@@ -1,30 +1,90 @@
 :root {
-    --hover-color: rgb(255, 241, 50);
-    --default-color: rgb(255, 255, 255);
-    --text-color: rgb(20,20,20);
+    /* For light mode */
+    --bg-color: rgb(245, 245, 245);
+    --primary-color: #0f4830;
+    --secondary-color: #7ea58c;
+    --accent-color: #fff132;
+    --text-color: #141414;
+}
+
+[data-theme="dark"] {
+    /* For dark mode */
+    --bg-color: #141414;
+    --primary-color: #0f4830;
+    --secondary-color: #242424;
+    --accent-color: #fff132;
+    --text-color: #ffffff;
 }
 
 @font-face {
-    font-family: "Montserrat";
-    src: url("../media/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+    font-family: "Inter";
+    src: url("../fonts/Inter/Inter-VariableFont_opsz\,wght.ttf") format("truetype");
     font-style: normal;
+    font-weight: 100 900;
 }
 
 @font-face {
-    font-family: "Montserrat";
-    src: url("../media/fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf") format("truetype");
+    font-family: "Inter";
+    src: url("../fonts/Inter/Inter-Italic-VariableFont_opsz\,wght.ttf") format("truetype");
     font-style: italic;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-family: "DM Sans";
+    src: url("../fonts/DM_Sans/DMSans-VariableFont_opsz\,wght.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 100 1000;
+}
+
+@font-face {
+    font-family: "DM Sans";
+    src: url("../fonts/DM_Sans/DMSans-Italic-VariableFont_opsz\,wght.ttf") format("truetype");
+    font-style: italic;
+    font-weight: 100 1000;
 }
 
 * {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 body {
-    /* background-image: url("../media/aboutme/dog_03.jpg"); */
-    background-image: url("../media/bg.jpg");
     margin: 0;
     padding: 0;
-    color: var(--default-color);
-    text-shadow: 4px 4px 4px rgba(0,0,0,0.6);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    background-image: url("../images/bg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+}
+
+.logo-slot { width: 280px; height: 100px; object-fit: contain; }
+
+.divider {
+    position: relative;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 2px;
+    background-color: #ddd;
+}
+
+.mobile-only{
+
+}
+
+.desktop-only{
+
+}
+
+@media (max-width: 768px) {
+    body {
+        background-size: auto 60%;
+    }
 }
