@@ -1,0 +1,110 @@
+/* ========================================================
+   EXISTING CSS
+   ======================================================== */
+.logo-slot {
+    max-height: 50px;
+    object-fit: contain;
+}
+
+.divider {
+    border-left: 1px solid #e9ecef;
+}
+
+@media (max-width: 991.98px) {
+    .divider {
+        border-left: none;
+    }
+}
+
+/* ========================================================
+   NEW CSS FOR home.html
+   ======================================================== */
+:root {
+    /* Main DLSU Color Palette*/
+    --dlsu-green: #084c34;
+    --dlsu-green-hover: #063927;
+    --dlsu-light: #eef4f1;
+    --dlsu-light-hover: #e3ede7;
+
+    /* Text Colors */
+    --text-main: #1d2125;
+    --text-secondary: #5e6c79;
+}
+
+.dashboard-body {
+    background-color: #ffffff;
+    padding-bottom: 70px;
+}
+
+@media (min-width: 992px) {
+    .dashboard-body,
+    .dashboard-body html {
+        padding-bottom: 0;
+    }
+}
+
+/* Base Typography utilities */
+.text-dlsu-green { color: var(--dlsu-green) !important; }
+.bg-dlsu-green { background-color: var(--dlsu-green) !important; }
+.bg-dlsu-light { background-color: var(--dlsu-light) !important; }
+
+/* Dashboard Buttons */
+.btn-dlsu-green {
+    background-color: var(--dlsu-green);
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-dlsu-green:hover {
+    background-color: var(--dlsu-green-hover);
+    color: #ffffff;
+}
+
+/* Sidebar Specific */
+.sidebar {
+    width: 240px;
+    background-color: #fafafa;
+}
+
+.nav-item-active {
+    background-color: var(--dlsu-light);
+    color: var(--dlsu-green);
+}
+
+.nav-item-default {
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.nav-item-default:hover {
+    background-color: #f1f3f5;
+    color: var(--dlsu-green);
+}
+
+/* Quick Action Cards */
+.quick-action-card {
+    background-color: var(--dlsu-light);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.quick-action-card:hover {
+    background-color: var(--dlsu-light-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+}
+
+.bg-success-subtle {
+    background-color: #e4f2ea !important;
+}
+.text-success {
+    color: #1b6d3d !important;
+}
+.border-success-subtle {
+    border-color: #cde6d7 !important;
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}

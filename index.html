@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+
+        <title>Arrows Express Booking App</title>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row min-vh-100">
+                <!-- Still figuring out how to make only certain items display on mobile/desktop - austin -->
+                <!-- LEFT SIDE -->
+                <div class="col-lg-6 d-none d-lg-flex flex-column">
+                    <div class="pt-2 ps-2">
+                        <img src="/assets/images/logo.png" alt="Logo" class="logo-slot">
+                    </div>
+
+                    <div class="my-auto px-5">
+                        <h1 class="display-4 fw-bold">ARROWS<br/>EXPRESS</h1>
+                        <p class="lead text-secondary">Your inter-campus shuttle<br/>booking platform</p>
+
+                        <div class="row text-center mt-4">
+                        <div class="col-4">View<br/>Schedules</div>
+                        <div class="col-4">Book<br/>Your Ride</div>
+                        <div class="col-4">Get<br/>Live Updates</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE -->
+                <div class="col-12 col-lg-6 d-flex flex-column divider">
+                    <div class="text-end pt-3 pe-4">
+                        <small>Don't have an account? <a href="#" class="fw-semibold">Sign up</a></small>
+                    </div>
+
+                    <div class="my-auto px-4 px-lg-5">
+                        <div class="mx-auto" style="max-width: 400px;">
+                        <h2 class="fw-bold">Log in</h2>
+                        <p class="text-secondary">Enter your DLSU account to continue to<br/>Arrows Express.</p>
+
+                        <form>
+                            <div class="mb-3">
+                            <label for="email" class="form-label">DLSU Email</label>
+                            <input type="email" class="form-control" id="email">
+                            </div>
+
+                            <div class="mb-1">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password">
+                            </div>
+                            <div class="text-end mb-3"><a href="#" class="small">Forgot password?</a></div>
+
+                            <button type="submit" class="btn btn-success w-100">Log In</button>
+
+                            <div class="d-flex align-items-center my-3">
+                            <hr class="flex-grow-1"><span class="mx-2 small text-secondary">or</span><hr class="flex-grow-1">
+                            </div>
+
+                            <button type="button" class="btn btn-outline-success w-100">Continue with Google</button>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="assets/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/chart.umd.min.js"></script>
+    </body>
+
+    <footer>
+    </footer>
+</html>
