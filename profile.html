@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <title>My Profile - Arrows Express</title>
+</head>
+<body class="dashboard-body profile-body bg-white">
+
+<div class="container-fluid p-0">
+    <div class="d-flex profile-layout">
+
+        <!-- DESKTOP SIDEBAR -->
+        <aside class="sidebar profile-sidebar d-none d-lg-flex flex-column border-end p-3 pt-4">
+            <div class="mb-4 px-3">
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="img-fluid profile-logo">
+            </div>
+
+            <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Passenger navigation">
+                <a href="home.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i> Home
+                </a>
+                <a href="my-bookings.html#my-bookings" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-calendar-event me-3 fs-5" aria-hidden="true"></i> My Bookings
+                </a>
+                <a href="schedules.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
+                    <i class="bi bi-clock me-3 fs-5"></i> Schedules
+                </a>
+                <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
+                    <i class="bi bi-geo-alt me-3 fs-5"></i> Routes & Maps
+                </a>
+                <a href="profile.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
+                    <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
+                </a>
+            </nav>
+
+            <div class="px-2">
+                <hr class="my-3 opacity-25">
+
+                <a href="index.html"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
+                    <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i>
+                    Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="profile-main flex-grow-1 p-4 px-xl-5">
+            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
+                <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                        <span class="dashboard-user-avatar me-2">
+                            <i class="bi bi-person-fill" aria-hidden="true"></i>
+                        </span>
+                        <span id="profile-header-name" class="fw-semibold me-2">Juan Dela Cruz</span>
+                        <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
+                    </a>
+                    <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </header>
+
+            <h1 class="fs-3 fw-bold text-dlsu-green mb-1">My Profile</h1>
+            <p class="text-secondary mb-4">View and update your passenger details.</p>
+
+            <div id="profile-message"
+                 class="alert d-none"
+                 role="status"
+                 aria-live="polite"
+                 aria-atomic="true"></div>
+
+            <noscript>
+                <p class="alert alert-warning">
+                    Enable JavaScript to view and edit your demo profile.
+                </p>
+            </noscript>
+
+            <div class="row g-4 align-items-start">
+
+                <!-- PASSENGER SUMMARY -->
+                <section class="col-12 col-xl-4"
+                         aria-labelledby="profile-summary-name">
+                    <div class="bg-dlsu-light rounded-4 p-4 text-center profile-summary">
+
+                        <!-- The ID number updates after saving profile changes. -->
+                        <p class="small text-secondary mb-3">
+                            ID Number:
+                            <span id="profile-summary-id"
+                                  class="fw-semibold text-dlsu-green">12400001</span>
+                        </p>
+
+                        <h2 id="profile-summary-name"
+                            class="fs-5 fw-bold text-dlsu-green mb-2">
+                            Juan Dela Cruz
+                        </h2>
+
+                        <p id="profile-summary-email"
+                           class="small text-secondary mb-3">
+                            juan_delacruz@dlsu.edu.ph
+                        </p>
+
+                        <span id="profile-summary-type"
+                              class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                            Student
+                        </span>
+
+                        <hr class="opacity-25 my-4">
+
+                        <p class="small text-secondary mb-1">Campus</p>
+                        <p id="profile-summary-campus"
+                           class="fw-semibold text-dlsu-green mb-0">
+                            Manila
+                        </p>
+                    </div>
+                </section>
+
+                <!-- VIEW AND EDIT PROFILE -->
+                <section class="col-12 col-xl-8"
+                         aria-labelledby="profile-details-heading">
+                    <div class="card border rounded-4 p-3 p-md-4 shadow-sm">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                            <div>
+                                <h2 id="profile-details-heading"
+                                    class="fs-5 fw-bold mb-1">
+                                    Personal Details
+                                </h2>
+                                <p id="profile-edit-help"
+                                   class="small text-secondary mb-0">
+                                    Select Edit Profile to make changes.
+                                </p>
+                            </div>
+
+                            <button type="button"
+                                    id="edit-profile-button"
+                                    class="btn btn-dlsu-green btn-sm"
+                                    disabled>
+                                <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                                Edit Profile
+                            </button>
+                        </div>
+
+                        <form id="profile-form" novalidate>
+                            <div class="row g-3">
+
+                                <div class="col-12 col-md-6">
+                                    <label for="first-name"
+                                           class="form-label fw-semibold">
+                                        First Name
+                                    </label>
+                                    <input type="text"
+                                           id="first-name"
+                                           name="firstName"
+                                           class="form-control"
+                                           autocomplete="given-name"
+                                           maxlength="50"
+                                           aria-describedby="first-name-error"
+                                           required readonly>
+                                    <div id="first-name-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="last-name"
+                                           class="form-label fw-semibold">
+                                        Last Name
+                                    </label>
+                                    <input type="text"
+                                           id="last-name"
+                                           name="lastName"
+                                           class="form-control"
+                                           autocomplete="family-name"
+                                           maxlength="50"
+                                           aria-describedby="last-name-error"
+                                           required readonly>
+                                    <div id="last-name-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="profile-email"
+                                           class="form-label fw-semibold">
+                                        DLSU Email
+                                    </label>
+                                    <input type="email"
+                                           id="profile-email"
+                                           name="email"
+                                           class="form-control"
+                                           autocomplete="email"
+                                           maxlength="254"
+                                           autocapitalize="none"
+                                           spellcheck="false"
+                                           aria-describedby="profile-email-error"
+                                           required readonly>
+                                    <div id="profile-email-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="id-number"
+                                           class="form-label fw-semibold">
+                                        ID Number
+                                    </label>
+                                    <input type="text"
+                                           id="id-number"
+                                           name="idNumber"
+                                           class="form-control"
+                                           maxlength="20"
+                                           aria-describedby="id-number-error"
+                                           required readonly>
+                                    <div id="id-number-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="passenger-type"
+                                           class="form-label fw-semibold">
+                                        Passenger Type
+                                    </label>
+                                    <select id="passenger-type"
+                                            name="passengerType"
+                                            class="form-select"
+                                            aria-describedby="passenger-type-error"
+                                            required disabled>
+                                        <option value="student">Student</option>
+                                        <option value="faculty">Faculty</option>
+                                        <option value="employee-staff">Employee / Staff</option>
+                                    </select>
+                                    <div id="passenger-type-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="sex" class="form-label fw-semibold">
+                                        Sex
+                                    </label>
+                                    <select id="sex"
+                                            name="sex"
+                                            class="form-select"
+                                            aria-describedby="sex-error"
+                                            required disabled>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                    <div id="sex-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="college-department"
+                                           class="form-label fw-semibold">
+                                        College / Department
+                                    </label>
+                                    <input type="text"
+                                           id="college-department"
+                                           name="collegeDepartment"
+                                           class="form-control"
+                                           maxlength="100"
+                                           aria-describedby="college-department-error"
+                                           required readonly>
+                                    <div id="college-department-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="contact-number"
+                                           class="form-label fw-semibold">
+                                        Contact Number
+                                    </label>
+                                    <input type="tel"
+                                           id="contact-number"
+                                           name="contactNumber"
+                                           class="form-control"
+                                           autocomplete="tel"
+                                           maxlength="25"
+                                           aria-describedby="contact-number-error"
+                                           required readonly>
+                                    <div id="contact-number-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="profile-campus"
+                                           class="form-label fw-semibold">
+                                        Campus
+                                    </label>
+                                    <select id="profile-campus"
+                                            name="campus"
+                                            class="form-select"
+                                            aria-describedby="profile-campus-error"
+                                            required disabled>
+                                        <option value="Manila">Manila</option>
+                                        <option value="Laguna">Laguna</option>
+                                    </select>
+                                    <div id="profile-campus-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <!-- Only the document filename is saved. -->
+                                <div class="col-12">
+                                    <label for="verification-document"
+                                           class="form-label fw-semibold">
+                                        Verification Document
+                                    </label>
+
+                                    <p id="profile-document-name"
+                                       class="small text-dlsu-green mb-2 text-break">
+                                        juan-delacruz-eaf.pdf
+                                    </p>
+
+                                    <div id="profile-document-edit" class="d-none">
+                                        <input type="file"
+                                               id="verification-document"
+                                               name="verificationDocument"
+                                               class="form-control"
+                                               accept=".pdf,.jpg,.jpeg,.png"
+                                               aria-describedby="verification-document-help verification-document-error"
+                                               disabled>
+                                        <div id="verification-document-error"
+                                             class="invalid-feedback"></div>
+                                    </div>
+
+                                    <div id="verification-document-help"
+                                         class="form-text">
+                                        Demo document record. Replacements accept PDF,
+                                        JPG, or PNG up to 5 MB. Only the filename is
+                                        saved; files are not uploaded.
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="profile-password"
+                                           class="form-label fw-semibold">
+                                        Password
+                                    </label>
+                                    <input type="password"
+                                           id="profile-password"
+                                           name="password"
+                                           class="form-control"
+                                           autocomplete="new-password"
+                                           maxlength="128"
+                                           aria-describedby="profile-password-error"
+                                           required readonly>
+                                    <div id="profile-password-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="confirm-password"
+                                           class="form-label fw-semibold">
+                                        Confirm Password
+                                    </label>
+                                    <input type="password"
+                                           id="confirm-password"
+                                           name="confirmPassword"
+                                           class="form-control"
+                                           autocomplete="new-password"
+                                           maxlength="128"
+                                           aria-describedby="confirm-password-error"
+                                           required readonly>
+                                    <div id="confirm-password-error"
+                                         class="invalid-feedback"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <p class="small text-secondary mb-0">
+                                        Password fields show masked demo values.
+                                        Password edits apply only to this visit and
+                                        do not change the demo login credentials.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div id="profile-edit-actions"
+                                 class="d-flex flex-wrap justify-content-end gap-2 mt-4 d-none">
+                                <button type="button"
+                                        id="cancel-profile-button"
+                                        class="btn btn-light border">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                        class="btn btn-dlsu-green">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <p class="small text-secondary mt-3 mb-0">
+                        Phase 1 demo: profile details are saved only in this
+                        browser. Mock account and document details are provided
+                        for demonstration.
+                    </p>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- MOBILE NAVIGATION -->
+<nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
+     aria-label="Mobile passenger navigation">
+    <div class="d-flex justify-content-around align-items-center py-2">
+        <a href="home.html" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i><span>Home</span>
+        </a>
+
+        <a href="my-bookings.html" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i><span>Book</span>
+        </a>
+
+        <a href="my-bookings.html#my-bookings" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i><span>My Bookings</span>
+        </a>
+
+        </a>
+        <a href="schedules.html"
+        class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-clock fs-5" aria-hidden="true"></i><span>Schedules</span>
+        </a>
+
+        <a href="routes-and-maps.html"
+        class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i><span>Routes</span>
+        </a>
+    </div>
+</nav>
+
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/profile.js"></script>
+</body>
+</html>
