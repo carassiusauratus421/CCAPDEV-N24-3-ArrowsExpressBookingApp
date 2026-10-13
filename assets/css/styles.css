@@ -108,3 +108,94 @@
 .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
 }
+
+/* ========================================================
+   LOGIN PAGE
+   ======================================================== */
+.login-body {
+    background-color: #ffffff;
+    color: var(--text-main);
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-text-button {
+    font-size: inherit;
+    vertical-align: baseline;
+    color: var(--dlsu-green);
+}
+
+.login-text-button:hover {
+    color: var(--dlsu-green-hover);
+}
+
+.login-body .btn-success {
+    --bs-btn-bg: var(--dlsu-green);
+    --bs-btn-border-color: var(--dlsu-green);
+    --bs-btn-hover-bg: var(--dlsu-green-hover);
+    --bs-btn-hover-border-color: var(--dlsu-green-hover);
+    --bs-btn-active-bg: var(--dlsu-green-hover);
+    --bs-btn-active-border-color: var(--dlsu-green-hover);
+    --bs-btn-disabled-bg: var(--dlsu-green);
+    --bs-btn-disabled-border-color: var(--dlsu-green);
+}
+
+.login-body .btn-outline-success {
+    --bs-btn-color: var(--dlsu-green);
+    --bs-btn-border-color: var(--dlsu-green);
+    --bs-btn-hover-bg: var(--dlsu-green);
+    --bs-btn-hover-border-color: var(--dlsu-green);
+    --bs-btn-active-bg: var(--dlsu-green-hover);
+    --bs-btn-active-border-color: var(--dlsu-green-hover);
+    --bs-btn-disabled-color: var(--dlsu-green);
+    --bs-btn-disabled-border-color: var(--dlsu-green);
+}
+
+.login-demo {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 575.98px) {
+    .login-body .logo-slot {
+        max-height: 38px;
+        max-width: 110px;
+    }
+}
+
+/* ========================================================
+   SIGNUP PAGE
+   Append this block to assets/css/styles.css.
+   ======================================================== */
+.signup-body {
+    background-color: #ffffff;
+    color: var(--text-main);
+}
+
+.signup-form-container {
+    width: 100%;
+    max-width: 560px;
+}
+
+.signup-link {
+    color: var(--dlsu-green);
+}
+
+.signup-link:hover {
+    color: var(--dlsu-green-hover);
+}
+
+.signup-body .btn-dlsu-green {
+    --bs-btn-disabled-bg: var(--dlsu-green);
+    --bs-btn-disabled-color: #ffffff;
+    --bs-btn-disabled-border-color: var(--dlsu-green);
+}
+
+@media (max-width: 575.98px) {
+    .signup-body .logo-slot {
+        max-height: 38px;
+        max-width: 110px;
+    }
+}
