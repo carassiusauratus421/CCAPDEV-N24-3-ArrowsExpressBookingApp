@@ -113,12 +113,6 @@ googleLoginButton.addEventListener("click", function () {
     completeMockLogin("Google demo sign-in successful. Opening Juan's passenger dashboard...");
 });
 
-document.getElementById("forgot-password-button").addEventListener("click", function () {
-    if (!isLoggingIn) {
-        showMessage("Password recovery is not available in this demo yet. The demo password is Arrows123!.", "info");
-    }
-});
-
 [emailInput, passwordInput].forEach(function (input) {
     input.addEventListener("input", function () {
         clearFieldError(input);
