@@ -21,12 +21,17 @@
 
                     <div class="my-auto px-5 py-4">
                         <div class="row mt-4">
-                            <h1 class="display-2 fw-bold">ARROWS<br>EXPRESS</h1>
-                            <p class="lead text-secondary">Your inter-campus shuttle<br>booking platform</p>
+                            <div class="col-3"> <!-- spacer column --> </div>
+                            <div class="col-6">
+                                <h1 class="display-2 fw-bold">ARROWS<br>EXPRESS</h1>
+                                <p class="lead text-secondary fw-medium">Your inter-campus shuttle<br>booking platform</p>
+                            </div>
+                            <div class="col-3"> <!-- spacer column --> </div>
                         </div>
 
                         <div class="row text-center mt-4">
-                            <div class="col-4">
+                            <div class="col-3"> <!-- spacer column --> </div>
+                            <div class="col-2">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <img src="assets/images/calendar.png" alt="" width="32" class="d-block mx-auto mb-2">
@@ -34,7 +39,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <img src="assets/images/bus.png" alt="" width="32" class="d-block mx-auto mb-2">
@@ -42,14 +47,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <img src="assets/images/bell.png" alt="" width="32" class="d-block mx-auto mb-2">
-                                        Get<br>Live Updates
+                                        Live<br> Updates
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-3"> <!-- spacer column --> </div>
                         </div>
                     </div>
                 </section>
@@ -67,7 +73,7 @@
                     <div class="my-auto px-3 px-sm-4 px-lg-5 py-4">
                         <div class="mx-auto login-form-container">
                             <h2 id="login-heading" class="fw-bold">Log in</h2>
-                            <p class="text-secondary">Enter your DLSU account to continue to Arrows Express.</p>
+                            <p class="text-secondary fw-medium">Enter your DLSU account to continue to Arrows Express.</p>
 
                             <!-- Inline feedback for validation and simulated actions. -->
                             <div id="login-message" class="alert d-none" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -78,7 +84,7 @@
 
                             <form id="login-form" method="post" novalidate>
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">DLSU Email</label>
+                                    <label for="email" class="form-label fw-bold">DLSU Email</label>
                                     <input type="email" class="form-control" id="email" name="email"
                                            placeholder="username@dlsu.edu.ph" autocomplete="username"
                                            autocapitalize="none" spellcheck="false"
@@ -87,7 +93,7 @@
                                 </div>
 
                                 <div class="mb-1">
-                                    <label for="password" class="form-label">Password</label>
+                                    <label for="password" class="form-label fw-bold">Password</label>
                                     <input type="password" class="form-control" id="password" name="password"
                                            placeholder="Enter your password" autocomplete="current-password"
                                            aria-describedby="password-error" required>

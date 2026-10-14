@@ -21,12 +21,17 @@
 
                     <div class="my-auto px-5 py-4">
                         <div class="row mt-4">
-                            <h1 class="display-2 fw-bold">ARROWS<br>EXPRESS</h1>
-                            <p class="lead text-secondary">Your inter-campus shuttle<br>booking platform</p>
+                            <div class="col-3"> <!-- spacer column --> </div>
+                            <div class="col-6">
+                                <h1 class="display-2 fw-bold">ARROWS<br>EXPRESS</h1>
+                                <p class="lead text-secondary fw-medium">Your inter-campus shuttle<br>booking platform</p>
+                            </div>
+                            <div class="col-3"> <!-- spacer column --> </div>
                         </div>
 
                         <div class="row text-center mt-4">
-                            <div class="col-4">
+                            <div class="col-3"> <!-- spacer column --> </div>
+                            <div class="col-2">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <img src="assets/images/calendar.png" alt="" width="32" class="d-block mx-auto mb-2">
@@ -34,7 +39,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <img src="assets/images/bus.png" alt="" width="32" class="d-block mx-auto mb-2">
@@ -42,14 +47,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <img src="assets/images/bell.png" alt="" width="32" class="d-block mx-auto mb-2">
-                                        Get<br>Live Updates
+                                        Live<br> Updates
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-3"> <!-- spacer column --> </div>
                         </div>
                     </div>
                 </section>
@@ -64,34 +70,34 @@
                     <div class="my-auto px-3 px-sm-4 px-lg-5 py-4">
                         <div class="mx-auto signup-form-container">
                             <h2 class="fw-bold">Sign up</h2>
-                            <p class="text-secondary">Create your passenger account for Arrows Express.</p>
+                            <p class="text-secondary fw-medium">Create your passenger account for Arrows Express.</p>
 
                             <!-- Frontend layout only. Registration is not enabled yet. -->
                             <form method="post">
                                 <div class="row g-3">
                                     <div class="col-12 col-sm-6">
-                                        <label for="first-name" class="form-label">First Name</label>
+                                        <label for="first-name" class="form-label fw-bold">First Name</label>
                                         <input type="text" class="form-control" id="first-name" name="firstName" placeholder="Juan" autocomplete="given-name">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="last-name" class="form-label">Last Name</label>
+                                        <label for="last-name" class="form-label fw-bold">Last Name</label>
                                         <input type="text" class="form-control" id="last-name" name="lastName" placeholder="Dela Cruz" autocomplete="family-name">
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="signup-email" class="form-label">DLSU Email</label>
+                                        <label for="signup-email" class="form-label fw-bold">DLSU Email</label>
                                         <input type="email" class="form-control" id="signup-email" name="email" placeholder="username@dlsu.edu.ph" autocomplete="email" autocapitalize="none" spellcheck="false" aria-describedby="signup-email-help">
                                         <div id="signup-email-help" class="form-text">Use your university email address.</div>
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="id-number" class="form-label">ID Number</label>
+                                        <label for="id-number" class="form-label fw-bold">ID Number</label>
                                         <input type="text" class="form-control" id="id-number" name="idNumber" placeholder="Enter your university ID number">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="passenger-type" class="form-label">Passenger Type</label>
+                                        <label for="passenger-type" class="form-label fw-bold">Passenger Type</label>
                                         <select class="form-select" id="passenger-type" name="passengerType">
                                             <option value="" selected>Select passenger type</option>
                                             <option value="student">Student</option>
@@ -101,7 +107,7 @@
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="sex" class="form-label">Sex</label>
+                                        <label for="sex" class="form-label fw-bold">Sex</label>
                                         <select class="form-select" id="sex" name="sex">
                                             <option value="" selected>Select sex</option>
                                             <option value="male">Male</option>
@@ -111,23 +117,23 @@
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="college-department" class="form-label">College / Department</label>
+                                        <label for="college-department" class="form-label fw-bold">College / Department</label>
                                         <input type="text" class="form-control" id="college-department" name="collegeDepartment" placeholder="Enter your college or department">
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="verification-document" class="form-label">Verification Document</label>
+                                        <label for="verification-document" class="form-label fw-bold">Verification Document</label>
                                         <input type="file" class="form-control" id="verification-document" name="verificationDocument" accept=".pdf,.jpg,.jpeg,.png" aria-describedby="verification-document-help">
                                         <div id="verification-document-help" class="form-text">Select an EAF or university ID (PDF, JPG, or PNG). Files are not uploaded yet.</div>
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="signup-password" class="form-label">Password</label>
+                                        <label for="signup-password" class="form-label fw-bold">Password</label>
                                         <input type="password" class="form-control" id="signup-password" name="password" placeholder="Create a password" autocomplete="new-password">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="confirm-password" class="form-label">Confirm Password</label>
+                                        <label for="confirm-password" class="form-label fw-bold">Confirm Password</label>
                                         <input type="password" class="form-control" id="confirm-password" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
                                     </div>
                                 </div>
