@@ -115,6 +115,10 @@
 .login-body {
     background-color: #ffffff;
     color: var(--text-main);
+    background-image: url(../images/bg.png);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: auto 60%;
 }
 
 .login-form-container {
@@ -172,6 +176,10 @@
 .signup-body {
     background-color: #ffffff;
     color: var(--text-main);
+    background-image: url(../images/bg.png);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: auto 60%;
 }
 
 .signup-form-container {
