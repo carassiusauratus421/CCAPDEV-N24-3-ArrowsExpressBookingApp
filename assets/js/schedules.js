@@ -140,7 +140,7 @@ function showTripMessage(message) {
     tripList.appendChild(row);
 }
 
-function renderAvailableTrips() {
+function generateAvailableTrips() {
     tripList.replaceChildren();
 
     if (!isTripDateValid()) {
@@ -205,14 +205,14 @@ document.querySelectorAll(".direction-button").forEach(function (button) {
             item.classList.toggle("active", active);
             item.setAttribute("aria-pressed", String(active));
         });
-        renderAvailableTrips();
+        generatevailableTrips();
     });
 });
 
-tripDateInput.addEventListener("change", renderAvailableTrips);
+tripDateInput.addEventListener("change", generateAvailableTrips);
 tripTimeslotSelect.addEventListener("change", function () {
     currentTimeslot = tripTimeslotSelect.value;
-    renderAvailableTrips();
+    generateAvailableTrips();
 });
 
 const today = new Date();
@@ -220,4 +220,4 @@ const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 tripDateInput.min = getLocalDateValue(today);
 tripDateInput.value = getLocalDateValue(tomorrow);
-renderAvailableTrips();
+generateAvailableTrips();
