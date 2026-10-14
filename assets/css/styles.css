@@ -429,7 +429,7 @@
     outline-offset: 2px;
 }
 
-#trip-date {
+#trip-date, #timeslot-filter {
     min-height: 48px;
     color: var(--dlsu-green);
     font-weight: 600;

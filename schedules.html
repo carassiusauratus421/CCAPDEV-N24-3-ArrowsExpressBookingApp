@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <title>Term 1 AY26-27 Schedule - Arrows Express Booking App</title>
+</head>
+<body class="dashboard-body bookings-body bg-white">
+    <div class="container-fluid p-0">
+        <div class="d-flex bookings-layout">
+            <!-- DESKTOP SIDEBAR -->
+            <aside class="sidebar bookings-sidebar d-none d-lg-flex flex-column border-end p-3 pt-4">
+                <div class="mb-4 px-3">
+                    <img src="assets/images/logo.png" alt="DLSU Logo" class="img-fluid bookings-logo">
+                </div>
+
+                <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Passenger navigation">
+                    <a href="home.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                        <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i> Home
+                    </a>
+                    <a href="my-bookings.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
+                        <i class="bi bi-calendar-event me-3 fs-5"></i> My Bookings
+                    </a>
+                    <a href="schedules.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
+                        <i class="bi bi-clock me-3 fs-5" aria-hidden="true"></i> Schedules
+                    </a>
+                    <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
+                        <i class="bi bi-geo-alt me-3 fs-5"></i> Routes & Maps
+                    </a>
+                    <a href="profile.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                        <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
+                    </a>
+                </nav>
+
+                <div class="px-2">
+                    <hr class="my-3 opacity-25">
+                    <a href="index.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
+                        <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i> Log Out
+                    </a>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
+                <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
+                    <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                            <span class="dashboard-user-avatar me-2">
+                                <i class="bi bi-person-fill" aria-hidden="true"></i>
+                            </span>
+                            <span class="fw-semibold me-2">Juan Dela Cruz</span>
+                            <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
+                        </a>
+                        <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </header>
+
+                <h1 class="fs-3 fw-bold text-dlsu-green mb-1">Term 1 AY 2026-2027 Schedule</h1>
+                <p class="text-secondary mb-4">Check the available schedules for this term.</p>
+                <div id="booking-message" class="alert d-none" role="status" aria-live="polite" aria-atomic="true"></div>
+
+                <!-- TRIP SEARCH AND INFORMATION -->
+                <div class="row g-4 mb-4" id="book-a-trip">
+                    <section class="col-12" aria-labelledby="available-trips-heading">
+                        <div class="row g-3 align-items-end mb-4">
+                            <div class="col-12 col-xl-6">
+                                <span class="form-label fw-semibold d-block" id="direction-label">Direction</span>
+                                <div class="d-flex gap-2" role="group" aria-labelledby="direction-label">
+                                    <button type="button" class="direction-button active" data-direction="manila-laguna" aria-pressed="true">
+                                        <i class="bi bi-bus-front me-2" aria-hidden="true"></i> Manila → Laguna
+                                    </button>
+                                    <button type="button" class="direction-button" data-direction="laguna-manila" aria-pressed="false">
+                                        <i class="bi bi-bus-front me-2" aria-hidden="true"></i> Laguna → Manila
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-xl-3">
+                                <label for="trip-date" class="form-label fw-semibold">Select Date</label>
+                                <input type="date" class="form-control" id="trip-date" aria-describedby="trip-date-error">
+                                <div class="invalid-feedback" id="trip-date-error">Choose today or a future date.</div>
+                            </div>
+
+                            <div class="col-6 col-xl-3">
+                                <label for="timeslot-filter" class="form-label fw-semibold">Time Slot</label>
+                                <select class="form-select" id="timeslot-filter">
+                                    <option value="all">All times</option>
+                                    <option value="morning">6:00 AM → 12:00 PM</option>
+                                    <option value="afternoon">12:00 PM → 6:00 PM</option>
+                                    <option value="evening">6:00 PM → 8:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <aside class="col-12 col-xl-12" aria-labelledby="trip-information-heading">
+                            <div class="trip-information-panel h-100">
+                                <div class="d-flex gap-3">
+                                    <i class="bi bi-calendar-event fs-4" aria-hidden="true"></i>
+                                    <div>
+                                        <h3 class="fs-6 fw-semibold mb-1">Reminders</h3>
+                                        <ul class="small ps-3 mb-0">
+                                            <li>Please arrive at least 10 minutes before departure.</li>
+                                            <li>Confirm your booking 60 minutes before your trip to avoid forfeiture.</li>
+                                            <li>Arrival times may vary depending on traffic conditions.</li>
+                                            <li>Eating inside the shuttle is prohibited.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </section>
+                </div>
+                
+
+                <h2 class="fs-5 fw-bold text-dlsu-green mb-3" id="available-trips-heading">Available Trips</h2>
+                <div class="available-trips-panel">
+                    <table class="table align-middle mb-0 available-trips-table">
+                        <caption class="visually-hidden">Available shuttle trips for the selected direction and date</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Departure Time</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Pickup Point</th>
+                                <th scope="col">Drop-off Point</th>
+                                <th scope="col"><span class="visually-hidden">Action</span></th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="available-trip-list">
+                            <tr><td colspan="5" style="grid-column: 1 / -1;">Loading available trips...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MOBILE NAVIGATION BAR -->
+    <nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
+        aria-label="Mobile passenger navigation">
+        <div class="d-flex justify-content-around align-items-center py-2">
+            <a href="home.html" class="dashboard-mobile-item text-decoration-none text-muted">
+                <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i><span>Home</span>
+            </a>
+
+            <a href="#book-a-trip" class="dashboard-mobile-item text-decoration-none text-muted">
+                <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i><span>Book</span>
+            </a>
+
+            <a href="my-bookings.html"
+            class="dashboard-mobile-item text-decoration-none text-muted"
+            aria-current="page">
+                <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i><span>My Bookings</span>
+            </a>
+            
+            <a href="schedules.html"
+            class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold">
+                <i class="bi bi-clock fs-5" aria-hidden="true"></i><span>Schedules</span>
+            </a>
+
+            <a href="routes-and-maps.html"
+            class="dashboard-mobile-item text-decoration-none text-muted">
+                <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i><span>Routes</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- AVAILABLE TRIP ROW -->
+    <template id="trip-row-template">
+        <tr>
+            <td class="trip-time fw-bold" data-label="Departure Time"></td>
+            <td class="trip-date" data-label="Date"></td>
+            <td class="trip-pickup" data-label="Pickup Point"></td>
+            <td class="trip-dropoff" data-label="Drop-off Point"></td>
+            <td class="trip-action text-end">
+                <button type="button" class="trip-select-button btn btn-dlsu-green btn-sm" data-bs-toggle="modal" data-bs-target="#trip-details-modal">Details</button>
+            </td>
+        </tr>
+    </template>
+
+    <!-- TRIP DETAILS MODAL -->
+    <div class="modal fade" id="trip-details-modal" tabindex="-1" aria-labelledby="trip-details-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5 fw-bold" id="trip-details-title">Trip Details</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h3 class="fs-5 fw-bold text-dlsu-green" id="selected-route"></h3>
+                    <dl class="row small booking-detail-list mb-0">
+                        <dt class="col-5">Date</dt><dd class="col-7" id="selected-date"></dd>
+                        <dt class="col-5">Departure Time</dt><dd class="col-7" id="selected-time"></dd>
+                        <dt class="col-5">Shuttle</dt><dd class="col-7" id="selected-shuttle"></dd>
+                        <dt class="col-5">Pick-up Point</dt><dd class="col-7" id="selected-pickup"></dd>
+                        <dt class="col-5">Drop-off Point</dt><dd class="col-7" id="selected-dropoff"></dd>
+                        <dt class="col-5">Slots</dt><dd class="col-7" id="selected-seats"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/schedules.js"></script>
+</body>
+</html>

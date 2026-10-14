@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Book a Shuttle - Arrows Express</title>
+    <title>Book a Shuttle - Arrows Express Booking App</title>
 </head>
 <body class="dashboard-body bookings-body bg-white">
 
@@ -134,30 +134,30 @@
 
             <!-- BOOKING HISTORY -->
             <section id="my-bookings" aria-labelledby="my-bookings-heading">
-            <h2 class="fs-5 fw-bold text-dlsu-green mb-1" id="my-bookings-heading">My Bookings</h2>
-            <p class="small text-secondary mb-3">View and manage all your shuttle bookings.</p>
-            <p class="small text-secondary">Sample bookings are shown below. Trips booked in this demo reset when the page reloads.</p>
-            <p id="booking-loading" class="small text-secondary" role="status">Loading booking data...</p>
+                <h2 class="fs-5 fw-bold text-dlsu-green mb-1" id="my-bookings-heading">My Bookings</h2>
+                <p class="small text-secondary mb-3">View and manage all your shuttle bookings.</p>
+                <p class="small text-secondary">Sample bookings are shown below. Trips booked in this demo reset when the page reloads.</p>
+                <p id="booking-loading" class="small text-secondary" role="status">Loading booking data...</p>
 
-            <!-- BOOKING TABS -->
-            <div class="nav nav-pills bookings-tabs mb-4" role="tablist" aria-label="Booking categories">
-                <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming-panel" type="button" role="tab" aria-controls="upcoming-panel" aria-selected="true">Upcoming</button>
-                <button class="nav-link" id="completed-tab" data-bs-toggle="pill" data-bs-target="#completed-panel" type="button" role="tab" aria-controls="completed-panel" aria-selected="false">Completed</button>
-                <button class="nav-link" id="cancelled-tab" data-bs-toggle="pill" data-bs-target="#cancelled-panel" type="button" role="tab" aria-controls="cancelled-panel" aria-selected="false">Cancelled</button>
-            </div>
+                <!-- BOOKING TABS -->
+                <div class="nav nav-pills bookings-tabs mb-4" role="tablist" aria-label="Booking categories">
+                    <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming-panel" type="button" role="tab" aria-controls="upcoming-panel" aria-selected="true">Upcoming</button>
+                    <button class="nav-link" id="completed-tab" data-bs-toggle="pill" data-bs-target="#completed-panel" type="button" role="tab" aria-controls="completed-panel" aria-selected="false">Completed</button>
+                    <button class="nav-link" id="cancelled-tab" data-bs-toggle="pill" data-bs-target="#cancelled-panel" type="button" role="tab" aria-controls="cancelled-panel" aria-selected="false">Cancelled</button>
+                </div>
 
-            <noscript><p class="alert alert-warning">Enable JavaScript to view the sample bookings.</p></noscript>
-            <div class="tab-content">
-                <section class="tab-pane fade show active" id="upcoming-panel" role="tabpanel" aria-labelledby="upcoming-tab" tabindex="0">
-                    <div id="upcoming-list"></div>
-                </section>
-                <section class="tab-pane fade" id="completed-panel" role="tabpanel" aria-labelledby="completed-tab" tabindex="0">
-                    <div id="completed-list"></div>
-                </section>
-                <section class="tab-pane fade" id="cancelled-panel" role="tabpanel" aria-labelledby="cancelled-tab" tabindex="0">
-                    <div id="cancelled-list"></div>
-                </section>
-            </div>
+                <noscript><p class="alert alert-warning">Enable JavaScript to view the sample bookings.</p></noscript>
+                <div class="tab-content">
+                    <section class="tab-pane fade show active" id="upcoming-panel" role="tabpanel" aria-labelledby="upcoming-tab" tabindex="0">
+                        <div id="upcoming-list"></div>
+                    </section>
+                    <section class="tab-pane fade" id="completed-panel" role="tabpanel" aria-labelledby="completed-tab" tabindex="0">
+                        <div id="completed-list"></div>
+                    </section>
+                    <section class="tab-pane fade" id="cancelled-panel" role="tabpanel" aria-labelledby="cancelled-tab" tabindex="0">
+                        <div id="cancelled-list"></div>
+                    </section>
+                </div>
             </section>
         </main>
     </div>
