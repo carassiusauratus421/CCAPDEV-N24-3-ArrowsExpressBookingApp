@@ -132,7 +132,7 @@ function showBookingMessage(message, type = "warning") {
 function showTripMessage(message) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 5;
+    cell.colSpan = 6;
     cell.style.gridColumn = "1 / -1";
     cell.className = "text-center text-secondary py-4";
     cell.textContent = message;
@@ -164,6 +164,7 @@ function generateAvailableTrips() {
         row.querySelector(".trip-date").textContent = getTripDate(trip.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
         row.querySelector(".trip-pickup").textContent = trip.pickup;
         row.querySelector(".trip-dropoff").textContent = trip.dropoff;
+        row.querySelector(".trip-slots").textContent = trip.slots;
 
         const button = row.querySelector(".trip-select-button");
         button.dataset.tripId = trip.id;
@@ -186,7 +187,7 @@ tripDetailsModal.addEventListener("show.bs.modal", function (event) {
         "selected-route": selectedTrip.route,
         "selected-date": getTripDate(selectedTrip.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
         "selected-time": selectedTrip.departure,
-        "selected-shuttle": "Arrows Express Line 1",
+        "selected-line": "Arrows Express Line 1",
         "selected-pickup": selectedTrip.pickup,
         "selected-dropoff": selectedTrip.dropoff,
         "selected-seats": selectedTrip.slots + " slots"
@@ -194,7 +195,6 @@ tripDetailsModal.addEventListener("show.bs.modal", function (event) {
     Object.keys(details).forEach(function (id) {
         document.getElementById(id).textContent = details[id];
     });
-    document.getElementById("trip-booking-error").classList.add("d-none");
 });
 
 document.querySelectorAll(".direction-button").forEach(function (button) {
@@ -205,7 +205,7 @@ document.querySelectorAll(".direction-button").forEach(function (button) {
             item.classList.toggle("active", active);
             item.setAttribute("aria-pressed", String(active));
         });
-        generatevailableTrips();
+        generateAvailableTrips();
     });
 });
 
