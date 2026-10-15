@@ -32,7 +32,7 @@ function buildNotificationData() {
     notificationChanges = readNotificationChanges();
     notificationData = JSON.parse(JSON.stringify(notificationSeed));
 
-    ["users", "trips", "bookings", "drivers", "notices"].forEach(function (section) {
+    ["users", "trips", "bookings", "drivers", "vehicles", "notices"].forEach(function (section) {
         if (!Array.isArray(notificationChanges[section])) {
             return;
         }
@@ -145,7 +145,7 @@ function buildPassengerNotifications() {
 
     notificationData.notices.forEach(function (notice) {
         if (notice.userId !== settings.defaultPassengerId ||
-            notice.type !== "booking-created") {
+            !["booking-created", "booking-decision"].includes(notice.type)) {
             return;
         }
 
@@ -155,19 +155,31 @@ function buildPassengerNotifications() {
             return;
         }
 
+        let title = notice.requiresAdminReview ? "Booking submitted" : "Booking received";
+        let message = "Booking " + details.booking.id + ": " + details.route +
+            " on " + formatNotificationDate(details.departure) + ".";
+        if (notice.type === "booking-decision") {
+            const titles = { "Accepted": "Booking accepted", "On Hold": "Booking on hold", "Rejected": "Booking rejected" };
+            const explanations = {
+                "Accepted": "The admin accepted your request. Confirm attendance when the departure reminder appears.",
+                "On Hold": "The admin put your request on hold. Please wait for another update.",
+                "Rejected": "The admin rejected your request. You can request another available trip."
+            };
+            title = titles[notice.decision] || "Booking updated";
+            message += " " + (explanations[notice.decision] || "View your booking for details.");
+        } else if (notice.requiresAdminReview) {
+            message += " Your request was submitted for admin review.";
+        } else {
+            message += " Current status: " +
+                (details.booking.status === "Confirmed" ? "Accepted" : details.booking.status) + ".";
+        }
         notifications.push({
-            id: notice.id,
-            details: details,
-            requiresConfirmation: false,
-            createdAt: new Date(notice.createdAt),
-            title: "Booking received",
-            message: "Booking " + details.booking.id + ": " + details.route +
-                " on " + formatNotificationDate(details.departure) +
-                ". Current status: " + details.booking.status + "."
+            id: notice.id, details: details, requiresConfirmation: false,
+            createdAt: new Date(notice.createdAt), title: title, message: message
         });
     });
 
-    return notifications.sort(function (first, second) {
+    return notifications.reverse().sort(function (first, second) {
         return second.createdAt - first.createdAt;
     });
 }
@@ -372,6 +384,7 @@ function renderNotificationPageDetails() {
     }
 }
 
+/* Reload saved changes and refresh notification displays. */
 function refreshNotifications() {
     if (!notificationSeed) {
         return;
@@ -401,6 +414,7 @@ function setNotificationBookingChange(bookingId, attendanceConfirmed) {
     change.attendanceConfirmed = attendanceConfirmed;
 }
 
+/* Save notification changes while preserving other demo edits. */
 function saveNotificationChanges() {
     notificationChanges.schemaVersion = notificationSeed.schemaVersion;
 

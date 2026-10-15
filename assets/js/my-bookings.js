@@ -18,6 +18,7 @@ let selectedTrip = null;
 let selectedBookingId = null;
 
 const bookingStatusClasses = {
+    "Pending": "bg-warning-subtle text-warning-emphasis border-warning-subtle",
     "Confirmed": "bg-success-subtle text-success border-success-subtle",
     "On Hold": "bg-warning-subtle text-warning-emphasis border-warning-subtle",
     "Completed": "bg-secondary-subtle text-secondary-emphasis border-secondary-subtle",
@@ -47,7 +48,7 @@ function rebuildBookingData() {
     bookingChanges = readBookingChanges();
     bookingData = JSON.parse(JSON.stringify(bookingSeed));
 
-    ["users", "trips", "bookings", "drivers", "notices"].forEach(function (section) {
+    ["users", "trips", "bookings", "drivers", "vehicles", "notices"].forEach(function (section) {
         if (!Array.isArray(bookingChanges[section])) {
             return;
         }
@@ -209,6 +210,13 @@ function getPassengerBooking(bookingId) {
         : null;
 }
 
+/* Display accepted and rejected decisions without changing stored statuses. */
+function getBookingDisplayStatus(booking) {
+    if (booking.adminDecision === "Rejected") { return "Rejected"; }
+    return booking.status === "Confirmed" ? "Accepted" : booking.status;
+}
+
+/* Choose the tab for this booking status. */
 function getBookingCategory(booking) {
     if (booking.status === "Cancelled") {
         return "cancelled";
@@ -272,7 +280,7 @@ function renderBookings(category) {
         });
 
         const status = card.querySelector(".booking-status");
-        status.textContent = details.booking.status;
+        status.textContent = getBookingDisplayStatus(details.booking);
         status.className =
             "booking-status badge rounded-pill px-3 py-2 border " +
             (bookingStatusClasses[details.booking.status] ||
@@ -303,7 +311,7 @@ function fillBookingDetails(details) {
         }),
         "detail-time": formatBookingTime(details.departure) +
             " – " + formatBookingTime(details.arrival),
-        "detail-status": booking.status,
+        "detail-status": getBookingDisplayStatus(booking),
         "detail-attendance": booking.attendanceConfirmed
             ? "Confirmed"
             : "Not confirmed",
@@ -338,7 +346,15 @@ function fillBookingDetails(details) {
 
     let note = "Your attendance is confirmed.";
 
-    if (minutes <= 0) {
+    if (booking.status === "Cancelled") {
+        note = booking.adminDecision === "Rejected"
+            ? "This booking was rejected. You can request another available trip."
+            : "This booking has been cancelled.";
+    } else if (booking.status === "Completed") {
+        note = "This trip is complete.";
+    } else if (booking.status === "Pending") {
+        note = "Awaiting admin review. You will be notified when your request is accepted, put on hold, or rejected.";
+    } else if (minutes <= 0) {
         note = "This trip has departed. Booking actions are no longer available.";
     } else if (booking.status === "On Hold") {
         note = "This booking is on hold. Attendance confirmation requires a confirmed reservation.";
@@ -411,8 +427,7 @@ function getAvailableTrips(
     return trips.map(function (trip) {
         const reservations = bookingData.bookings.filter(function (booking) {
             return booking.tripId === trip.id &&
-                (booking.status === "Confirmed" ||
-                    booking.status === "On Hold");
+                ["Pending", "Confirmed", "On Hold"].includes(booking.status);
         });
 
         return {
@@ -439,6 +454,7 @@ function getAvailableTrips(
     });
 }
 
+/* Check availability and prevent duplicate active bookings. */
 function canReserveTrip(details) {
     return details &&
         details.available > 0 &&
@@ -549,6 +565,7 @@ function renderAvailableTrips() {
     });
 }
 
+/* Refresh passenger details, bookings, and available trips. */
 function refreshBookingsPage() {
     if (!bookingSeed) {
         return;
@@ -675,11 +692,17 @@ tripDetailsModal.addEventListener("show.bs.modal", function (event) {
     });
 
     document.getElementById("trip-booking-error").classList.add("d-none");
-    bookTripButton.disabled = false;
+    /* Wait for Bootstrap's opening transition before allowing submission. */
+    bookTripButton.disabled = true;
+});
+
+tripDetailsModal.addEventListener("shown.bs.modal", function () {
+    bookTripButton.disabled = !selectedTrip;
 });
 
 tripDetailsModal.addEventListener("hidden.bs.modal", function () {
     selectedTrip = null;
+    bookTripButton.disabled = true;
 });
 
 /* Recheck seats and duplicates immediately before adding a reservation. */
@@ -729,7 +752,8 @@ bookTripButton.addEventListener("click", function () {
         id: bookingId,
         userId: bookingData.settings.defaultPassengerId,
         tripId: selectedTrip.id,
-        status: "Confirmed",
+        status: "Pending",
+        adminDecision: "Pending",
         attendanceConfirmed: false
     });
 
@@ -738,6 +762,7 @@ bookTripButton.addEventListener("click", function () {
         userId: bookingData.settings.defaultPassengerId,
         bookingId: bookingId,
         type: "booking-created",
+        requiresAdminReview: true,
         createdAt: getBookingDemoNow().toISOString()
     });
 
@@ -751,7 +776,7 @@ bookTripButton.addEventListener("click", function () {
     bootstrap.Modal.getOrCreateInstance(tripDetailsModal).hide();
 
     document.getElementById("booking-toast-message").textContent =
-        "Demo booking " + bookingId + " added to Upcoming." +
+        "Booking " + bookingId + " submitted. Awaiting admin review." +
         (bookingStorageAvailable
             ? ""
             : " Changes could not be saved in this browser.");

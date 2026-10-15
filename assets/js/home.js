@@ -14,7 +14,7 @@ function applyDashboardChanges(data) {
             return data;
         }
 
-        ["users", "trips", "bookings"].forEach(function (section) {
+        ["users", "trips", "bookings", "drivers", "vehicles"].forEach(function (section) {
             if (!Array.isArray(savedChanges[section])) {
                 return;
             }
@@ -126,8 +126,7 @@ function renderDashboard(data) {
     const upcomingBookings = data.bookings
         .filter(function (booking) {
             return booking.userId === passenger.id &&
-                (booking.status === "Confirmed" ||
-                    booking.status === "On Hold");
+                ["Pending", "Confirmed", "On Hold"].includes(booking.status);
         })
         .map(function (booking) {
             const trip = data.trips.find(function (item) {
@@ -187,7 +186,7 @@ function renderDashboard(data) {
                 formatTripTime(departure) + " – " + formatTripTime(arrival);
 
             const status = record.querySelector(".dashboard-trip-status");
-            status.textContent = item.booking.status;
+            status.textContent = item.booking.status === "Confirmed" ? "Accepted" : item.booking.status;
             status.className =
                 "dashboard-trip-status badge rounded-pill px-2 py-1 border " +
                 (item.booking.status === "Confirmed"

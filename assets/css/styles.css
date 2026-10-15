@@ -973,3 +973,64 @@ html, body{
     --bs-btn-disabled-color: #ffffff;
     --bs-btn-disabled-border-color: var(--dlsu-green);
 }
+
+/* ========================================================
+   ADMIN DASHBOARD
+   ======================================================== */
+.admin-body main {
+    overflow-wrap: anywhere;
+}
+.admin-body .admin-table-wrapper {
+    min-width: 0;
+    overflow-x: auto;
+}
+.admin-body .admin-table {
+    font-size: 0.85rem;
+}
+.admin-body .admin-table th {
+    color: var(--dlsu-green);
+    background-color: var(--dlsu-light);
+}
+.admin-body .admin-table th,
+.admin-body .admin-table td {
+    padding: 0.85rem;
+    vertical-align: middle;
+}
+.admin-body .admin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.admin-body .admin-actions .btn {
+    font-size: 0.75rem;
+}
+.admin-body .form-control,
+.admin-body .form-select {
+    min-width: 0;
+}
+@media (max-width: 767.98px) {
+    .admin-body .admin-table thead {
+        display: none;
+    }
+    .admin-body .admin-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        border-bottom: 1px solid #dfe8e3;
+    }
+    .admin-body .admin-table td {
+        display: block;
+        border: 0;
+        padding: 0.5rem 0;
+        overflow-wrap: anywhere;
+    }
+    .admin-body .admin-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        color: var(--text-secondary);
+        font-size: 0.7rem;
+        margin-bottom: 0.2rem;
+    }
+    .admin-body .admin-table tbody tr {
+        padding: 0.75rem 0;
+    }
+}

@@ -1,39 +1,52 @@
-/* MOCK LOG IN FOR PHASE 1 */
-
-
-const demoAccount = {
-    email: "juan_delacruz@dlsu.edu.ph",
-    password: "Arrows123!",
-    firstName: "Juan",
-    lastName: "Dela Cruz",
-    role: "passenger"
-};
-
-const demoDriverAccount = {
-    email: "roberto_sanjose@dlsu.edu.ph",
-    password: "Arrows123!",
-    firstName: "Roberto",
-    lastName: "San Jose",
-    role: "driver"
-};
-
-const demoAdminAccount = {
-    email: "adrian.ming@dlsu.edu.ph",
-    password: "Arrows123!",
-    firstName: "Adrian",
-    lastName: "Ming",
-    role: "admin"
-}
-
+/* MOCK LOG IN USING THE SHARED JSON DATA */
+const loginStorageKey = "arrowsExpressDemoChanges:v1";
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const loginButton = document.getElementById("login-button");
 const googleLoginButton = document.getElementById("google-login-button");
 const loginMessage = document.getElementById("login-message");
+let loginSeed = null;
+let demoAccounts = [];
+let demoAccount = null;
 let isLoggingIn = false;
+let accountsLoadFailed = false;
 
-/* Use textContent so user-facing messages are treated as plain text. */
+/* Saved profiles override JSON names and emails, but not demo passwords. */
+function refreshDemoAccounts() {
+    if (!loginSeed) { return; }
+    const users = JSON.parse(JSON.stringify(loginSeed.users));
+    try {
+        const changes = JSON.parse(localStorage.getItem(loginStorageKey));
+        if (changes && changes.schemaVersion === loginSeed.schemaVersion) {
+            (changes.users || []).forEach(function (change) {
+                const user = users.find(function (item) { return item.id === change.id; });
+                if (user) { Object.assign(user, change); }
+                else { users.push({ ...change }); }
+            });
+        }
+    } catch (error) {
+        console.warn("Saved demo account changes could not be loaded:", error);
+    }
+    demoAccounts = users.filter(function (user) {
+        return !user.deleted && ["passenger", "driver", "admin"].includes(user.role);
+    }).map(function (user) {
+        const credentials = loginSeed.demoCredentials.find(function (item) { return item.userId === user.id; });
+        const password = credentials?.password ||
+            (user.role === "admin" && user.createdBy ? loginSeed.settings.newAccountDemoPassword : null);
+        return password ? { ...user, password: password } : null;
+    }).filter(Boolean);
+    demoAccount = demoAccounts.find(function (account) { return account.id === loginSeed.settings.defaultPassengerId; });
+
+    [["passenger", loginSeed.settings.defaultPassengerId],
+        ["driver", loginSeed.settings.defaultDriverUserId],
+        ["admin", loginSeed.settings.defaultAdminId]].forEach(function ([role, id]) {
+        const account = demoAccounts.find(function (item) { return item.id === id; });
+        document.getElementById("demo-" + role + "-email").textContent = account?.email || "Profile deleted";
+        document.getElementById("demo-" + role + "-password").textContent = account?.password || "Unavailable";
+    });
+}
+
 function showMessage(message, type) {
     loginMessage.className = "alert alert-" + type;
     loginMessage.textContent = message;
@@ -51,116 +64,103 @@ function clearFieldError(input) {
     document.getElementById(input.id + "-error").textContent = "";
 }
 
-/* Validate required fields and the university email domain. */
+/* Check the email and password fields before demo sign-in. */
 function validateLogin() {
     emailInput.value = emailInput.value.trim().toLowerCase();
     clearFieldError(emailInput);
     clearFieldError(passwordInput);
-
     if (emailInput.value === "") {
         setFieldError(emailInput, "Please enter your DLSU email.");
     } else if (emailInput.validity.typeMismatch || !/^[^\s@]+@dlsu\.edu\.ph$/i.test(emailInput.value)) {
         setFieldError(emailInput, "Use a valid email ending in @dlsu.edu.ph.");
     }
-
-    if (passwordInput.value.trim() === "") {
-        setFieldError(passwordInput, "Please enter your password.");
-    }
-
+    if (passwordInput.value.trim() === "") { setFieldError(passwordInput, "Please enter your password."); }
     const firstInvalidInput = loginForm.querySelector(".is-invalid");
     if (firstInvalidInput) {
         showMessage("Please correct the highlighted fields.", "danger");
         firstInvalidInput.focus();
         return false;
     }
-
     return true;
 }
 
-/* Save only mock profile information. Passwords are never saved. */
+function canUseDemoAccounts() {
+    if (!loginSeed) {
+        showMessage(accountsLoadFailed ? "Demo accounts could not be loaded. Check mock-data.json and reload."
+            : "Demo accounts are still loading. Please try again in a moment.", accountsLoadFailed ? "danger" : "info");
+        return false;
+    }
+    refreshDemoAccounts();
+    return true;
+}
+
+/* This is a frontend session marker, not server authentication. */
 function completeMockLogin(message, account = demoAccount) {
+    if (!account) { showMessage("The demo passenger profile is unavailable.", "warning"); return; }
     isLoggingIn = true;
-    loginButton.disabled = true;
-    googleLoginButton.disabled = true;
-    emailInput.disabled = true;
-    passwordInput.disabled = true;
+    [loginButton, googleLoginButton, emailInput, passwordInput].forEach(function (control) { control.disabled = true; });
     loginButton.textContent = "Opening dashboard...";
     loginForm.setAttribute("aria-busy", "true");
-
     try {
         sessionStorage.setItem("arrowsExpressUser", JSON.stringify({
-            email: account.email,
-            firstName: account.firstName,
-            lastName: account.lastName,
-            role: account.role
+            id: account.id, email: account.email, firstName: account.firstName,
+            lastName: account.lastName, role: account.role
         }));
-    } catch (error) {
-        // The static dashboard can still open if browser storage is unavailable.
-    }
-
+    } catch (error) { /* Browser storage may be unavailable in this demo. */ }
     showMessage(message, "success");
-
-    window.setTimeout(function () {
-
-        switch (account.role) {
-            case "passenger":   window.location.href = "home.html"; break;
-            case "driver":      window.location.href = "driver-home.html"; break;
-            case "admin":       window.location.href = "admin.html"; break;
-        }
-
-        // window.location.href = account.role === "driver"
-        //     ? "driver-home.html"
-        //     : "home.html";
-    }, 800);
+    const destinations = { passenger: "home.html", driver: "driver-home.html", admin: "admin.html" };
+    window.setTimeout(function () { window.location.href = destinations[account.role]; }, 800);
 }
 
 loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
-
-    if (isLoggingIn || !validateLogin()) {
-        return;
-    }
-
-    const account = [demoAccount, demoDriverAccount, demoAdminAccount].find(function (account) {
-        return account.email === emailInput.value &&
-               account.password === passwordInput.value;
+    if (isLoggingIn || !canUseDemoAccounts() || !validateLogin()) { return; }
+    const account = demoAccounts.find(function (item) {
+        return item.email.toLowerCase() === emailInput.value && item.password === passwordInput.value;
     });
-
     if (!account) {
-        showMessage(
-            "Email or password is incorrect. Use one of the demo accounts shown below.",
-            "danger"
-        );
+        showMessage("Email or password is incorrect. Use one of the demo accounts shown below.", "danger");
         passwordInput.focus();
         return;
     }
-
-    completeMockLogin(
-        "Demo login successful. Opening your " + account.role + " dashboard...",
-        account
-    );
+    completeMockLogin("Demo login successful. Opening your " + account.role + " dashboard...", account);
 });
 
-/* Google sign-in uses the same demo passenger and makes no external request. */
 googleLoginButton.addEventListener("click", function () {
-    if (isLoggingIn) {
-        return;
-    }
+    if (isLoggingIn || !canUseDemoAccounts()) { return; }
     clearFieldError(emailInput);
     clearFieldError(passwordInput);
-    completeMockLogin("Google demo sign-in successful. Opening Juan's passenger dashboard...");
+    completeMockLogin("Google demo sign-in successful. Opening the passenger dashboard...");
 });
 
 [emailInput, passwordInput].forEach(function (input) {
     input.addEventListener("input", function () {
         clearFieldError(input);
-        if (!isLoggingIn) {
-            loginMessage.classList.add("d-none");
-            loginMessage.textContent = "";
-        }
+        if (!isLoggingIn) { loginMessage.classList.add("d-none"); loginMessage.textContent = ""; }
     });
 });
+window.addEventListener("pageshow", function () {
+    isLoggingIn = false;
+    [loginButton, googleLoginButton, emailInput, passwordInput].forEach(function (control) { control.disabled = false; });
+    loginButton.textContent = "Log In";
+    loginForm.removeAttribute("aria-busy");
+    loginMessage.classList.add("d-none");
+    refreshDemoAccounts();
+});
+window.addEventListener("storage", function (event) {
+    if (event.key === loginStorageKey || event.key === null) { refreshDemoAccounts(); }
+});
+window.addEventListener("arrows-express-data-updated", refreshDemoAccounts);
 
-// Enable login actions only after their JavaScript handlers are ready.
-loginButton.disabled = false;
-googleLoginButton.disabled = false;
+fetch("assets/data/mock-data.json")
+    .then(function (response) {
+        if (!response.ok) { throw new Error("Could not load mock-data.json."); }
+        return response.json();
+    })
+    .then(function (data) { loginSeed = data; refreshDemoAccounts(); })
+    .catch(function (error) {
+        loginSeed = null;
+        accountsLoadFailed = true;
+        console.error("Could not load demo accounts:", error);
+        showMessage("Demo accounts could not be loaded. Check mock-data.json and reload.", "danger");
+    });

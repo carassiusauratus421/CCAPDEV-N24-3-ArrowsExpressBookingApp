@@ -30,11 +30,6 @@
                     Home
                 </a>
 
-                <a href="routes-and-maps.html"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                    <i class="bi bi-geo-alt me-3 fs-5" aria-hidden="true"></i>
-                    Passenger Guide
-                </a>
             </nav>
 
             <div class="px-2">
@@ -49,6 +44,7 @@
 
         <!-- MAIN CONTENT AREA -->
         <main class="driver-main flex-grow-1 p-4 px-xl-5">
+            <!-- PAGE HEADER -->
             <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                 <img src="assets/images/logo.png"
                      alt="DLSU Logo"
@@ -60,7 +56,7 @@
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
                         </span>
-                        <span class="fw-semibold me-2">Roberto San Jose</span>
+                        <span class="fw-semibold me-2" data-driver-name>Roberto San Jose</span>
                         <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
                     </a>
 
@@ -94,26 +90,26 @@
                                 class="fs-6 fw-bold mb-0">
                                 Driver Details
                             </h2>
-                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                            <span id="driver-verification-badge" class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
                                 Verified driver
                             </span>
                         </div>
 
-                        <h3 class="fs-5 fw-bold text-dlsu-green mb-1">
+                        <h3 class="fs-5 fw-bold text-dlsu-green mb-1" data-driver-name>
                             Roberto San Jose
                         </h3>
-                        <p class="small text-secondary mb-4">Driver ID: DRV-001</p>
+                        <p class="small text-secondary mb-4">Driver ID: <span id="driver-number">DRV-001</span></p>
 
                         <dl class="small driver-detail-list mb-0">
                             <dt class="text-secondary fw-normal">DLSU Email</dt>
-                            <dd class="fw-semibold">
+                            <dd id="driver-email" class="fw-semibold">
                                 roberto_sanjose@dlsu.edu.ph
                             </dd>
 
                             <dt class="text-secondary fw-normal">
                                 Admin Verification
                             </dt>
-                            <dd class="fw-semibold mb-0">Verified (Demo)</dd>
+                            <dd id="driver-verification-details" class="fw-semibold mb-0">Verified (Demo)</dd>
                         </dl>
                     </section>
 
@@ -129,8 +125,8 @@
                             </h2>
                         </div>
 
-                        <p class="fs-4 fw-bold text-dlsu-green mb-1">NCM 1234</p>
-                        <p class="small text-secondary mb-3">Toyota Hiace</p>
+                        <p id="driver-vehicle-plate" class="fs-4 fw-bold text-dlsu-green mb-1">NCM 1234</p>
+                        <p id="driver-vehicle-type" class="small text-secondary mb-3">Loading vehicle...</p>
                     </section>
                 </div>
 
@@ -277,15 +273,11 @@
             <span>Vehicle</span>
         </a>
 
-        <a href="routes-and-maps.html"
-           class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i>
-            <span>Passenger Guide</span>
-        </a>
     </div>
 </nav>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/booking-lifecycle.js"></script>
 <script src="assets/js/driver-home.js"></script>
 <script src="assets/js/theme-toggle.js"></script>
 </body>

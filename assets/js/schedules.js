@@ -25,7 +25,7 @@ function rebuildScheduleData() {
             return;
         }
 
-        ["users", "trips", "bookings"].forEach(function (section) {
+        ["users", "trips", "bookings", "drivers", "vehicles"].forEach(function (section) {
             if (!Array.isArray(changes[section])) {
                 return;
             }
@@ -162,8 +162,7 @@ function getAvailableTrips() {
 
         const reservations = scheduleData.bookings.filter(function (booking) {
             return booking.tripId === trip.id &&
-                (booking.status === "Confirmed" ||
-                    booking.status === "On Hold");
+                ["Pending", "Confirmed", "On Hold"].includes(booking.status);
         }).length;
 
         return {
@@ -205,12 +204,13 @@ function showTripMessage(message) {
     tripList.appendChild(row);
 }
 
+/* Fill the selected departure details in the modal. */
 function fillScheduleDetails(trip) {
     const details = {
         "selected-route": trip.route,
         "selected-date": formatScheduleDate(trip.date, "long"),
         "selected-time": trip.departure,
-        "selected-shuttle": trip.shuttle,
+        "selected-line": trip.shuttle,
         "selected-pickup": trip.pickup,
         "selected-dropoff": trip.dropoff,
         "selected-seats": trip.available + " / " +
@@ -222,6 +222,7 @@ function fillScheduleDetails(trip) {
     });
 }
 
+/* Render the trips for the selected date and direction. */
 function generateAvailableTrips() {
     tripList.replaceChildren();
 
@@ -262,6 +263,7 @@ function generateAvailableTrips() {
     });
 }
 
+/* Refresh the passenger name and schedule using shared data. */
 function refreshSchedulePage() {
     if (!scheduleSeed) {
         return;

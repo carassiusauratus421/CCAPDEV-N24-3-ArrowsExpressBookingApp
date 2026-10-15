@@ -154,6 +154,7 @@ function renderProfile() {
     confirmPasswordInput.value = savedDemoPassword;
 }
 
+/* Switch between viewing and editing profile details. */
 function setProfileEditing(isEditing) {
     isEditingProfile = isEditing;
 
