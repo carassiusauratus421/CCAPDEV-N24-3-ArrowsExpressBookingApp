@@ -29,10 +29,36 @@
     /* Text Colors */
     --text-main: #1d2125;
     --text-secondary: #5e6c79;
+
+   /* Background Colors */
+    --bg-main: rgb(255, 255, 255);
+    --bg-secondary: rgb(238, 244, 241);
+    --bg-hover: #e3ede7;
+
+    --school-logo: url(../images/logo.png);
+}
+
+.dark-mode {
+    /* Main DLSU Color Palette*/
+    --dlsu-green: #084c34;
+    --dlsu-green-hover: #063927;
+    --dlsu-light: #eef4f1;
+    --dlsu-light-hover: #e3ede7;
+
+    /* Text Colors */
+    --text-main: hsl(210, 12%, 90%);
+    --text-secondary: hsl(209, 13%, 100%);
+
+   /* Background Colors */
+    --bg-main: hsl(0, 0%, 10%);
+    --bg-secondary: hsl(150, 21%, 15%);
+    --bg-hover: #e3ede7;
+
+    --school-logo: url(../images/logo.png);
 }
 
 .dashboard-body {
-    background-color: #ffffff;
+    background-color: var(--bg-main);
     padding-bottom: 70px;
 }
 
@@ -64,7 +90,7 @@
 /* Sidebar Specific */
 .sidebar {
     width: 240px;
-    background-color: #fafafa;
+    background-color: var(--bg-secondary);
 }
 
 .nav-item-active {
@@ -72,7 +98,7 @@
     color: var(--dlsu-green);
 }
 
-.nav-item-default {
+.nav-item-default{
     color: var(--text-secondary);
     transition: all 0.2s ease;
 }
@@ -488,6 +514,7 @@
     .bookings-body .bookings-main {
         padding-left: 3rem !important;
         padding-right: 3rem !important;
+        background-color: var(--bg-main);
     }
 }
 
@@ -765,6 +792,7 @@
     color: var(--text-main);
     font-size: 0.85rem;
     overflow-wrap: anywhere;
+    background-color: var(--bg-secondary);
 }
 
 .dashboard-account:hover {
@@ -808,6 +836,13 @@
     padding: 0.25rem;
     font-size: 0.65rem;
     text-align: center;
+    
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    cursor: pointer;
 }
 
 .dashboard-mobile-item > span {

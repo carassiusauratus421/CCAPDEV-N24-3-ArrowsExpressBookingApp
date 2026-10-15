@@ -22,7 +22,7 @@
                 <a href="home.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
                     <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i> Home
                 </a>
-                <a href="#my-bookings" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
+                <a href="my-bookings.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
                     <i class="bi bi-calendar-event me-3 fs-5" aria-hidden="true"></i> My Bookings
                 </a>
                 <a href="schedules.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
@@ -45,7 +45,17 @@
                 <a href="profile.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
                     <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
                 </a>
+
+                <button type="button"
+                        class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                        id="themeToggle"
+                        aria-pressed="false">
+
+                    <i class="bi bi-moon me-3 fs-5" id="themeIcon" aria-hidden="true"></i>
+                    <span id="themeText">Dark Mode</span>
+                </button>
             </nav>
+
 
             <div class="px-2">
                 <hr class="my-3 opacity-25">
@@ -244,6 +254,11 @@
         class="dashboard-mobile-item text-decoration-none text-muted">
             <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i><span>Passenger Guide</span>
         </a>
+
+        <button type="button" class="dashboard-mobile-item text-muted" id="themeToggle" aria-pressed="false">
+            <i class="bi bi-moon fs-5" id="themeIcon" aria-hidden="true"></i>
+            <span id="themeText">Dark Mode</span>
+        </button>
     </div>
 </nav>
 
@@ -395,5 +410,6 @@
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/my-bookings.js"></script>
+<script src="assets/js/theme-toggle.js"></script>
 </body>
 </html>
