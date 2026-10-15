@@ -9,6 +9,14 @@ const demoAccount = {
     role: "passenger"
 };
 
+const demoDriverAccount = {
+    email: "roberto_sanjose@dlsu.edu.ph",
+    password: "Arrows123!",
+    firstName: "Roberto",
+    lastName: "San Jose",
+    role: "driver"
+};
+
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -62,7 +70,7 @@ function validateLogin() {
 }
 
 /* Save only mock profile information. Passwords are never saved. */
-function completeMockLogin(message) {
+function completeMockLogin(message, account = demoAccount) {
     isLoggingIn = true;
     loginButton.disabled = true;
     googleLoginButton.disabled = true;
@@ -73,34 +81,49 @@ function completeMockLogin(message) {
 
     try {
         sessionStorage.setItem("arrowsExpressUser", JSON.stringify({
-            email: demoAccount.email,
-            firstName: demoAccount.firstName,
-            lastName: demoAccount.lastName,
-            role: demoAccount.role
+            email: account.email,
+            firstName: account.firstName,
+            lastName: account.lastName,
+            role: account.role
         }));
     } catch (error) {
         // The static dashboard can still open if browser storage is unavailable.
     }
 
     showMessage(message, "success");
+
     window.setTimeout(function () {
-        window.location.href = "home.html";
+        window.location.href = account.role === "driver"
+            ? "driver-home.html"
+            : "home.html";
     }, 800);
 }
 
 loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
+
     if (isLoggingIn || !validateLogin()) {
         return;
     }
 
-    if (emailInput.value !== demoAccount.email || passwordInput.value !== demoAccount.password) {
-        showMessage("Email or password is incorrect. Use the demo account shown below.", "danger");
+    const account = [demoAccount, demoDriverAccount].find(function (account) {
+        return account.email === emailInput.value &&
+               account.password === passwordInput.value;
+    });
+
+    if (!account) {
+        showMessage(
+            "Email or password is incorrect. Use one of the demo accounts shown below.",
+            "danger"
+        );
         passwordInput.focus();
         return;
     }
 
-    completeMockLogin("Demo login successful. Opening your passenger dashboard...");
+    completeMockLogin(
+        "Demo login successful. Opening your " + account.role + " dashboard...",
+        account
+    );
 });
 
 /* Google sign-in uses the same demo passenger and makes no external request. */

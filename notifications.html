@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <title>Notifications - Arrows Express Booking App</title>
+</head>
+<body class="dashboard-body bg-white">
+
+<div class="container-fluid p-0">
+    <div class="d-flex vh-100 overflow-hidden">
+
+        <!-- DESKTOP SIDEBAR -->
+        <aside class="sidebar d-none d-lg-flex flex-column border-end p-3 pt-4">
+            <div class="mb-4 px-3">
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="img-fluid"
+                     style="max-height: 40px;">
+            </div>
+
+            <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Passenger navigation">
+                <a href="home.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i>
+                    Home
+                </a>
+
+                <a href="my-bookings.html#my-bookings" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-calendar-event me-3 fs-5" aria-hidden="true"></i>
+                    My Bookings
+                </a>
+
+                <a href="schedules.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-clock me-3 fs-5" aria-hidden="true"></i>
+                    Schedules
+                </a>
+
+                <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-geo-alt me-3 fs-5" aria-hidden="true"></i>
+                    Routes &amp; Maps
+                </a>
+
+                <a href="notifications.html"
+                   class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                   aria-current="page"
+                   data-notification-link>
+                    <i class="bi bi-bell me-3 fs-5" aria-hidden="true"></i>
+                    Notifications
+                    <span class="badge bg-success-subtle text-success rounded-pill ms-auto"
+                          data-notification-count hidden>0</span>
+                </a>
+
+                <a href="profile.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i>
+                    Profile
+                </a>
+            </nav>
+
+            <div class="px-2">
+                <hr class="my-3 opacity-25">
+
+                <a href="index.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
+                    <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i>
+                    Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content flex-grow-1 p-4 px-xl-5 position-relative overflow-y-auto">
+
+            <!-- TOP HEADER -->
+            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="dashboard-logo d-lg-none">
+
+                <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
+                    <!-- MOBILE NOTIFICATIONS -->
+                    <a href="notifications.html"
+                       class="notification-bell btn btn-white border rounded-circle d-lg-none"
+                       aria-label="Notifications"
+                       aria-current="page"
+                       data-notification-link>
+                        <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                        <span class="notification-count badge bg-success rounded-pill"
+                              data-notification-count hidden>0</span>
+                    </a>
+
+                    <!-- PROFILE LINK -->
+                    <a href="profile.html"
+                       class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                        <span class="dashboard-user-avatar me-2">
+                            <i class="bi bi-person-fill" aria-hidden="true"></i>
+                        </span>
+                        <span class="fw-semibold me-2" data-passenger-name>
+                            Loading...
+                        </span>
+                        <i class="bi bi-chevron-right text-muted small me-1"
+                           aria-hidden="true"></i>
+                    </a>
+
+                    <!-- MOBILE LOG OUT -->
+                    <a href="index.html"
+                       class="btn btn-sm btn-light border d-lg-none"
+                       aria-label="Log out">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </header>
+
+            <!-- PAGE HEADING -->
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                <div>
+                    <h1 class="fs-3 fw-bold text-dlsu-green mb-1">Notifications</h1>
+                    <p id="notification-summary"
+                    class="text-secondary small mb-0"
+                    aria-live="polite">
+                        Loading notifications...
+                    </p>
+                </div>
+
+                <button type="button"
+                        id="mark-notifications-read"
+                        class="btn btn-outline-success btn-sm">
+                    Mark all as read
+                </button>
+            </div>
+
+            <!-- DEMO CLOCK FROM THE SHARED JSON SETTINGS -->
+            <div id="notification-demo-clock"
+                 class="bg-dlsu-light border rounded-4 p-3 mb-4 small">
+                <span class="badge bg-success-subtle text-success me-2">
+                    Phase 1 demo
+                </span>
+                Loading demo time...
+            </div>
+
+            <div id="notification-feedback"
+                 class="alert d-none"
+                 role="status"
+                 aria-live="polite"
+                 aria-atomic="true"
+                 tabindex="-1"></div>
+
+            <noscript>
+                <p class="alert alert-warning">
+                    Enable JavaScript to view and confirm your demo notifications.
+                </p>
+            </noscript>
+
+            <!-- POPULATED BY notifications.js -->
+            <div id="notification-list"
+                 class="d-flex flex-column gap-3"
+                 aria-label="Passenger notifications"></div>
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4">
+                <p class="small text-secondary mb-0">
+                    Confirmation is simulated and saved in this browser.
+                </p>
+
+                <button type="button"
+                        id="reset-notifications-demo"
+                        class="btn btn-outline-secondary btn-sm">
+                    Reset notification demo
+                </button>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- MOBILE NAVIGATION -->
+<nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
+     aria-label="Mobile passenger navigation">
+    <div class="d-flex justify-content-around align-items-center py-2">
+        <a href="home.html" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i>
+            <span>Home</span>
+        </a>
+
+        <a href="my-bookings.html" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i>
+            <span>Book</span>
+        </a>
+
+        <a href="my-bookings.html#my-bookings" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i>
+            <span>My Bookings</span>
+        </a>
+
+        <a href="schedules.html" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-clock fs-5" aria-hidden="true"></i>
+            <span>Schedules</span>
+        </a>
+
+        <a href="routes-and-maps.html" class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i>
+            <span>Routes</span>
+        </a>
+    </div>
+</nav>
+
+<!-- REUSABLE NOTIFICATION CARD -->
+<template id="notification-template">
+    <article class="notification-record card border rounded-4 p-3 p-md-4 shadow-sm">
+        <div class="d-flex align-items-start gap-3">
+            <div class="notification-icon bg-success-subtle rounded-circle text-dlsu-green">
+                <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+            </div>
+
+            <div class="notification-copy flex-grow-1">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                    <h2 class="notification-title fs-6 fw-bold text-dlsu-green mb-0"></h2>
+                    <span class="notification-read-status badge rounded-pill"></span>
+                </div>
+
+                <p class="notification-text small text-secondary mb-2"></p>
+                <p class="notification-time small text-secondary mb-3"></p>
+
+                <!-- Keep these fields in this order for notifications.js. -->
+                <dl class="notification-trip-details row g-2 small mb-3">
+                    <div class="col-12 col-sm-6">
+                        <dt class="text-secondary fw-normal">Booking reference</dt>
+                        <dd class="fw-semibold mb-0"></dd>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <dt class="text-secondary fw-normal">Departure</dt>
+                        <dd class="fw-semibold mb-0"></dd>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <dt class="text-secondary fw-normal">Route</dt>
+                        <dd class="fw-semibold mb-0"></dd>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <dt class="text-secondary fw-normal">Pick-up point</dt>
+                        <dd class="fw-semibold mb-0"></dd>
+                    </div>
+                </dl>
+
+                <p class="notification-confirmed small fw-semibold text-success mb-3"
+                   hidden>
+                    <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                    Attendance confirmed
+                </p>
+
+                <div class="notification-actions d-flex flex-wrap gap-2">
+                    <button type="button"
+                            class="btn btn-dlsu-green btn-sm"
+                            data-confirm-booking>
+                        Confirm Booking
+                    </button>
+
+                    <a href="my-bookings.html"
+                       class="btn btn-outline-success btn-sm">
+                        Booking Details
+                    </a>
+
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            data-read-notification>
+                        Mark as read
+                    </button>
+                </div>
+            </div>
+        </div>
+    </article>
+</template>
+
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/notifications.js"></script>
+</body>
+</html>

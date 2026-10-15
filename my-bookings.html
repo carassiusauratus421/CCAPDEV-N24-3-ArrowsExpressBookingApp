@@ -28,8 +28,19 @@
                 <a href="schedules.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
                     <i class="bi bi-clock me-3 fs-5"></i> Schedules
                 </a>
-                <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
-                    <i class="bi bi-geo-alt me-3 fs-5"></i> Routes & Maps
+                <a href="routes-and-maps.html"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                   style="font-size: 0.9rem;">
+                    <i class="bi bi-geo-alt me-3 fs-5" aria-hidden="true"></i>
+                    Routes &amp; Maps
+                </a>
+                <a href="notifications.html"
+                class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                data-notification-link>
+                    <i class="bi bi-bell me-3 fs-5" aria-hidden="true"></i>
+                    Notifications
+                    <span class="badge bg-success-subtle text-success rounded-pill ms-auto"
+                        data-notification-count hidden>0</span>
                 </a>
                 <a href="profile.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
                     <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
@@ -47,16 +58,38 @@
         <!-- MAIN CONTENT AREA -->
         <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
             <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
-                <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
-                <div class="ms-auto d-flex align-items-center gap-2">
-                    <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="dashboard-logo d-lg-none">
+
+                <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
+                    <!-- MOBILE NOTIFICATIONS -->
+                    <a href="notifications.html"
+                       class="notification-bell btn btn-white border rounded-circle d-lg-none"
+                       aria-label="Notifications"
+                       data-notification-link>
+                        <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                        <span class="notification-count badge bg-success rounded-pill"
+                              data-notification-count hidden>0</span>
+                    </a>
+
+                    <!-- PROFILE LINK -->
+                    <a href="profile.html"
+                       class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
                         </span>
-                        <span class="fw-semibold me-2">Juan Dela Cruz</span>
-                        <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
+                        <span class="fw-semibold me-2" data-passenger-name>
+                            Loading...
+                        </span>
+                        <i class="bi bi-chevron-right text-muted small me-1"
+                           aria-hidden="true"></i>
                     </a>
-                    <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+
+                    <!-- MOBILE LOG OUT -->
+                    <a href="index.html"
+                       class="btn btn-sm btn-light border d-lg-none"
+                       aria-label="Log out">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
@@ -73,11 +106,20 @@
                         <div class="col-12 col-md-7">
                             <span class="form-label fw-semibold d-block" id="direction-label">Direction</span>
                             <div class="d-flex gap-2" role="group" aria-labelledby="direction-label">
-                                <button type="button" class="direction-button active" data-direction="manila-laguna" aria-pressed="true">
-                                    <i class="bi bi-bus-front me-2" aria-hidden="true"></i> Manila → Laguna
+                                <button type="button"
+                                        class="direction-button active"
+                                        data-direction="manila-laguna"
+                                        aria-pressed="true">
+                                    <i class="bi bi-bus-front me-2" aria-hidden="true"></i>
+                                    <span data-route-name="manila-laguna">Loading...</span>
                                 </button>
-                                <button type="button" class="direction-button" data-direction="laguna-manila" aria-pressed="false">
-                                    <i class="bi bi-bus-front me-2" aria-hidden="true"></i> Laguna → Manila
+
+                                <button type="button"
+                                        class="direction-button"
+                                        data-direction="laguna-manila"
+                                        aria-pressed="false">
+                                    <i class="bi bi-bus-front me-2" aria-hidden="true"></i>
+                                    <span data-route-name="laguna-manila">Loading...</span>
                                 </button>
                             </div>
                         </div>
@@ -107,15 +149,24 @@
                         <h2 class="fs-5 fw-bold mb-4" id="trip-information-heading"><i class="bi bi-info-circle me-2" aria-hidden="true"></i> Trip Information</h2>
                         <div class="d-flex gap-3 mb-3">
                             <i class="bi bi-geo-alt fs-4" aria-hidden="true"></i>
-                            <div><h3 class="fs-6 fw-semibold mb-1">Pick-up Point</h3><p class="small mb-0" id="trip-pickup">DLSU Manila</p></div>
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">Pick-up Point</h3>
+                                <p class="small mb-0" id="trip-pickup">Loading...</p>
+                            </div>
                         </div>
                         <div class="d-flex gap-3 mb-3">
                             <i class="bi bi-geo-alt fs-4" aria-hidden="true"></i>
-                            <div><h3 class="fs-6 fw-semibold mb-1">Drop-off Point</h3><p class="small mb-0" id="trip-dropoff">DLSU Laguna Campus</p></div>
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">Drop-off Point</h3>
+                                <p class="small mb-0" id="trip-dropoff">Loading...</p>
+                            </div>
                         </div>
                         <div class="d-flex gap-3 mb-3">
                             <i class="bi bi-clock fs-4" aria-hidden="true"></i>
-                            <div><h3 class="fs-6 fw-semibold mb-1">Estimated Travel Time</h3><p class="small mb-0">1.5 – 2 hours</p></div>
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">Estimated Travel Time</h3>
+                                <p class="small mb-0" id="trip-duration">Loading...</p>
+                            </div>
                         </div>
                         <div class="d-flex gap-3">
                             <i class="bi bi-calendar-event fs-4" aria-hidden="true"></i>
@@ -123,7 +174,11 @@
                                 <h3 class="fs-6 fw-semibold mb-1">Reminders</h3>
                                 <ul class="small ps-3 mb-0">
                                     <li>Please arrive at least 10 minutes before departure.</li>
-                                    <li>Confirm your booking 60 minutes before your trip to avoid forfeiture.</li>
+                                    <li>
+                                        Confirm your attendance when a reminder appears
+                                        <span id="trip-confirmation-minutes">...</span>
+                                        minutes before departure.
+                                    </li>
                                     <li>Schedules may vary depending on traffic conditions.</li>
                                 </ul>
                             </div>
@@ -136,7 +191,6 @@
             <section id="my-bookings" aria-labelledby="my-bookings-heading">
                 <h2 class="fs-5 fw-bold text-dlsu-green mb-1" id="my-bookings-heading">My Bookings</h2>
                 <p class="small text-secondary mb-3">View and manage all your shuttle bookings.</p>
-                <p class="small text-secondary">Sample bookings are shown below. Trips booked in this demo reset when the page reloads.</p>
                 <p id="booking-loading" class="small text-secondary" role="status">Loading booking data...</p>
 
                 <!-- BOOKING TABS -->
@@ -225,7 +279,10 @@
         <td data-label="Shuttle"><span class="trip-shuttle fw-semibold d-block"></span><span class="trip-plate small text-secondary"></span></td>
         <td data-label="Available Seats">
             <span class="trip-seats small d-block mb-2"></span>
-            <div class="progress trip-seat-progress" role="progressbar" aria-label="Available seats" aria-valuemin="0" aria-valuemax="13">
+                <div class="progress trip-seat-progress"
+                 role="progressbar"
+                 aria-label="Available seats"
+                 aria-valuemin="0">
                 <div class="progress-bar bg-dlsu-green"></div>
             </div>
         </td>
@@ -277,6 +334,8 @@
                     <dt class="col-5">Date</dt><dd class="col-7" id="detail-date"></dd>
                     <dt class="col-5">Time</dt><dd class="col-7" id="detail-time"></dd>
                     <dt class="col-5">Booking Status</dt><dd class="col-7" id="detail-status"></dd>
+                    <dt class="col-5">Attendance</dt>
+                    <dd class="col-7" id="detail-attendance"></dd>
                     <dt class="col-5">Trip Status</dt><dd class="col-7" id="detail-trip-status"></dd>
                     <dt class="col-5">Shuttle</dt><dd class="col-7" id="detail-shuttle"></dd>
                     <dt class="col-5">Vehicle</dt><dd class="col-7" id="detail-vehicle"></dd>
@@ -284,11 +343,35 @@
                     <dt class="col-5">Pick-up Point</dt><dd class="col-7" id="detail-pickup"></dd>
                     <dt class="col-5">Drop-off Point</dt><dd class="col-7" id="detail-dropoff"></dd>
                 </dl>
+                <div id="notification-feedback"
+                     class="alert d-none mt-3"
+                     role="status"
+                     aria-live="polite"
+                     aria-atomic="true"
+                     tabindex="-1"></div>
+
                 <div id="booking-actions" class="mt-3">
-                    <p id="booking-action-note" class="small text-secondary">Booking confirmation and cancellation are not available yet.</p>
+                    <p id="booking-action-note" class="small text-secondary">
+                        Loading booking actions...
+                    </p>
+
                     <div class="d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-success" aria-describedby="booking-action-note" disabled>Confirm Booking</button>
-                        <button type="button" class="btn btn-outline-danger" aria-describedby="booking-action-note" disabled>Cancel Booking</button>
+                        <button type="button"
+                                id="confirm-booking-button"
+                                class="btn btn-success"
+                                aria-describedby="booking-action-note"
+                                data-confirm-booking
+                                hidden>
+                            Confirm Booking
+                        </button>
+
+                        <button type="button"
+                                id="cancel-booking-button"
+                                class="btn btn-outline-danger"
+                                aria-describedby="booking-action-note"
+                                hidden>
+                            Cancel Booking
+                        </button>
                     </div>
                 </div>
             </div>
@@ -310,6 +393,7 @@
 </div>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/notifications.js"></script>
 <script src="assets/js/my-bookings.js"></script>
 </body>
 </html>
