@@ -143,7 +143,8 @@
                                 <th scope="col">Departure Time</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">Pickup Point</th>
-                                <th scope="col">Drop-off Point</th>
+                                <th scope="col">Dropoff Point</th>
+                                <th scope="col">Slots</th>
                                 <th scope="col"><span class="visually-hidden">Action</span></th>
                             </tr>
                         </thead>
@@ -194,6 +195,7 @@
             <td class="trip-date" data-label="Date"></td>
             <td class="trip-pickup" data-label="Pickup Point"></td>
             <td class="trip-dropoff" data-label="Drop-off Point"></td>
+            <td class="trip-slots" data-label="Slots"></td>
             <td class="trip-action text-end">
                 <button type="button" class="trip-select-button btn btn-dlsu-green btn-sm" data-bs-toggle="modal" data-bs-target="#trip-details-modal">Details</button>
             </td>
@@ -213,7 +215,7 @@
                     <dl class="row small booking-detail-list mb-0">
                         <dt class="col-5">Date</dt><dd class="col-7" id="selected-date"></dd>
                         <dt class="col-5">Departure Time</dt><dd class="col-7" id="selected-time"></dd>
-                        <dt class="col-5">Shuttle</dt><dd class="col-7" id="selected-shuttle"></dd>
+                        <dt class="col-5">Line</dt><dd class="col-7" id="selected-line"></dd>
                         <dt class="col-5">Pick-up Point</dt><dd class="col-7" id="selected-pickup"></dd>
                         <dt class="col-5">Drop-off Point</dt><dd class="col-7" id="selected-dropoff"></dd>
                         <dt class="col-5">Slots</dt><dd class="col-7" id="selected-seats"></dd>

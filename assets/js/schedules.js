@@ -249,6 +249,7 @@ function generateAvailableTrips() {
             formatScheduleDate(trip.date);
         row.querySelector(".trip-pickup").textContent = trip.pickup;
         row.querySelector(".trip-dropoff").textContent = trip.dropoff;
+        row.querySelector(".trip-slots").textContent = trip.slots;
 
         const button = row.querySelector(".trip-select-button");
         button.dataset.tripId = trip.id;
