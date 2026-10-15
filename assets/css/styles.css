@@ -38,23 +38,12 @@
     --school-logo: url(../images/logo.png);
 }
 
+html, body{
+    background-color: var(--bg-main);
+}
+
 .dark-mode {
-    /* Main DLSU Color Palette*/
-    --dlsu-green: #084c34;
-    --dlsu-green-hover: #063927;
-    --dlsu-light: #eef4f1;
-    --dlsu-light-hover: #e3ede7;
-
-    /* Text Colors */
-    --text-main: hsl(210, 12%, 90%);
-    --text-secondary: hsl(209, 13%, 100%);
-
-   /* Background Colors */
-    --bg-main: hsl(0, 0%, 10%);
-    --bg-secondary: hsl(150, 21%, 15%);
-    --bg-hover: #e3ede7;
-
-    --school-logo: url(../images/logo.png);
+    filter: invert(0.92) hue-rotate(160deg);
 }
 
 .dashboard-body {
@@ -139,7 +128,7 @@
    LOGIN PAGE
    ======================================================== */
 .login-body {
-    background-color: #ffffff;
+    background-color: var(--bg-main);
     color: var(--text-main);
     background-image: url(../images/bg.png);
     background-repeat: no-repeat;
@@ -199,7 +188,7 @@
    SIGNUP PAGE
    ======================================================== */
 .signup-body {
-    background-color: #ffffff;
+    background-color: var(--bg-main);
     color: var(--text-main);
     background-image: url(../images/bg.png);
     background-repeat: no-repeat;
@@ -237,7 +226,7 @@
    FORGOT PASSWORD PAGE
    ======================================================== */
 .forgot-password-body {
-    background-color: #ffffff;
+    background-color: var(--bg-main);
     color: var(--text-main);
 }
 
