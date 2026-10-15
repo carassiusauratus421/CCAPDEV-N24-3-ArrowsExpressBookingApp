@@ -236,7 +236,7 @@ function generateAvailableTrips() {
 
     if (trips.length === 0) {
         showTripMessage(!getScheduleType(tripDateInput.value)
-            ? "No trips are scheduled for this Sunday."
+            ? "Shuttle service is not available on Sundays."
             : "No trips match your filters.");
         return;
     }
@@ -249,7 +249,7 @@ function generateAvailableTrips() {
             formatScheduleDate(trip.date);
         row.querySelector(".trip-pickup").textContent = trip.pickup;
         row.querySelector(".trip-dropoff").textContent = trip.dropoff;
-        row.querySelector(".trip-slots").textContent = trip.slots;
+        row.querySelector(".trip-slots").textContent = trip.available;
 
         const button = row.querySelector(".trip-select-button");
         button.dataset.tripId = trip.id;
