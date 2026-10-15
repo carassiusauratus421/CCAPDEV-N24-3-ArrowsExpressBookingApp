@@ -1,16 +1,9 @@
-/* MOCK PASSENGER PROFILE FOR PHASE 1 */
-const demoProfile = {
-    firstName: "Juan",
-    lastName: "Dela Cruz",
-    email: "juan_delacruz@dlsu.edu.ph",
-    idNumber: "12400001",
-    passengerType: "student",
-    sex: "male",
-    collegeDepartment: "College of Computer Studies",
-    contactNumber: "09123456789",
-    campus: "Manila",
-    verificationDocument: "juan-delacruz-eaf.pdf"
-};
+/* PASSENGER PROFILE: JSON DEFAULTS AND SHARED BROWSER CHANGES */
+const profileStorageKey = "arrowsExpressDemoChanges:v1";
+let profileData = null;
+let profileSeed = null;
+let profileChanges = {};
+let profileStorageAvailable = true;
 
 const passengerTypeLabels = {
     student: "Student",
@@ -46,9 +39,8 @@ const allProfileInputs = [
     confirmPasswordInput
 ];
 
-let savedProfile = { ...demoProfile };
-let profileStorageKey = "arrowsExpressProfile:" + demoProfile.email;
-let savedDemoPassword = "Arrows123!";
+let savedProfile = null;
+let savedDemoPassword = "";
 let isEditingProfile = false;
 
 function showProfileMessage(message, type) {
@@ -184,108 +176,68 @@ function setProfileEditing(isEditing) {
         : "Select Edit Profile to make changes.";
 }
 
-/* Upgrade the earlier five-field profile while preserving existing edits. */
-function upgradeStoredProfile(storedProfile) {
-    const profile = { ...savedProfile };
-
-    if (
-        !storedProfile ||
-        typeof storedProfile !== "object" ||
-        Array.isArray(storedProfile) ||
-        (
-            !Object.hasOwn(storedProfile, "firstName") &&
-            typeof storedProfile.fullName !== "string"
-        )
-    ) {
-        throw new Error("Invalid stored profile");
+/* Load shared edits without replacing records belonging to other pages. */
+function readSharedProfileChanges() {
+    if (!profileStorageAvailable) {
+        return profileChanges;
     }
 
-    Object.keys(profile).forEach(function (key) {
-        if (Object.hasOwn(storedProfile, key)) {
-            if (typeof storedProfile[key] !== "string") {
-                throw new Error("Invalid stored profile field");
-            }
+    try {
+        const saved = JSON.parse(localStorage.getItem(profileStorageKey));
 
-            profile[key] = storedProfile[key];
-        }
-    });
-
-    if (
-        !Object.hasOwn(storedProfile, "firstName") &&
-        typeof storedProfile.fullName === "string"
-    ) {
-        const names = storedProfile.fullName.trim().split(/\s+/);
-        profile.firstName = names.shift();
-
-        if (names.length > 0) {
-            profile.lastName = names.join(" ");
-        }
+        return saved && saved.schemaVersion === profileData.schemaVersion
+            ? saved
+            : { schemaVersion: profileData.schemaVersion };
+    } catch (error) {
+        profileStorageAvailable = false;
+        console.warn("Saved profile changes could not be loaded:", error);
+        return profileChanges;
     }
-
-    if (
-        !Object.hasOwn(storedProfile, "idNumber") &&
-        typeof storedProfile.studentNumber === "string"
-    ) {
-        profile.idNumber = storedProfile.studentNumber;
-    }
-
-    if (
-        !Object.hasOwn(storedProfile, "firstName") &&
-        profile.contactNumber === ""
-    ) {
-        profile.contactNumber = demoProfile.contactNumber;
-    }
-
-    if (
-        Object.keys(getProfileErrors(profile)).length > 0 ||
-        profile.verificationDocument.trim() === "" ||
-        profile.verificationDocument.length > 255
-    ) {
-        throw new Error("Invalid stored profile values");
-    }
-
-    return profile;
 }
 
 function loadProfile() {
-    try {
-        const user = JSON.parse(sessionStorage.getItem("arrowsExpressUser"));
+    profileChanges = readSharedProfileChanges();
+    savedProfile = { ...profileSeed };
 
-        if (user && typeof user === "object") {
-            if (
-                typeof user.email === "string" &&
-                /^[a-z0-9._%+-]+@dlsu\.edu\.ph$/i.test(user.email)
-            ) {
-                savedProfile.email = user.email.toLowerCase();
-                profileStorageKey = "arrowsExpressProfile:" + savedProfile.email;
-            }
+    const storedProfile = Array.isArray(profileChanges.users)
+        ? profileChanges.users.find(function (user) {
+            return user.id === profileSeed.id;
+        })
+        : null;
 
-            ["firstName", "lastName"].forEach(function (key) {
-                if (
-                    typeof user[key] === "string" &&
-                    user[key].trim() !== "" &&
-                    user[key].length <= 50
-                ) {
-                    savedProfile[key] = user[key].trim();
-                }
-            });
-        }
-    } catch (error) {
-        // Direct visits and unavailable session storage use the filled demo account.
+    if (!storedProfile) {
+        return;
     }
 
-    try {
-        const storedProfile = JSON.parse(localStorage.getItem(profileStorageKey));
+    const candidate = { ...profileSeed };
 
-        if (storedProfile !== null) {
-            savedProfile = upgradeStoredProfile(storedProfile);
+    [...Object.keys(profileFields), "verificationDocument"].forEach(function (key) {
+        if (typeof storedProfile[key] === "string") {
+            candidate[key] = storedProfile[key];
         }
-    } catch (error) {
+    });
+
+    if (Object.keys(getProfileErrors(candidate)).length > 0 ||
+        candidate.verificationDocument.trim() === "" ||
+        candidate.verificationDocument.length > 255) {
         showProfileMessage(
-            "Saved details could not be loaded. Filled demo details are shown; you can still edit them.",
+            "Saved profile details are invalid. The original demo details are shown.",
             "warning"
         );
+        return;
     }
+
+    savedProfile = candidate;
+}
+
+/* Keep an unfinished edit intact when another page updates shared data. */
+function refreshSharedProfile() {
+    if (!profileSeed || isEditingProfile) {
+        return;
+    }
+
+    loadProfile();
+    renderProfile();
 }
 
 editProfileButton.addEventListener("click", function () {
@@ -295,6 +247,7 @@ editProfileButton.addEventListener("click", function () {
 });
 
 document.getElementById("cancel-profile-button").addEventListener("click", function () {
+    loadProfile();
     renderProfile();
     setProfileEditing(false);
     clearProfileMessage();
@@ -338,7 +291,7 @@ profileForm.addEventListener("submit", function (event) {
         if (!/\.(pdf|jpe?g|png)$/i.test(file.name) || file.name.length > 255) {
             setProfileFieldError(
                 documentInput,
-                "Choose a PDF, JPG, or PNG with a filename up to 255 characters."
+                "Choose a PDF, JPG, or PNG."
             );
         } else if (file.size > 5 * 1024 * 1024) {
             setProfileFieldError(
@@ -363,8 +316,23 @@ profileForm.addEventListener("submit", function (event) {
     savedDemoPassword = passwordInput.value;
     savedProfile = profile;
 
+    profileChanges = readSharedProfileChanges();
+    profileChanges.schemaVersion = profileData.schemaVersion;
+    profileChanges.users = profileChanges.users || [];
+
+    const storedUser = profileChanges.users.find(function (user) {
+        return user.id === profileSeed.id;
+    });
+
+    if (storedUser) {
+        Object.assign(storedUser, profile);
+    } else {
+        profileChanges.users.push({ id: profileSeed.id, ...profile });
+    }
+
     try {
-        localStorage.setItem(profileStorageKey, JSON.stringify(savedProfile));
+        localStorage.setItem(profileStorageKey, JSON.stringify(profileChanges));
+        profileStorageAvailable = true;
 
         showProfileMessage(
             "Profile updated successfully. Demo details are saved in this browser." +
@@ -376,6 +344,8 @@ profileForm.addEventListener("submit", function (event) {
             "success"
         );
     } catch (error) {
+        profileStorageAvailable = false;
+
         showProfileMessage(
             "Profile updated for this visit, but browser storage is unavailable. Changes will reset on reload.",
             "warning"
@@ -385,6 +355,7 @@ profileForm.addEventListener("submit", function (event) {
     renderProfile();
     setProfileEditing(false);
     editProfileButton.focus();
+    window.dispatchEvent(new Event("arrows-express-data-updated"));
 });
 
 allProfileInputs.forEach(function (input) {
@@ -402,9 +373,58 @@ documentInput.addEventListener("change", function () {
         : savedProfile.verificationDocument;
 });
 
-loadProfile();
-renderProfile();
 setProfileEditing(false);
+editProfileButton.disabled = true;
 
-// Enable editing only after the page's handlers and demo data are ready.
-editProfileButton.disabled = false;
+window.addEventListener("arrows-express-data-updated", refreshSharedProfile);
+
+window.addEventListener("storage", function (event) {
+    if (event.key === profileStorageKey || event.key === null) {
+        refreshSharedProfile();
+    }
+});
+
+window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+        refreshSharedProfile();
+    }
+});
+
+/* Initial values and the public demo password come from the shared JSON. */
+fetch("assets/data/mock-data.json")
+    .then(function (response) {
+        if (!response.ok) {
+            throw new Error("Could not load mock-data.json.");
+        }
+
+        return response.json();
+    })
+    .then(function (data) {
+        profileData = data;
+        profileSeed = data.users.find(function (user) {
+            return user.id === data.settings.defaultPassengerId;
+        });
+
+        const credentials = data.demoCredentials.find(function (account) {
+            return account.userId === data.settings.defaultPassengerId;
+        });
+
+        if (!profileSeed || !credentials) {
+            throw new Error("The demo passenger or credentials could not be found.");
+        }
+
+        savedDemoPassword = credentials.password;
+        loadProfile();
+        renderProfile();
+        editProfileButton.disabled = false;
+    })
+    .catch(function (error) {
+        console.error("Could not load profile details:", error);
+        profileSeed = null;
+        editProfileButton.disabled = true;
+
+        showProfileMessage(
+            "Unable to load your profile. Please reload the page.",
+            "danger"
+        );
+    });

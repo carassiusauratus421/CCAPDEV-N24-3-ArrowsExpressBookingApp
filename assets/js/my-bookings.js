@@ -1,424 +1,931 @@
 /* ========================================================
-   SAMPLE BOOKING DATA
-   Categories are fixed for this preview, not calculated from today's date.
-   The first four trips match the existing dashboard samples.
+   MY BOOKINGS
    ======================================================== */
-const sampleBookings = [
-    {
-        id: "AE-001",
-        category: "upcoming",
-        date: "2025-04-28",
-        route: "Manila → Laguna",
-        departure: "8:00 AM",
-        arrival: "10:00 AM",
-        shuttle: "DLSU Shuttle 1",
-        plate: "NCM 1234",
-        vehicle: "Coaster",
-        driver: "San Jose, R. (ID: 8743)",
-        pickup: "DLSU Manila, Gate 1",
-        dropoff: "DLSU Laguna Campus",
-        status: "Confirmed",
-        tripStatus: "On Time"
-    },
-    {
-        id: "AE-002",
-        category: "upcoming",
-        date: "2025-04-30",
-        route: "Laguna → Manila",
-        departure: "4:00 PM",
-        arrival: "6:00 PM",
-        shuttle: "DLSU Shuttle 2",
-        plate: "DEF 5678",
-        vehicle: "Coaster",
-        driver: "Not assigned",
-        pickup: "DLSU Laguna Campus",
-        dropoff: "DLSU Manila",
-        status: "Confirmed",
-        tripStatus: "Scheduled"
-    },
-    {
-        id: "AE-003",
-        category: "upcoming",
-        date: "2025-05-02",
-        route: "Manila → Laguna",
-        departure: "8:00 AM",
-        arrival: "10:00 AM",
-        shuttle: "DLSU Shuttle 3",
-        plate: "GHI 9012",
-        vehicle: "Coaster",
-        driver: "Not assigned",
-        pickup: "DLSU Manila",
-        dropoff: "DLSU Laguna Campus",
-        status: "Confirmed",
-        tripStatus: "Scheduled"
-    },
-    {
-        id: "AE-004",
-        category: "upcoming",
-        date: "2025-05-05",
-        route: "Laguna → Manila",
-        departure: "4:00 PM",
-        arrival: "6:00 PM",
-        shuttle: "DLSU Shuttle 4",
-        plate: "JKL 3456",
-        vehicle: "Coaster",
-        driver: "Not assigned",
-        pickup: "DLSU Laguna Campus",
-        dropoff: "DLSU Manila",
-        status: "Confirmed",
-        tripStatus: "Scheduled"
-    },
-    {
-        id: "AE-005",
-        category: "upcoming",
-        date: "2025-05-08",
-        route: "Manila → Laguna",
-        departure: "7:00 AM",
-        arrival: "9:00 AM",
-        shuttle: "DLSU Shuttle 2",
-        plate: "DEF 5678",
-        vehicle: "Coaster",
-        driver: "Not assigned",
-        pickup: "DLSU Manila",
-        dropoff: "DLSU Laguna Campus",
-        status: "On Hold",
-        tripStatus: "Scheduled"
-    },
-    {
-        id: "AE-006",
-        category: "completed",
-        date: "2025-04-20",
-        route: "Laguna → Manila",
-        departure: "4:00 PM",
-        arrival: "6:00 PM",
-        shuttle: "DLSU Shuttle 1",
-        plate: "NCM 1234",
-        vehicle: "Coaster",
-        driver: "San Jose, R. (ID: 8743)",
-        pickup: "DLSU Laguna Campus",
-        dropoff: "DLSU Manila",
-        status: "Completed",
-        tripStatus: "Arrived"
-    },
-    {
-        id: "AE-007",
-        category: "cancelled",
-        date: "2025-04-22",
-        route: "Manila → Laguna",
-        departure: "8:00 AM",
-        arrival: "10:00 AM",
-        shuttle: "DLSU Shuttle 3",
-        plate: "GHI 9012",
-        vehicle: "Coaster",
-        driver: "Not assigned",
-        pickup: "DLSU Manila",
-        dropoff: "DLSU Laguna Campus",
-        status: "Cancelled",
-        tripStatus: "Not applicable"
-    }
-];
-
+const bookingStorageKey = "arrowsExpressDemoChanges:v1";
 const bookingCardTemplate = document.getElementById("booking-card-template");
 const bookingDetailsModal = document.getElementById("booking-details-modal");
+const tripRowTemplate = document.getElementById("trip-row-template");
+const tripDetailsModal = document.getElementById("trip-details-modal");
+const tripDateInput = document.getElementById("trip-date");
+const bookTripButton = document.getElementById("book-trip-button");
+
+let bookingSeed = null;
+let bookingData = null;
+let bookingChanges = {};
+let bookingStorageAvailable = true;
+let currentDirection = document.querySelector(".direction-button.active").dataset.direction;
+let selectedTrip = null;
+let selectedBookingId = null;
+
 const bookingStatusClasses = {
-    "Confirmed": "bg-success-subtle text-success border border-success-subtle",
-    "On Hold": "bg-warning-subtle text-warning-emphasis border border-warning-subtle",
-    "Completed": "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle",
-    "Cancelled": "bg-danger-subtle text-danger-emphasis border border-danger-subtle"
+    "Confirmed": "bg-success-subtle text-success border-success-subtle",
+    "On Hold": "bg-warning-subtle text-warning-emphasis border-warning-subtle",
+    "Completed": "bg-secondary-subtle text-secondary-emphasis border-secondary-subtle",
+    "Cancelled": "bg-danger-subtle text-danger-emphasis border-danger-subtle"
 };
 
-function getBookingDate(booking) {
-    return new Date(booking.date + "T12:00:00");
-}
-
-function getBookingTime(booking) {
-    return booking.departure + " – " + booking.arrival;
-}
-
-/* Build the cards from a single HTML template. */
-function renderBookings(category) {
-    const list = document.getElementById(category + "-list");
-    const bookings = sampleBookings.filter(function (booking) {
-        return booking.category === category;
-    });
-    list.replaceChildren();
-
-    if (bookings.length === 0) {
-        const emptyMessage = document.createElement("p");
-        emptyMessage.className = "text-secondary border rounded-4 p-4";
-        emptyMessage.textContent = "No " + category + " bookings to display.";
-        list.appendChild(emptyMessage);
-        return;
+/* Preserve edits saved by the notification and profile pages. */
+function readBookingChanges() {
+    if (!bookingStorageAvailable) {
+        return bookingChanges;
     }
 
-    bookings.forEach(function (booking) {
-        const card = bookingCardTemplate.content.firstElementChild.cloneNode(true);
-        const date = getBookingDate(booking);
-        card.querySelector(".booking-month").textContent = date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-        card.querySelector(".booking-day").textContent = date.getDate();
-        card.querySelector(".booking-year").textContent = date.getFullYear();
-        card.querySelector(".booking-route").textContent = booking.route;
-        card.querySelector(".booking-shuttle").textContent = booking.shuttle + " | " + booking.plate;
-        card.querySelector(".booking-time").textContent = getBookingTime(booking);
-        card.querySelector(".booking-pickup").textContent = booking.pickup;
+    try {
+        const saved = JSON.parse(localStorage.getItem(bookingStorageKey));
 
-        const status = card.querySelector(".booking-status");
-        status.textContent = booking.status;
-        status.className += " " + bookingStatusClasses[booking.status];
+        return saved && saved.schemaVersion === bookingSeed.schemaVersion
+            ? saved
+            : { schemaVersion: bookingSeed.schemaVersion };
+    } catch (error) {
+        bookingStorageAvailable = false;
+        console.warn("Saved demo changes could not be loaded:", error);
+        return bookingChanges;
+    }
+}
 
-        const detailsButton = card.querySelector(".booking-details-button");
-        detailsButton.dataset.bookingId = booking.id;
-        detailsButton.setAttribute("aria-label", "View details for booking " + booking.id);
-        list.appendChild(card);
+function rebuildBookingData() {
+    bookingChanges = readBookingChanges();
+    bookingData = JSON.parse(JSON.stringify(bookingSeed));
+
+    ["users", "trips", "bookings", "drivers", "notices"].forEach(function (section) {
+        if (!Array.isArray(bookingChanges[section])) {
+            return;
+        }
+
+        bookingChanges[section].forEach(function (change) {
+            const index = bookingData[section].findIndex(function (record) {
+                return record.id === change.id;
+            });
+
+            if (index === -1) {
+                bookingData[section].push(change);
+            } else {
+                Object.assign(bookingData[section][index], change);
+            }
+        });
     });
 }
 
-/* Populate the modal with plain text rather than inserting data as HTML. */
-function fillBookingDetails(booking) {
-    const details = {
-        "detail-route": booking.route,
-        "detail-id": booking.id,
-        "detail-date": getBookingDate(booking).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-        "detail-time": getBookingTime(booking),
-        "detail-status": booking.status,
-        "detail-trip-status": booking.tripStatus,
-        "detail-shuttle": booking.shuttle,
-        "detail-vehicle": booking.plate + " | " + booking.vehicle,
-        "detail-driver": booking.driver,
-        "detail-pickup": booking.pickup,
-        "detail-dropoff": booking.dropoff
-    };
+/* Update one record while keeping its other saved fields. */
+function setBookingChange(section, record) {
+    bookingChanges[section] = bookingChanges[section] || [];
 
-    Object.keys(details).forEach(function (id) {
-        document.getElementById(id).textContent = details[id];
+    const existing = bookingChanges[section].find(function (item) {
+        return item.id === record.id;
     });
-    document.getElementById("booking-actions").hidden = booking.category !== "upcoming";
+
+    if (existing) {
+        Object.assign(existing, record);
+    } else {
+        bookingChanges[section].push({ ...record });
+    }
+}
+
+function saveBookingChanges() {
+    bookingChanges.schemaVersion = bookingSeed.schemaVersion;
+
+    try {
+        localStorage.setItem(bookingStorageKey, JSON.stringify(bookingChanges));
+        bookingStorageAvailable = true;
+    } catch (error) {
+        bookingStorageAvailable = false;
+        console.warn("Demo changes could not be saved:", error);
+    }
+
+    window.dispatchEvent(new Event("arrows-express-data-updated"));
 }
 
 function showBookingMessage(message, type = "warning") {
     const feedback = document.getElementById("booking-message");
-    feedback.textContent = message;
     feedback.className = "alert alert-" + type;
+    feedback.textContent = message;
 }
 
-bookingDetailsModal.addEventListener("show.bs.modal", function (event) {
-    // A dashboard link opens the modal without a related button on this page.
-    if (!event.relatedTarget) {
-        return;
-    }
-    const booking = sampleBookings.find(function (item) {
-        return item.id === event.relatedTarget.dataset.bookingId;
-    });
-    if (!booking) {
-        event.preventDefault();
-        showBookingMessage("This booking could not be found. Please select an existing booking.");
-        return;
-    }
-    fillBookingDetails(booking);
-});
-
-["upcoming", "completed", "cancelled"].forEach(renderBookings);
-document.getElementById("booking-loading").hidden = true;
-
-/* Support dashboard links such as my-bookings.html?booking=AE-001. */
-const requestedBookingId = new URLSearchParams(window.location.search).get("booking");
-if (requestedBookingId) {
-    const requestedBooking = sampleBookings.find(function (booking) {
-        return booking.id === requestedBookingId;
-    });
-    if (requestedBooking) {
-        bootstrap.Tab.getOrCreateInstance(document.getElementById(requestedBooking.category + "-tab")).show();
-        fillBookingDetails(requestedBooking);
-        bootstrap.Modal.getOrCreateInstance(bookingDetailsModal).show();
-    } else {
-        showBookingMessage("This booking could not be found. Please select View Details from the list.");
-    }
+function showBookingModalMessage(message, type = "success") {
+    const feedback = document.getElementById("notification-feedback");
+    feedback.className = "alert alert-" + type + " mt-3";
+    feedback.textContent = message;
+    feedback.focus({ preventScroll: true });
 }
 
-/* ========================================================
-   AVAILABLE TRIPS AND DEMO RESERVATIONS
-   Trip data repeats by date and direction for this frontend preview.
-   ======================================================== */
-const tripSlots = [
-    { id: "SH-01", shuttle: "DLSU Shuttle 1", plate: "ABC 1234", departure: "7:00 AM", arrival: "9:00 AM", hour: 7, capacity: 13, available: 8 },
-    { id: "SH-02", shuttle: "DLSU Shuttle 2", plate: "DEF 5678", departure: "9:00 AM", arrival: "11:00 AM", hour: 9, capacity: 13, available: 5 },
-    { id: "SH-03", shuttle: "DLSU Shuttle 3", plate: "GHI 9012", departure: "12:00 PM", arrival: "2:00 PM", hour: 12, capacity: 13, available: 11 },
-    { id: "SH-04", shuttle: "DLSU Shuttle 4", plate: "JKL 3456", departure: "4:00 PM", arrival: "6:00 PM", hour: 16, capacity: 13, available: 7 }
-];
+/* Date filters and trip times use the same Philippine demo clock. */
+function getBookingDemoNow() {
+    return new Date(bookingData.settings.demoNow);
+}
 
-const tripDateInput = document.getElementById("trip-date");
-const tripRowTemplate = document.getElementById("trip-row-template");
-const tripDetailsModal = document.getElementById("trip-details-modal");
-const bookTripButton = document.getElementById("book-trip-button");
-let currentDirection = "manila-laguna";
-let selectedTrip = null;
+function getBookingToday() {
+    const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: bookingData.settings.timeZone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).formatToParts(getBookingDemoNow());
 
-/* Build a local calendar date without UTC shifting the selected day. */
-function getLocalDateValue(date) {
-    return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+    return ["year", "month", "day"].map(function (type) {
+        return parts.find(function (part) {
+            return part.type === type;
+        }).value;
+    }).join("-");
+}
+
+function getBookingDeparture(trip) {
+    return new Date(
+        new Date(trip.date + "T00:00:00+08:00").getTime() +
+        trip.departureMinutes * 60000
+    );
+}
+
+function formatBookingDate(date, options) {
+    return date.toLocaleDateString("en-US", {
+        ...options,
+        timeZone: bookingData.settings.timeZone
+    });
+}
+
+function formatBookingTime(date) {
+    return date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: bookingData.settings.timeZone
+    });
+}
+
+/* Join a trip to its route, vehicle and assigned driver. */
+function getBookingTripDetails(trip) {
+    const route = bookingData.routes.find(function (item) {
+        return item.id === trip.routeId;
+    });
+
+    const vehicle = bookingData.vehicles.find(function (item) {
+        return item.id === trip.vehicleId;
+    });
+
+    const driver = bookingData.drivers.find(function (item) {
+        return item.id === trip.driverId;
+    });
+
+    const driverUser = driver
+        ? bookingData.users.find(function (user) {
+            return user.id === driver.userId;
+        })
+        : null;
+
+    const departure = getBookingDeparture(trip);
+    const arrival = new Date(
+        departure.getTime() + trip.durationMinutes * 60000
+    );
+
+    return {
+        trip: trip,
+        departure: departure,
+        arrival: arrival,
+        route: route ? route.name : "Route unavailable",
+        pickup: route
+            ? route.pickupCampus + ", " + route.pickup
+            : "To be announced",
+        dropoff: route ? route.dropoff : "To be announced",
+        shuttle: vehicle ? vehicle.name : bookingData.settings.serviceName,
+        plate: vehicle ? vehicle.plate : "Vehicle to be assigned",
+        vehicle: vehicle ? vehicle.type : "To be assigned",
+        driver: driverUser
+            ? driverUser.lastName + ", " + driverUser.firstName.charAt(0) +
+                ". (ID: " + driver.employeeNumber + ")"
+            : "Not assigned"
+    };
+}
+
+function getPassengerBooking(bookingId) {
+    const booking = bookingData.bookings.find(function (item) {
+        return item.id === bookingId &&
+            item.userId === bookingData.settings.defaultPassengerId;
+    });
+
+    const trip = booking && bookingData.trips.find(function (item) {
+        return item.id === booking.tripId;
+    });
+
+    return trip
+        ? { ...getBookingTripDetails(trip), booking: booking }
+        : null;
+}
+
+function getBookingCategory(booking) {
+    if (booking.status === "Cancelled") {
+        return "cancelled";
+    }
+
+    return booking.status === "Completed" ? "completed" : "upcoming";
+}
+
+/* Build the three booking lists from the same shared records. */
+function renderBookings(category) {
+    const list = document.getElementById(category + "-list");
+
+    const bookings = bookingData.bookings
+        .map(function (booking) {
+            return getPassengerBooking(booking.id);
+        })
+        .filter(function (details) {
+            return details &&
+                getBookingCategory(details.booking) === category;
+        })
+        .sort(function (first, second) {
+            return category === "upcoming"
+                ? first.departure - second.departure
+                : second.departure - first.departure;
+        });
+
+    list.replaceChildren();
+
+    if (bookings.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "text-secondary p-4 mb-0";
+        empty.textContent = "No " + category + " bookings to display.";
+        list.appendChild(empty);
+    }
+
+    bookings.forEach(function (details) {
+        const card = bookingCardTemplate.content.firstElementChild.cloneNode(true);
+
+        const fields = {
+            ".booking-month": formatBookingDate(
+                details.departure,
+                { month: "short" }
+            ).toUpperCase(),
+            ".booking-day": formatBookingDate(
+                details.departure,
+                { day: "numeric" }
+            ),
+            ".booking-year": formatBookingDate(
+                details.departure,
+                { year: "numeric" }
+            ),
+            ".booking-route": details.route,
+            ".booking-shuttle": details.shuttle + " | " + details.plate,
+            ".booking-time": formatBookingTime(details.departure) +
+                " – " + formatBookingTime(details.arrival),
+            ".booking-pickup": details.pickup
+        };
+
+        Object.keys(fields).forEach(function (selector) {
+            card.querySelector(selector).textContent = fields[selector];
+        });
+
+        const status = card.querySelector(".booking-status");
+        status.textContent = details.booking.status;
+        status.className =
+            "booking-status badge rounded-pill px-3 py-2 border " +
+            (bookingStatusClasses[details.booking.status] ||
+                "bg-light text-dark");
+
+        const button = card.querySelector(".booking-details-button");
+        button.dataset.bookingId = details.booking.id;
+        button.setAttribute(
+            "aria-label",
+            "View details for booking " + details.booking.id
+        );
+
+        list.appendChild(card);
+    });
+}
+
+/* Keep the open details modal synchronized after confirmation or cancellation. */
+function fillBookingDetails(details) {
+    const booking = details.booking;
+
+    const fields = {
+        "detail-route": details.route,
+        "detail-id": booking.id,
+        "detail-date": formatBookingDate(details.departure, {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }),
+        "detail-time": formatBookingTime(details.departure) +
+            " – " + formatBookingTime(details.arrival),
+        "detail-status": booking.status,
+        "detail-attendance": booking.attendanceConfirmed
+            ? "Confirmed"
+            : "Not confirmed",
+        "detail-trip-status": details.trip.tripStatus || "Scheduled",
+        "detail-shuttle": details.shuttle,
+        "detail-vehicle": details.plate + " | " + details.vehicle,
+        "detail-driver": details.driver,
+        "detail-pickup": details.pickup,
+        "detail-dropoff": details.dropoff
+    };
+
+    Object.keys(fields).forEach(function (id) {
+        document.getElementById(id).textContent = fields[id];
+    });
+
+    const upcoming = getBookingCategory(booking) === "upcoming";
+    const minutes = (details.departure - getBookingDemoNow()) / 60000;
+
+    const canConfirm = booking.status === "Confirmed" &&
+        !booking.attendanceConfirmed &&
+        minutes > 0 &&
+        minutes <= bookingData.settings.confirmationMinutes;
+
+    document.getElementById("booking-actions").hidden = !upcoming;
+
+    const confirmButton = document.getElementById("confirm-booking-button");
+    confirmButton.dataset.confirmBooking = booking.id;
+    confirmButton.hidden = !canConfirm;
+
+    document.getElementById("cancel-booking-button").hidden =
+        !upcoming || minutes <= 0;
+
+    let note = "Your attendance is confirmed.";
+
+    if (minutes <= 0) {
+        note = "This trip has departed. Booking actions are no longer available.";
+    } else if (booking.status === "On Hold") {
+        note = "This booking is on hold. Attendance confirmation requires a confirmed reservation.";
+    } else if (!booking.attendanceConfirmed) {
+        const opens = new Date(
+            details.departure.getTime() -
+            bookingData.settings.confirmationMinutes * 60000
+        );
+
+        note = canConfirm
+            ? "Please confirm your attendance before departure."
+            : "Attendance confirmation opens on " +
+                formatBookingDate(opens, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                }) +
+                " at " + formatBookingTime(opens) + ".";
+    }
+
+    document.getElementById("booking-action-note").textContent = note;
 }
 
 function isTripDateValid() {
-    const valid = tripDateInput.value !== "" && tripDateInput.validity.valid && tripDateInput.value >= getLocalDateValue(new Date());
+    const valid = tripDateInput.value !== "" &&
+        tripDateInput.validity.valid &&
+        tripDateInput.value >= getBookingToday();
+
     tripDateInput.classList.toggle("is-invalid", !valid);
     tripDateInput.setAttribute("aria-invalid", String(!valid));
+
     return valid;
 }
 
-function getDirectionDetails(direction) {
-    if (direction === "laguna-manila") {
-        return { route: "Laguna → Manila", pickup: "DLSU Laguna Campus", dropoff: "DLSU Manila" };
-    }
-    return { route: "Manila → Laguna", pickup: "DLSU Manila", dropoff: "DLSU Laguna Campus" };
+/* Combine dated trips with the weekly timetable, without duplicating a departure.
+   A dated trip takes priority over a weekly slot at the same time. */
+function getAvailableTrips(
+    date = tripDateInput.value,
+    direction = currentDirection
+) {
+    const datedTrips = bookingData.trips.filter(function (trip) {
+        return trip.date === date && trip.routeId === direction;
+    });
+
+    const day = new Date(date + "T00:00:00Z").getUTCDay();
+
+    const timetable = day === 0
+        ? null
+        : bookingData.weeklySchedules[
+            day === 6 ? "saturday" : "weekday"
+        ];
+
+    const slots = timetable ? timetable[direction] || [] : [];
+    const trips = datedTrips.slice();
+
+    slots.forEach(function (slot) {
+        if (!datedTrips.some(function (trip) {
+            return trip.departureMinutes === slot.departureMinutes;
+        })) {
+            trips.push({
+                ...slot,
+                id: "scheduled-" + date + "-" + slot.id,
+                date: date,
+                routeId: direction,
+                tripStatus: "Scheduled"
+            });
+        }
+    });
+
+    return trips.map(function (trip) {
+        const reservations = bookingData.bookings.filter(function (booking) {
+            return booking.tripId === trip.id &&
+                (booking.status === "Confirmed" ||
+                    booking.status === "On Hold");
+        });
+
+        return {
+            ...getBookingTripDetails(trip),
+            available: Math.max(
+                0,
+                trip.capacity -
+                    (trip.otherReservations || 0) -
+                    reservations.length
+            ),
+            alreadyBooked: reservations.some(function (booking) {
+                return booking.userId ===
+                    bookingData.settings.defaultPassengerId;
+            }),
+            departed: getBookingDeparture(trip) <= getBookingDemoNow(),
+            unavailable: [
+                "Cancelled",
+                "Arrived",
+                "Not applicable"
+            ].includes(trip.tripStatus)
+        };
+    }).sort(function (first, second) {
+        return first.departure - second.departure;
+    });
 }
 
-function getAvailableTrips() {
-    const direction = getDirectionDetails(currentDirection);
-    const now = new Date();
-    return tripSlots.map(function (slot) {
-        const key = tripDateInput.value + "|" + currentDirection + "|" + slot.id;
-        const reservations = sampleBookings.filter(function (booking) {
-            return booking.tripKey === key && booking.status !== "Cancelled";
-        });
-        return {
-            ...slot,
-            ...direction,
-            key: key,
-            date: tripDateInput.value,
-            available: Math.max(0, slot.available - reservations.length),
-            alreadyBooked: reservations.length > 0,
-            departed: tripDateInput.value === getLocalDateValue(now) && slot.hour * 60 <= now.getHours() * 60 + now.getMinutes()
-        };
-    });
+function canReserveTrip(details) {
+    return details &&
+        details.available > 0 &&
+        !details.alreadyBooked &&
+        !details.departed &&
+        !details.unavailable;
+}
+
+function showAvailableTripMessage(message) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = 4;
+    cell.textContent = message;
+    row.appendChild(cell);
+
+    document.getElementById("available-trip-list").replaceChildren(row);
 }
 
 function renderAvailableTrips() {
     const list = document.getElementById("available-trip-list");
-    list.replaceChildren();
-    const direction = getDirectionDetails(currentDirection);
-    document.getElementById("trip-pickup").textContent = direction.pickup;
-    document.getElementById("trip-dropoff").textContent = direction.dropoff;
+
+    const route = bookingData.routes.find(function (item) {
+        return item.id === currentDirection;
+    });
+
+    document.getElementById("trip-pickup").textContent =
+        route ? route.pickupCampus + ", " + route.pickup : "To be announced";
+
+    document.getElementById("trip-dropoff").textContent =
+        route ? route.dropoff : "To be announced";
 
     if (!isTripDateValid()) {
-        const row = document.createElement("tr");
-        const cell = document.createElement("td");
-        cell.colSpan = 4;
-        cell.textContent = "Choose today or a future date to view trips.";
-        row.appendChild(cell);
-        list.appendChild(row);
+        document.getElementById("trip-duration").textContent =
+            "Choose a valid date.";
+
+        showAvailableTripMessage(
+            "Choose the demo date or a later date to view trips."
+        );
         return;
     }
 
-    getAvailableTrips().forEach(function (trip) {
+    const trips = getAvailableTrips();
+    list.replaceChildren();
+
+    const durations = trips.map(function (details) {
+        return details.trip.durationMinutes / 60;
+    });
+
+    const minimum = Math.min(...durations);
+    const maximum = Math.max(...durations);
+
+    document.getElementById("trip-duration").textContent =
+        trips.length === 0
+            ? "No trips scheduled."
+            : (minimum === maximum
+                ? String(minimum)
+                : minimum + " – " + maximum) +
+                (maximum === 1 ? " hour" : " hours");
+
+    if (trips.length === 0) {
+        showAvailableTripMessage(
+            "No trips are scheduled for this direction and date."
+        );
+    }
+
+    trips.forEach(function (details) {
         const row = tripRowTemplate.content.firstElementChild.cloneNode(true);
-        row.querySelector(".trip-time").textContent = trip.departure;
-        row.querySelector(".trip-shuttle").textContent = trip.shuttle;
-        row.querySelector(".trip-plate").textContent = trip.plate;
-        row.querySelector(".trip-seats").textContent = trip.available + " / " + trip.capacity + " seats";
-        row.querySelector(".progress").setAttribute("aria-valuenow", trip.available);
-        row.querySelector(".progress-bar").style.width = (trip.available / trip.capacity * 100) + "%";
+
+        row.querySelector(".trip-time").textContent =
+            formatBookingTime(details.departure);
+
+        row.querySelector(".trip-shuttle").textContent = details.shuttle;
+        row.querySelector(".trip-plate").textContent = details.plate;
+        row.querySelector(".trip-seats").textContent =
+            details.available + " / " + details.trip.capacity + " seats";
+
+        const progress = row.querySelector(".progress");
+        progress.setAttribute("aria-valuemax", details.trip.capacity);
+        progress.setAttribute("aria-valuenow", details.available);
+
+        row.querySelector(".progress-bar").style.width =
+            (details.trip.capacity > 0
+                ? details.available / details.trip.capacity * 100
+                : 0) + "%";
 
         const button = row.querySelector(".trip-select-button");
-        button.dataset.tripId = trip.id;
-        button.setAttribute("aria-label", "Select " + trip.shuttle + " at " + trip.departure);
-        button.disabled = trip.departed || trip.available === 0 || trip.alreadyBooked;
-        if (trip.departed) {
-            button.textContent = "Departed";
-        } else if (trip.alreadyBooked) {
-            button.textContent = "Already Booked";
-        } else if (trip.available === 0) {
-            button.textContent = "Full";
-        }
+        button.dataset.tripId = details.trip.id;
+        button.disabled = !canReserveTrip(details);
+
+        button.textContent = details.departed
+            ? "Departed"
+            : details.unavailable
+                ? "Unavailable"
+                : details.alreadyBooked
+                    ? "Already Booked"
+                    : details.available === 0
+                        ? "Full"
+                        : "Select";
+
+        button.setAttribute(
+            "aria-label",
+            button.textContent + ": " + details.route +
+            " at " + formatBookingTime(details.departure)
+        );
+
         list.appendChild(row);
     });
 }
 
-tripDetailsModal.addEventListener("show.bs.modal", function (event) {
-    selectedTrip = getAvailableTrips().find(function (trip) {
-        return trip.id === event.relatedTarget?.dataset.tripId;
-    });
-    if (!isTripDateValid() || !selectedTrip || selectedTrip.departed || selectedTrip.available === 0 || selectedTrip.alreadyBooked) {
-        event.preventDefault();
-        selectedTrip = null;
-        showBookingMessage("This trip is unavailable. Please select another trip.");
+function refreshBookingsPage() {
+    if (!bookingSeed) {
         return;
     }
 
-    const details = {
-        "selected-route": selectedTrip.route,
-        "selected-date": getBookingDate(selectedTrip).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-        "selected-time": selectedTrip.departure,
-        "selected-shuttle": selectedTrip.shuttle + " | " + selectedTrip.plate,
-        "selected-pickup": selectedTrip.pickup,
-        "selected-dropoff": selectedTrip.dropoff,
-        "selected-seats": selectedTrip.available + " / " + selectedTrip.capacity
-    };
-    Object.keys(details).forEach(function (id) {
-        document.getElementById(id).textContent = details[id];
+    rebuildBookingData();
+
+    const passenger = bookingData.users.find(function (user) {
+        return user.id === bookingData.settings.defaultPassengerId;
     });
+
+    if (!passenger) {
+        throw new Error("The demo passenger could not be found.");
+    }
+
+    document.querySelectorAll("[data-passenger-name]").forEach(function (name) {
+        name.textContent = passenger.firstName + " " + passenger.lastName;
+    });
+
+    document.querySelectorAll("[data-route-name]").forEach(function (label) {
+        const route = bookingData.routes.find(function (item) {
+            return item.id === label.dataset.routeName;
+        });
+
+        label.textContent = route ? route.name : "Route unavailable";
+    });
+
+    document.getElementById("trip-confirmation-minutes").textContent =
+        bookingData.settings.confirmationMinutes;
+
+    tripDateInput.min = getBookingToday();
+
+    document.getElementById("trip-date-error").textContent =
+        "Choose " + getBookingToday() + " or a later date.";
+
+    if (!tripDateInput.value) {
+        tripDateInput.value = getBookingToday();
+    }
+
+    ["upcoming", "completed", "cancelled"].forEach(renderBookings);
+    renderAvailableTrips();
+
+    document.getElementById("booking-loading").hidden = true;
+
+    if (selectedBookingId) {
+        const details = getPassengerBooking(selectedBookingId);
+
+        if (details) {
+            fillBookingDetails(details);
+        }
+    }
+}
+
+/* Bootstrap supplies the clicked card button as relatedTarget. */
+bookingDetailsModal.addEventListener("show.bs.modal", function (event) {
+    if (!bookingSeed) {
+        event.preventDefault();
+        return;
+    }
+
+    rebuildBookingData();
+
+    const id = event.relatedTarget
+        ? event.relatedTarget.dataset.bookingId
+        : selectedBookingId;
+
+    const details = getPassengerBooking(id);
+
+    if (!details) {
+        event.preventDefault();
+        showBookingMessage("This booking could not be found.");
+        return;
+    }
+
+    selectedBookingId = id;
+    document.getElementById("notification-feedback").classList.add("d-none");
+    fillBookingDetails(details);
+});
+
+tripDetailsModal.addEventListener("show.bs.modal", function (event) {
+    if (!bookingSeed) {
+        event.preventDefault();
+        return;
+    }
+
+    rebuildBookingData();
+
+    const id = event.relatedTarget
+        ? event.relatedTarget.dataset.tripId
+        : null;
+
+    const details = isTripDateValid()
+        ? getAvailableTrips().find(function (item) {
+            return item.trip.id === id;
+        })
+        : null;
+
+    if (!canReserveTrip(details)) {
+        event.preventDefault();
+        showBookingMessage(
+            "This trip is unavailable. Please select another trip."
+        );
+        return;
+    }
+
+    selectedTrip = details.trip;
+
+    const fields = {
+        "selected-route": details.route,
+        "selected-date": formatBookingDate(details.departure, {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }),
+        "selected-time": formatBookingTime(details.departure),
+        "selected-shuttle": details.shuttle + " | " + details.plate,
+        "selected-pickup": details.pickup,
+        "selected-dropoff": details.dropoff,
+        "selected-seats": details.available + " / " + details.trip.capacity
+    };
+
+    Object.keys(fields).forEach(function (id) {
+        document.getElementById(id).textContent = fields[id];
+    });
+
     document.getElementById("trip-booking-error").classList.add("d-none");
     bookTripButton.disabled = false;
 });
 
+tripDetailsModal.addEventListener("hidden.bs.modal", function () {
+    selectedTrip = null;
+});
+
+/* Recheck seats and duplicates immediately before adding a reservation. */
 bookTripButton.addEventListener("click", function () {
     if (!selectedTrip || bookTripButton.disabled) {
         return;
     }
-    const trip = getAvailableTrips().find(function (item) {
-        return item.key === selectedTrip.key;
+
+    rebuildBookingData();
+
+    const details = getAvailableTrips(
+        selectedTrip.date,
+        selectedTrip.routeId
+    ).find(function (item) {
+        return item.trip.id === selectedTrip.id;
     });
-    if (!trip || !isTripDateValid() || trip.departed || trip.available === 0 || trip.alreadyBooked) {
-        const feedback = document.getElementById("trip-booking-error");
-        feedback.textContent = "This trip is no longer available. Close this window and select another trip.";
-        feedback.classList.remove("d-none");
+
+    if (!canReserveTrip(details)) {
+        const error = document.getElementById("trip-booking-error");
+
+        error.textContent =
+            "This trip is no longer available. Please select another trip.";
+        error.classList.remove("d-none");
+
         bookTripButton.disabled = true;
+        renderAvailableTrips();
         return;
     }
 
     bookTripButton.disabled = true;
-    const booking = {
-        id: "AE-" + String(sampleBookings.length + 1).padStart(3, "0"),
-        category: "upcoming",
-        date: trip.date,
-        route: trip.route,
-        departure: trip.departure,
-        arrival: trip.arrival,
-        shuttle: trip.shuttle,
-        plate: trip.plate,
-        vehicle: "Coaster",
-        driver: "Not assigned",
-        pickup: trip.pickup,
-        dropoff: trip.dropoff,
+
+    const numbers = bookingData.bookings.map(function (booking) {
+        const match = /^AE-(\d+)$/.exec(booking.id);
+        return match ? Number(match[1]) : 0;
+    });
+
+    const bookingId =
+        "AE-" + String(Math.max(0, ...numbers) + 1).padStart(3, "0");
+
+    if (!bookingData.trips.some(function (trip) {
+        return trip.id === selectedTrip.id;
+    })) {
+        setBookingChange("trips", selectedTrip);
+    }
+
+    setBookingChange("bookings", {
+        id: bookingId,
+        userId: bookingData.settings.defaultPassengerId,
+        tripId: selectedTrip.id,
         status: "Confirmed",
-        tripStatus: "Scheduled",
-        tripKey: trip.key
-    };
-    sampleBookings.unshift(booking);
+        attendanceConfirmed: false
+    });
+
+    setBookingChange("notices", {
+        id: "booking-created-" + bookingId,
+        userId: bookingData.settings.defaultPassengerId,
+        bookingId: bookingId,
+        type: "booking-created",
+        createdAt: getBookingDemoNow().toISOString()
+    });
+
     selectedTrip = null;
-    renderBookings("upcoming");
-    renderAvailableTrips();
-    bootstrap.Tab.getOrCreateInstance(document.getElementById("upcoming-tab")).show();
+    saveBookingChanges();
+
+    bootstrap.Tab.getOrCreateInstance(
+        document.getElementById("upcoming-tab")
+    ).show();
+
     bootstrap.Modal.getOrCreateInstance(tripDetailsModal).hide();
-    document.getElementById("booking-toast-message").textContent = "Demo booking " + booking.id + " added to Upcoming.";
-    bootstrap.Toast.getOrCreateInstance(document.getElementById("booking-toast")).show();
+
+    document.getElementById("booking-toast-message").textContent =
+        "Demo booking " + bookingId + " added to Upcoming." +
+        (bookingStorageAvailable
+            ? ""
+            : " Changes could not be saved in this browser.");
+
+    bootstrap.Toast.getOrCreateInstance(
+        document.getElementById("booking-toast")
+    ).show();
+});
+
+/* Attendance is handled by notifications.js using data-confirm-booking. */
+document.getElementById("cancel-booking-button").addEventListener("click", function () {
+    if (!bookingSeed || !selectedBookingId) {
+        return;
+    }
+
+    rebuildBookingData();
+    const details = getPassengerBooking(selectedBookingId);
+
+    if (!details ||
+        getBookingCategory(details.booking) !== "upcoming" ||
+        details.departure <= getBookingDemoNow()) {
+        showBookingModalMessage(
+            "This booking can no longer be cancelled.",
+            "warning"
+        );
+        return;
+    }
+
+    if (!window.confirm("Cancel booking " + details.booking.id + "?")) {
+        return;
+    }
+
+    /* Read again after the confirmation dialog to preserve recent tab edits. */
+    rebuildBookingData();
+    const current = getPassengerBooking(selectedBookingId);
+
+    if (!current ||
+        getBookingCategory(current.booking) !== "upcoming" ||
+        current.departure <= getBookingDemoNow()) {
+        refreshBookingsPage();
+        showBookingModalMessage(
+            "This booking can no longer be cancelled.",
+            "warning"
+        );
+        return;
+    }
+
+    setBookingChange("bookings", {
+        id: current.booking.id,
+        status: "Cancelled",
+        attendanceConfirmed: false
+    });
+
+    saveBookingChanges();
+
+    showBookingModalMessage(
+        "Booking " + current.booking.id + " cancelled." +
+        (bookingStorageAvailable
+            ? ""
+            : " This change could not be saved in this browser.")
+    );
 });
 
 document.querySelectorAll(".direction-button").forEach(function (button) {
     button.addEventListener("click", function () {
         currentDirection = button.dataset.direction;
+
         document.querySelectorAll(".direction-button").forEach(function (item) {
             const active = item === button;
             item.classList.toggle("active", active);
             item.setAttribute("aria-pressed", String(active));
         });
-        renderAvailableTrips();
+
+        if (bookingSeed) {
+            refreshBookingsPage();
+        }
     });
 });
 
-tripDateInput.addEventListener("change", renderAvailableTrips);
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-tripDateInput.min = getLocalDateValue(today);
-tripDateInput.value = getLocalDateValue(tomorrow);
-renderAvailableTrips();
+tripDateInput.addEventListener("change", function () {
+    if (bookingSeed) {
+        refreshBookingsPage();
+    }
+});
+
+/* View All and mobile My Bookings links select the Upcoming tab. */
+function handleBookingHash() {
+    if (window.location.hash === "#my-bookings") {
+        bootstrap.Tab.getOrCreateInstance(
+            document.getElementById("upcoming-tab")
+        ).show();
+
+        requestAnimationFrame(function () {
+            document.getElementById("my-bookings").scrollIntoView({
+                block: "start"
+            });
+        });
+    }
+}
+
+window.addEventListener("hashchange", handleBookingHash);
+
+window.addEventListener(
+    "arrows-express-data-updated",
+    refreshBookingsPage
+);
+
+window.addEventListener("storage", function (event) {
+    if (event.key === bookingStorageKey || event.key === null) {
+        refreshBookingsPage();
+    }
+});
+
+window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+        refreshBookingsPage();
+    }
+});
+
+/* Open a booking from a dashboard or notification link after data is ready. */
+fetch("assets/data/mock-data.json")
+    .then(function (response) {
+        if (!response.ok) {
+            throw new Error("Could not load mock-data.json.");
+        }
+
+        return response.json();
+    })
+    .then(function (data) {
+        bookingSeed = data;
+        refreshBookingsPage();
+        handleBookingHash();
+
+        const requestedId = new URLSearchParams(
+            window.location.search
+        ).get("booking");
+
+        if (requestedId) {
+            const details = getPassengerBooking(requestedId);
+
+            if (details) {
+                selectedBookingId = requestedId;
+
+                bootstrap.Tab.getOrCreateInstance(
+                    document.getElementById(
+                        getBookingCategory(details.booking) + "-tab"
+                    )
+                ).show();
+
+                bootstrap.Modal.getOrCreateInstance(
+                    bookingDetailsModal
+                ).show();
+            } else {
+                showBookingMessage(
+                    "This booking could not be found. Select View Details from the list."
+                );
+            }
+        }
+    })
+    .catch(function (error) {
+        console.error("Could not load booking data:", error);
+        bookingSeed = null;
+
+        document.getElementById("booking-loading").hidden = false;
+        document.getElementById("booking-loading").textContent =
+            "Unable to load booking data.";
+
+        showAvailableTripMessage(
+            "Unable to load trips. Please reload the page."
+        );
+
+        showBookingMessage(
+            "Unable to load bookings. Please reload the page.",
+            "danger"
+        );
+    });
+

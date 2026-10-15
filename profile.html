@@ -36,6 +36,14 @@
                 <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
                     <i class="bi bi-geo-alt me-3 fs-5"></i> Routes & Maps
                 </a>
+                <a href="notifications.html"
+                class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                data-notification-link>
+                    <i class="bi bi-bell me-3 fs-5" aria-hidden="true"></i>
+                    Notifications
+                    <span class="badge bg-success-subtle text-success rounded-pill ms-auto"
+                        data-notification-count hidden>0</span>
+                </a>
                 <a href="profile.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
                     <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
                 </a>
@@ -56,12 +64,21 @@
         <main class="profile-main flex-grow-1 p-4 px-xl-5">
             <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                 <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
-                <div class="ms-auto d-flex align-items-center gap-2">
+                <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
+                    <!-- MOBILE NOTIFICATIONS -->
+                    <a href="notifications.html"
+                       class="notification-bell btn btn-white border rounded-circle d-lg-none"
+                       aria-label="Notifications"
+                       data-notification-link>
+                        <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                        <span class="notification-count badge bg-success rounded-pill"
+                              data-notification-count hidden>0</span>
+                    </a>
                     <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
                         </span>
-                        <span id="profile-header-name" class="fw-semibold me-2">Juan Dela Cruz</span>
+                        <span id="profile-header-name" class="fw-semibold me-2" data-passenger-name>Loading...</span>
                         <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
                     </a>
                     <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
@@ -96,22 +113,22 @@
                         <p class="small text-secondary mb-3">
                             ID Number:
                             <span id="profile-summary-id"
-                                  class="fw-semibold text-dlsu-green">12400001</span>
+                                  class="fw-semibold text-dlsu-green">Loading...</span>
                         </p>
 
                         <h2 id="profile-summary-name"
                             class="fs-5 fw-bold text-dlsu-green mb-2">
-                            Juan Dela Cruz
+                            Loading...
                         </h2>
 
                         <p id="profile-summary-email"
                            class="small text-secondary mb-3">
-                            juan_delacruz@dlsu.edu.ph
+                            Loading...
                         </p>
 
                         <span id="profile-summary-type"
                               class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
-                            Student
+                            Loading...
                         </span>
 
                         <hr class="opacity-25 my-4">
@@ -119,7 +136,7 @@
                         <p class="small text-secondary mb-1">Campus</p>
                         <p id="profile-summary-campus"
                            class="fw-semibold text-dlsu-green mb-0">
-                            Manila
+                            Loading...
                         </p>
                     </div>
                 </section>
@@ -315,7 +332,7 @@
 
                                     <p id="profile-document-name"
                                        class="small text-dlsu-green mb-2 text-break">
-                                        juan-delacruz-eaf.pdf
+                                        Loading...
                                     </p>
 
                                     <div id="profile-document-edit" class="d-none">
@@ -395,12 +412,6 @@
                             </div>
                         </form>
                     </div>
-
-                    <p class="small text-secondary mt-3 mb-0">
-                        Phase 1 demo: profile details are saved only in this
-                        browser. Mock account and document details are provided
-                        for demonstration.
-                    </p>
                 </section>
             </div>
         </main>
@@ -423,7 +434,6 @@
             <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i><span>My Bookings</span>
         </a>
 
-        </a>
         <a href="schedules.html"
         class="dashboard-mobile-item text-decoration-none text-muted">
             <i class="bi bi-clock fs-5" aria-hidden="true"></i><span>Schedules</span>
@@ -437,6 +447,7 @@
 </nav>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/notifications.js"></script>
 <script src="assets/js/profile.js"></script>
 </body>
 </html>

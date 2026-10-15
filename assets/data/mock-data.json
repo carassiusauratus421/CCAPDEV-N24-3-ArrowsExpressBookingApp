@@ -1,0 +1,602 @@
+{
+    "schemaVersion": 1,
+    "settings": {
+        "demoNow": "2026-10-15T07:00:00+08:00",
+        "timeZone": "Asia/Manila",
+        "confirmationMinutes": 60,
+        "defaultPassengerId": "passenger-1",
+        "defaultDriverUserId": "driver-user-1",
+        "serviceName": "Arrows Express Line 1"
+    },
+    "users": [
+        {
+            "id": "passenger-1",
+            "role": "passenger",
+            "firstName": "Juan",
+            "lastName": "Dela Cruz",
+            "email": "juan_delacruz@dlsu.edu.ph",
+            "idNumber": "12400001",
+            "passengerType": "student",
+            "sex": "male",
+            "collegeDepartment": "College of Computer Studies",
+            "contactNumber": "09123456789",
+            "campus": "Manila",
+            "verificationDocument": "juan-delacruz-eaf.pdf"
+        },
+        {
+            "id": "driver-user-1",
+            "role": "driver",
+            "firstName": "Roberto",
+            "lastName": "San Jose",
+            "email": "roberto_sanjose@dlsu.edu.ph"
+        }
+    ],
+    "demoCredentials": [
+        {
+            "userId": "passenger-1",
+            "password": "Arrows123!"
+        },
+        {
+            "userId": "driver-user-1",
+            "password": "Arrows123!"
+        }
+    ],
+    "drivers": [
+        {
+            "id": "driver-1",
+            "userId": "driver-user-1",
+            "driverNumber": "DRV-001",
+            "employeeNumber": "8743",
+            "verified": true,
+            "vehicleId": "vehicle-1",
+            "status": "active",
+            "updatedAt": null
+        }
+    ],
+    "driverStatuses": {
+        "on-departure": {
+            "label": "On Departure",
+            "description": "Preparing the assigned vehicle for departure.",
+            "badgeClass": "bg-primary-subtle text-primary"
+        },
+        "active": {
+            "label": "Active",
+            "description": "Available for assigned shuttle duties.",
+            "badgeClass": "bg-success-subtle text-success"
+        },
+        "inactive": {
+            "label": "Inactive",
+            "description": "Temporarily unavailable for shuttle duties.",
+            "badgeClass": "bg-warning-subtle text-dark"
+        },
+        "off-duty": {
+            "label": "Off-duty",
+            "description": "Not currently on duty.",
+            "badgeClass": "bg-secondary-subtle text-secondary"
+        }
+    },
+    "vehicles": [
+        {
+            "id": "vehicle-1",
+            "plate": "NCM 1234",
+            "type": "Coaster",
+            "name": "DLSU Shuttle 1",
+            "capacity": 39
+        },
+        {
+            "id": "vehicle-2",
+            "plate": "DEF 5678",
+            "type": "Coaster",
+            "name": "DLSU Shuttle 2",
+            "capacity": 39
+        },
+        {
+            "id": "vehicle-3",
+            "plate": "GHI 9012",
+            "type": "Coaster",
+            "name": "DLSU Shuttle 3",
+            "capacity": 39
+        },
+        {
+            "id": "vehicle-4",
+            "plate": "JKL 3456",
+            "type": "Coaster",
+            "name": "DLSU Shuttle 4",
+            "capacity": 39
+        }
+    ],
+    "routes": [
+        {
+            "id": "manila-laguna",
+            "name": "Manila → Laguna",
+            "pickupCampus": "DLSU Manila",
+            "pickup": "Southgate (LS Bldg.)",
+            "dropoff": "DLSU Laguna Campus"
+        },
+        {
+            "id": "laguna-manila",
+            "name": "Laguna → Manila",
+            "pickupCampus": "DLSU Laguna",
+            "pickup": "East Canopy (MRR Bldg.)",
+            "dropoff": "DLSU Manila"
+        }
+    ],
+    "weeklySchedules": {
+        "weekday": {
+            "manila-laguna": [
+                {
+                    "id": "weekday-manila-laguna-1",
+                    "departureMinutes": 360,
+                    "durationMinutes": 120,
+                    "capacity": 65,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-2",
+                    "departureMinutes": 450,
+                    "durationMinutes": 120,
+                    "capacity": 65,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-3",
+                    "departureMinutes": 570,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-4",
+                    "departureMinutes": 660,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-5",
+                    "departureMinutes": 780,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-6",
+                    "departureMinutes": 870,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-7",
+                    "departureMinutes": 930,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-8",
+                    "departureMinutes": 1050,
+                    "durationMinutes": 120,
+                    "capacity": 65,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-9",
+                    "departureMinutes": 1095,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-manila-laguna-10",
+                    "departureMinutes": 1185,
+                    "durationMinutes": 120,
+                    "capacity": 13,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                }
+            ],
+            "laguna-manila": [
+                {
+                    "id": "weekday-laguna-manila-1",
+                    "departureMinutes": 360,
+                    "durationMinutes": 120,
+                    "capacity": 52,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-2",
+                    "departureMinutes": 420,
+                    "durationMinutes": 120,
+                    "capacity": 52,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-3",
+                    "departureMinutes": 540,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-4",
+                    "departureMinutes": 660,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-5",
+                    "departureMinutes": 780,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-6",
+                    "departureMinutes": 870,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-7",
+                    "departureMinutes": 930,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-8",
+                    "departureMinutes": 1050,
+                    "durationMinutes": 120,
+                    "capacity": 65,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "weekday-laguna-manila-9",
+                    "departureMinutes": 1095,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                }
+            ]
+        },
+        "saturday": {
+            "manila-laguna": [
+                {
+                    "id": "saturday-manila-laguna-1",
+                    "departureMinutes": 360,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-2",
+                    "departureMinutes": 450,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-3",
+                    "departureMinutes": 540,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-4",
+                    "departureMinutes": 660,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-5",
+                    "departureMinutes": 780,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-6",
+                    "departureMinutes": 870,
+                    "durationMinutes": 120,
+                    "capacity": 13,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-7",
+                    "departureMinutes": 930,
+                    "durationMinutes": 120,
+                    "capacity": 13,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-manila-laguna-8",
+                    "departureMinutes": 1050,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                }
+            ],
+            "laguna-manila": [
+                {
+                    "id": "saturday-laguna-manila-1",
+                    "departureMinutes": 360,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-2",
+                    "departureMinutes": 420,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-3",
+                    "departureMinutes": 540,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-4",
+                    "departureMinutes": 660,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-5",
+                    "departureMinutes": 780,
+                    "durationMinutes": 120,
+                    "capacity": 26,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-6",
+                    "departureMinutes": 870,
+                    "durationMinutes": 120,
+                    "capacity": 13,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-7",
+                    "departureMinutes": 930,
+                    "durationMinutes": 120,
+                    "capacity": 13,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                },
+                {
+                    "id": "saturday-laguna-manila-8",
+                    "departureMinutes": 1050,
+                    "durationMinutes": 120,
+                    "capacity": 39,
+                    "otherReservations": 0,
+                    "vehicleId": null,
+                    "driverId": null
+                }
+            ]
+        }
+    },
+    "trips": [
+        {
+            "id": "sample-trip-1",
+            "date": "2026-10-15",
+            "routeId": "manila-laguna",
+            "departureMinutes": 480,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-1",
+            "driverId": "driver-1",
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "On Time"
+        },
+        {
+            "id": "sample-trip-2",
+            "date": "2026-10-17",
+            "routeId": "laguna-manila",
+            "departureMinutes": 960,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-2",
+            "driverId": null,
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "Scheduled"
+        },
+        {
+            "id": "sample-trip-3",
+            "date": "2026-10-19",
+            "routeId": "manila-laguna",
+            "departureMinutes": 480,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-3",
+            "driverId": null,
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "Scheduled"
+        },
+        {
+            "id": "sample-trip-4",
+            "date": "2026-10-22",
+            "routeId": "laguna-manila",
+            "departureMinutes": 960,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-4",
+            "driverId": null,
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "Scheduled"
+        },
+        {
+            "id": "sample-trip-5",
+            "date": "2026-10-24",
+            "routeId": "manila-laguna",
+            "departureMinutes": 420,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-2",
+            "driverId": null,
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "Scheduled"
+        },
+        {
+            "id": "sample-trip-6",
+            "date": "2026-10-07",
+            "routeId": "laguna-manila",
+            "departureMinutes": 960,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-1",
+            "driverId": "driver-1",
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "Arrived"
+        },
+        {
+            "id": "sample-trip-7",
+            "date": "2026-10-09",
+            "routeId": "manila-laguna",
+            "departureMinutes": 480,
+            "durationMinutes": 120,
+            "vehicleId": "vehicle-3",
+            "driverId": null,
+            "capacity": 39,
+            "otherReservations": 20,
+            "tripStatus": "Not applicable"
+        }
+    ],
+    "bookings": [
+        {
+            "id": "AE-001",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-1",
+            "status": "Confirmed",
+            "attendanceConfirmed": false
+        },
+        {
+            "id": "AE-002",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-2",
+            "status": "Confirmed",
+            "attendanceConfirmed": false
+        },
+        {
+            "id": "AE-003",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-3",
+            "status": "Confirmed",
+            "attendanceConfirmed": false
+        },
+        {
+            "id": "AE-004",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-4",
+            "status": "Confirmed",
+            "attendanceConfirmed": false
+        },
+        {
+            "id": "AE-005",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-5",
+            "status": "On Hold",
+            "attendanceConfirmed": false
+        },
+        {
+            "id": "AE-006",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-6",
+            "status": "Completed",
+            "attendanceConfirmed": false
+        },
+        {
+            "id": "AE-007",
+            "userId": "passenger-1",
+            "tripId": "sample-trip-7",
+            "status": "Cancelled",
+            "attendanceConfirmed": false
+        }
+    ],
+    "notices": [
+        {
+            "id": "booking-created-AE-001",
+            "userId": "passenger-1",
+            "bookingId": "AE-001",
+            "type": "booking-created",
+            "createdAt": "2026-10-14T16:30:00+08:00"
+        }
+    ],
+    "readNotificationIds": [
+        "booking-created-AE-001"
+    ]
+}

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+
     <title>Term 1 AY26-27 Schedule - Arrows Express Booking App</title>
 </head>
 <body class="dashboard-body bookings-body bg-white">
@@ -21,14 +22,22 @@
                     <a href="home.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
                         <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i> Home
                     </a>
-                    <a href="my-bookings.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
+                    <a href="my-bookings.html#my-bookings" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
                         <i class="bi bi-calendar-event me-3 fs-5"></i> My Bookings
                     </a>
-                    <a href="schedules.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
+                    <a href="schedules.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;" aria-current="page">
                         <i class="bi bi-clock me-3 fs-5" aria-hidden="true"></i> Schedules
                     </a>
                     <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
                         <i class="bi bi-geo-alt me-3 fs-5"></i> Routes & Maps
+                    </a>
+                    <a href="notifications.html"
+                    class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                    data-notification-link>
+                        <i class="bi bi-bell me-3 fs-5" aria-hidden="true"></i>
+                        Notifications
+                        <span class="badge bg-success-subtle text-success rounded-pill ms-auto"
+                            data-notification-count hidden>0</span>
                     </a>
                     <a href="profile.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
                         <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
@@ -47,12 +56,20 @@
             <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
                 <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                     <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
-                    <div class="ms-auto d-flex align-items-center gap-2">
+                    <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
+                        <a href="notifications.html"
+                           class="notification-bell btn btn-white border rounded-circle d-lg-none"
+                           aria-label="Notifications"
+                           data-notification-link>
+                            <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                            <span class="notification-count badge bg-success rounded-pill"
+                                  data-notification-count hidden>0</span>
+                        </a>
                         <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                             <span class="dashboard-user-avatar me-2">
                                 <i class="bi bi-person-fill" aria-hidden="true"></i>
                             </span>
-                            <span class="fw-semibold me-2">Juan Dela Cruz</span>
+                            <span class="fw-semibold me-2" data-passenger-name>Loading...</span>
                             <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
                         </a>
                         <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
@@ -73,10 +90,10 @@
                                 <span class="form-label fw-semibold d-block" id="direction-label">Direction</span>
                                 <div class="d-flex gap-2" role="group" aria-labelledby="direction-label">
                                     <button type="button" class="direction-button active" data-direction="manila-laguna" aria-pressed="true">
-                                        <i class="bi bi-bus-front me-2" aria-hidden="true"></i> Manila → Laguna
+                                        <i class="bi bi-bus-front me-2" aria-hidden="true"></i> <span data-route-name="manila-laguna">Loading...</span>
                                     </button>
                                     <button type="button" class="direction-button" data-direction="laguna-manila" aria-pressed="false">
-                                        <i class="bi bi-bus-front me-2" aria-hidden="true"></i> Laguna → Manila
+                                        <i class="bi bi-bus-front me-2" aria-hidden="true"></i> <span data-route-name="laguna-manila">Loading...</span>
                                     </button>
                                 </div>
                             </div>
@@ -103,10 +120,10 @@
                                 <div class="d-flex gap-3">
                                     <i class="bi bi-calendar-event fs-4" aria-hidden="true"></i>
                                     <div>
-                                        <h3 class="fs-6 fw-semibold mb-1">Reminders</h3>
+                                        <h3 id="trip-information-heading" class="fs-6 fw-semibold mb-1">Reminders</h3>
                                         <ul class="small ps-3 mb-0">
                                             <li>Please arrive at least 10 minutes before departure.</li>
-                                            <li>Confirm your booking 60 minutes before your trip to avoid forfeiture.</li>
+                                            <li>Confirm your attendance when a reminder appears <span id="schedule-confirmation-minutes">...</span> minutes before departure.</li>
                                             <li>Arrival times may vary depending on traffic conditions.</li>
                                             <li>Eating inside the shuttle is prohibited.</li>
                                         </ul>
@@ -116,7 +133,6 @@
                         </aside>
                     </section>
                 </div>
-                
 
                 <h2 class="fs-5 fw-bold text-dlsu-green mb-3" id="available-trips-heading">Available Trips</h2>
                 <div class="available-trips-panel">
@@ -149,18 +165,18 @@
                 <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i><span>Home</span>
             </a>
 
-            <a href="#book-a-trip" class="dashboard-mobile-item text-decoration-none text-muted">
+            <a href="my-bookings.html" class="dashboard-mobile-item text-decoration-none text-muted">
                 <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i><span>Book</span>
             </a>
 
-            <a href="my-bookings.html"
-            class="dashboard-mobile-item text-decoration-none text-muted"
-            aria-current="page">
+            <a href="my-bookings.html#my-bookings"
+            class="dashboard-mobile-item text-decoration-none text-muted">
                 <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i><span>My Bookings</span>
             </a>
-            
+
             <a href="schedules.html"
-            class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold">
+            class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold"
+            aria-current="page">
                 <i class="bi bi-clock fs-5" aria-hidden="true"></i><span>Schedules</span>
             </a>
 
@@ -211,6 +227,7 @@
     </div>
 
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/notifications.js"></script>
     <script src="assets/js/schedules.js"></script>
 </body>
 </html>

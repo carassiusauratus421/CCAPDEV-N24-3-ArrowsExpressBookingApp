@@ -171,7 +171,6 @@
 
 /* ========================================================
    SIGNUP PAGE
-   Append this block to assets/css/styles.css.
    ======================================================== */
 .signup-body {
     background-color: #ffffff;
@@ -210,7 +209,6 @@
 
 /* ========================================================
    FORGOT PASSWORD PAGE
-   Append this block to assets/css/styles.css.
    ======================================================== */
 .forgot-password-body {
     background-color: #ffffff;
@@ -245,7 +243,6 @@
 
 /* ========================================================
    MY BOOKINGS PAGE
-   Booking layout aligned with the dashboard.
    ======================================================== */
 @font-face {
     font-family: "Bookings Inter";
@@ -701,8 +698,6 @@
 
 /* ========================================================
    SHARED PAGE LAYOUT
-   Append once at the bottom of assets/css/styles.css.
-   Dashboard dimensions are the reference for passenger pages.
    ======================================================== */
 .dashboard-body {
     padding-bottom: 0;
@@ -861,4 +856,96 @@
         max-height: 30px;
         max-width: 110px;
     }
+}
+
+/* ========================================================
+   PASSENGER NOTIFICATIONS
+   ======================================================== */
+
+.notification-header-actions {
+    max-width: 100%;
+}
+
+.notification-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    color: var(--dlsu-green);
+}
+
+.notification-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    font-size: 0.6rem;
+}
+
+.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+}
+
+.notification-copy {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.notification-reminder-title {
+    font-size: 0.9rem;
+}
+
+.notification-reminder-text {
+    font-size: 0.75rem;
+}
+
+.notification-record {
+    border-left: 4px solid transparent !important;
+}
+
+.notification-record.is-unread {
+    border-left-color: var(--dlsu-green) !important;
+    background-color: var(--dlsu-light);
+}
+
+.notification-record dd {
+    overflow-wrap: anywhere;
+}
+
+.notification-actions .btn {
+    white-space: normal;
+}
+
+@media (max-width: 575.98px) {
+    .notification-actions .btn {
+        width: 100%;
+    }
+}
+
+/* ========================================================
+   DRIVER DASHBOARD
+   ======================================================== */
+.driver-detail-list dd {
+    overflow-wrap: anywhere;
+    margin-bottom: 1rem;
+}
+
+#driver-details,
+#assigned-vehicle,
+#driver-status {
+    scroll-margin-top: 1rem;
+}
+
+.driver-body .btn-dlsu-green {
+    --bs-btn-disabled-bg: var(--dlsu-green);
+    --bs-btn-disabled-color: #ffffff;
+    --bs-btn-disabled-border-color: var(--dlsu-green);
 }
