@@ -17,6 +17,14 @@ const demoDriverAccount = {
     role: "driver"
 };
 
+const demoAdminAccount = {
+    email: "adrian.ming@dlsu.edu.ph",
+    password: "Arrows123!",
+    firstName: "Adrian",
+    lastName: "Ming",
+    role: "admin"
+}
+
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -93,9 +101,16 @@ function completeMockLogin(message, account = demoAccount) {
     showMessage(message, "success");
 
     window.setTimeout(function () {
-        window.location.href = account.role === "driver"
-            ? "driver-home.html"
-            : "home.html";
+
+        switch (account.role) {
+            case "passenger":   window.location.href = "home.html"; break;
+            case "driver":      window.location.href = "driver-home.html"; break;
+            case "admin":       window.location.href = "admin.html"; break;
+        }
+
+        // window.location.href = account.role === "driver"
+        //     ? "driver-home.html"
+        //     : "home.html";
     }, 800);
 }
 
@@ -106,7 +121,7 @@ loginForm.addEventListener("submit", function (event) {
         return;
     }
 
-    const account = [demoAccount, demoDriverAccount].find(function (account) {
+    const account = [demoAccount, demoDriverAccount, demoAdminAccount].find(function (account) {
         return account.email === emailInput.value &&
                account.password === passwordInput.value;
     });
