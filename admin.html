@@ -1,173 +1,545 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Admin Dashboard - Arrows Express Booking App</title>
+
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Admin Dashboard - Arrows Express Booking App</title>
 </head>
+
 <body class="dashboard-body bookings-body bg-white">
 
 <div class="container-fluid p-0">
     <div class="d-flex bookings-layout">
+
         <!-- DESKTOP SIDEBAR -->
         <aside class="sidebar bookings-sidebar d-none d-lg-flex flex-column border-end p-3 pt-4">
+
             <div class="mb-4 px-3">
-                <img src="assets/images/logo.png" alt="DLSU Logo" class="img-fluid bookings-logo">
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="img-fluid bookings-logo">
             </div>
 
-            <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Passenger navigation">
-                <a href="home.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                    <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i> Home
+            <nav class="nav flex-column gap-1 mb-auto px-2"
+                 aria-label="Admin navigation">
+
+                <a href="#dashboard"
+                   class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-grid me-3 fs-5" aria-hidden="true"></i>
+                    Dashboard
                 </a>
-                <a href="#my-bookings" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
-                    <i class="bi bi-calendar-event me-3 fs-5" aria-hidden="true"></i> My Bookings
+
+                <a href="#slots"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-clock me-3 fs-5" aria-hidden="true"></i>
+                    Trip Slots
                 </a>
-                <a href="schedules.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
-                    <i class="bi bi-clock me-3 fs-5"></i> Schedules
+
+                <a href="#bookings"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-calendar-check me-3 fs-5" aria-hidden="true"></i>
+                    Bookings
                 </a>
-                <a href="routes-and-maps.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" style="font-size: 0.9rem;">
-                    <i class="bi bi-geo-alt me-3 fs-5"></i> Routes & Maps
+
+                <a href="#profiles"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-people me-3 fs-5" aria-hidden="true"></i>
+                    Profiles
                 </a>
-                <a href="profile.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                    <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i> Profile
+
+                <a href="#vehicles"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
+                    <i class="bi bi-bus-front me-3 fs-5" aria-hidden="true"></i>
+                    Vehicles
                 </a>
+
+                <button type="button"
+                        class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+                        id="themeToggle"
+                        aria-pressed="false">
+                    <i class="bi bi-moon me-3 fs-5"
+                       id="themeIcon"
+                       aria-hidden="true"></i>
+                    <span id="themeText">Dark Mode</span>
+                </button>
             </nav>
 
             <div class="px-2">
                 <hr class="my-3 opacity-25">
-                <a href="index.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
-                    <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i> Log Out
+
+                <a href="index.html"
+                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
+                    <i class="bi bi-box-arrow-right me-3 fs-5"
+                       aria-hidden="true"></i>
+                    Log Out
                 </a>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- MAIN CONTENT -->
         <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
-            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
-                <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
+            <!-- HEADER -->
+            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="dashboard-logo d-lg-none">
+
                 <div class="ms-auto d-flex align-items-center gap-2">
-                    <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                    <span class="dashboard-account btn btn-white border rounded-pill py-1 px-3 d-flex align-items-center shadow-sm">
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
                         </span>
-                        <span class="fw-semibold me-2">Admin</span>
-                        <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
-                    </a>
-                    <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
-                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-                    </a>
+                        <span class="fw-semibold">Administrator</span>
+                    </span>
                 </div>
             </header>
 
-            <h1 class="fs-3 fw-bold text-dlsu-green mb-1">Dashboard</h1>
-            <p class="text-secondary mb-4">Manage shuttle operations, drivers, passengers, and bookings.</p>
-            <div id="booking-message" class="alert d-none" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div id="dashboard">
+                <h1 class="fs-3 fw-bold text-dlsu-green mb-1">
+                    Admin Dashboard
+                </h1>
 
-            <div class="row mb-4 g-4">
-                <div class="col-12 col-xl-4">
-                    <div class="quick-action-card rounded-4 p-3">
-                        Total Shuttles: 4 <br>
-                        3 Active <br>
-                        1 in Maintenance
-                    </div>
-                </div>
-                <div class="col-12 col-xl-4">
-                    <div class="quick-action-card rounded-4 p-3">
-                        Total Shuttles: 4 <br>
-                        3 On Duty <br>
-                        1 Off Duty
-                    </div>
-                </div>
-                <div class="col-12 col-xl-4">
-                    <div class="quick-action-card rounded-4 p-3">
-                        Total Passengers: 67
-                    </div>
-                </div>
+                <p class="text-secondary mb-4">
+                    Manage shuttle bookings, trip availability, profiles, and vehicles.
+                </p>
+
+                <div id="message"
+                     class="alert d-none"
+                     role="status"
+                     aria-live="polite"></div>
             </div>
 
-            <div class="row mb-4 g-4">
-                <h2 class="fs-5 fw-bold text-dlsu-green mb-3">Shuttles</h2>
-                    <div>
-                        <table class="table align-middle mb-0 ">
-                            <thead>
-                                <tr><th scope="col">Shuttle Name</th><th scope="col">Plate Number</th><th scope="col">Route</th><th scope="col">Capacity</th><th scope="col">Driver</th><th scope="col">Status</th><th scope="col">Actions</th></tr>
-                            </thead>
-                            <tbody id="shuttle-list">
-                                
-                            </tbody>
-                        </table>
-                    </div>
-            </div>
+            <!-- VEHICLES -->
+            <section id="vehicles" class="mb-5"
+                     aria-labelledby="vehicles-heading">
 
-            <div class="row mb-4 g-4">
-                <div class="col-12 col-xl-6">
-                    <h2 class="fs-5 fw-bold text-dlsu-green mb-3">Drivers</h2>
-                    <div>
-                        <table class="table align-middle mb-0 ">
-                            <thead>
-                                <tr><th scope="col">Name</th><th scope="col">Contact Number</th><th scope="col">Assigned Shuttle</th><th scope="col">Status</th><th scope="col">Actions</th></tr>
-                            </thead>
-                            <tbody id="driver-list">
-                                
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="mb-3">
+                    <h2 class="fs-5 fw-bold text-dlsu-green mb-1"
+                        id="vehicles-heading">
+                        Vehicle Management
+                    </h2>
+                    <p class="small text-secondary mb-0">
+                        Add, edit, and remove shuttle vehicles.
+                    </p>
                 </div>
-                <div class="col-12 col-xl-6">
-                    <h2 class="fs-5 fw-bold text-dlsu-green mb-3">Recent Bookings</h2>
-                    <div>
-                        <table class="table align-middle mb-0 ">
-                            <thead>
-                                <tr><th scope="col">Passenger</th><th scope="col">Route</th><th scope="col">Schedule</th><th scope="col">Status</th><th scope="col">Actions</th></tr>
-                            </thead>
-                            <tbody>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
-            <hr>
+                <form id="vehicle-form"
+                      class="card border-0 shadow-sm mb-4">
+
+                    <div class="card-body p-3 p-md-4">
+                        <h3 class="fs-6 fw-bold mb-3">Vehicle Information</h3>
+
+                        <input type="hidden" id="vehicle-id">
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <label for="vehicle-name" class="form-label fw-semibold">
+                                    Vehicle Name
+                                </label>
+                                <input type="text"
+                                       id="vehicle-name"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <label for="vehicle-plate" class="form-label fw-semibold">
+                                    Plate Number
+                                </label>
+                                <input type="text"
+                                       id="vehicle-plate"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <label for="vehicle-model" class="form-label fw-semibold">
+                                    Model / Type
+                                </label>
+                                <input type="text"
+                                       id="vehicle-model"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <label for="vehicle-capacity" class="form-label fw-semibold">
+                                    Capacity
+                                </label>
+                                <input type="number"
+                                       id="vehicle-capacity"
+                                       class="form-control"
+                                       min="1"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-dlsu-green">
+                                <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+                                Save Vehicle
+                            </button>
+
+                            <button type="button"
+                                    id="vehicle-cancel"
+                                    class="btn btn-light border">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="table-responsive bg-white rounded-3 border">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Vehicle Name</th>
+                                <th scope="col">Plate Number</th>
+                                <th scope="col">Model / Type</th>
+                                <th scope="col">Capacity</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicle-list">
+                            <tr>
+                                <td colspan="5" class="text-secondary p-3">
+                                    Loading vehicles...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- PROFILES -->
+            <section id="profiles" class="mb-5"
+                     aria-labelledby="profiles-heading">
+
+                <div class="mb-3">
+                    <h2 class="fs-5 fw-bold text-dlsu-green mb-1"
+                        id="profiles-heading">
+                        Profile Management
+                    </h2>
+                    <p class="small text-secondary mb-0">
+                        Manage passenger and driver information.
+                    </p>
+                </div>
+
+                <form id="profile-form"
+                      class="card border-0 shadow-sm mb-4">
+
+                    <div class="card-body p-3 p-md-4">
+                        <h3 class="fs-6 fw-bold mb-3">Profile Information</h3>
+
+                        <input type="hidden" id="profile-id">
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4 col-xl-2">
+                                <label for="profile-role" class="form-label fw-semibold">
+                                    Role
+                                </label>
+                                <select id="profile-role"
+                                        class="form-select"
+                                        required>
+                                    <option value="passenger">Passenger</option>
+                                    <option value="driver">Driver</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-4 col-xl-2">
+                                <label for="profile-first-name" class="form-label fw-semibold">
+                                    First Name
+                                </label>
+                                <input type="text"
+                                       id="profile-first-name"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-12 col-md-4 col-xl-2">
+                                <label for="profile-last-name" class="form-label fw-semibold">
+                                    Last Name
+                                </label>
+                                <input type="text"
+                                       id="profile-last-name"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <label for="profile-email" class="form-label fw-semibold">
+                                    Email
+                                </label>
+                                <input type="email"
+                                       id="profile-email"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <label for="profile-contact" class="form-label fw-semibold">
+                                    Contact Number
+                                </label>
+                                <input type="number"
+                                       id="profile-contact"
+                                       class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-dlsu-green">
+                                <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+                                Save Profile
+                            </button>
+
+                            <button type="button"
+                                    id="profile-cancel"
+                                    class="btn btn-light border">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="table-responsive bg-white rounded-3 border">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Contact</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profile-list">
+                            <tr>
+                                <td colspan="6" class="text-secondary p-3">
+                                    Loading profiles...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- BOOKINGS -->
+            <section id="bookings" class="mb-5"
+                     aria-labelledby="bookings-heading">
+
+                <h2 class="fs-5 fw-bold text-dlsu-green mb-1"
+                    id="bookings-heading">
+                    Booking Management
+                </h2>
+                <p class="small text-secondary mb-3">
+                    Review bookings and update their status.
+                </p>
+
+                <div class="table-responsive bg-white rounded-3 border">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Booking ID</th>
+                                <th scope="col">Passenger</th>
+                                <th scope="col">Trip</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booking-list">
+                            <tr>
+                                <td colspan="5" class="text-secondary p-3">
+                                    Loading bookings...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- TRIP SLOTS -->
+            <section id="slots" class="mb-5"
+                     aria-labelledby="slots-heading">
+
+                <h2 class="fs-5 fw-bold text-dlsu-green mb-1"
+                    id="slots-heading">
+                    Trip Slot Management
+                </h2>
+                <p class="small text-secondary mb-3">
+                    View scheduled trips and update their reservation capacity.
+                </p>
+
+                <div class="table-responsive bg-white rounded-3 border">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Route</th>
+                                <th scope="col">Departure</th>
+                                <th scope="col">Vehicle</th>
+                                <th scope="col">Capacity</th>
+                                <th scope="col">Reserved</th>
+                                <th scope="col">Available</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="slot-list">
+                            <tr>
+                                <td colspan="8" class="text-secondary p-3">
+                                    Loading trips...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer class="border-top pt-3 mt-5">
+                <p class="small text-secondary mb-0">
+                    Arrows Express Booking App · Admin Panel
+                </p>
+            </footer>
+
         </main>
     </div>
 </div>
 
 <!-- MOBILE NAVIGATION -->
 <nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
-     aria-label="Mobile passenger navigation">
+     aria-label="Mobile admin navigation">
+
     <div class="d-flex justify-content-around align-items-center py-2">
-        <a href="home.html" class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i><span>Home</span>
+
+        <a href="#dashboard"
+           class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold">
+            <i class="bi bi-grid fs-5" aria-hidden="true"></i>
+            <span>Dashboard</span>
         </a>
 
-        <a href="#book-a-trip" class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i><span>Book</span>
+        <a href="#slots"
+           class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-clock fs-5" aria-hidden="true"></i>
+            <span>Slots</span>
         </a>
 
-        <a href="#my-bookings"
-           class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold"
-           aria-current="page">
-            <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i><span>My Bookings</span>
-        </a>
-        
-        <a href="schedules.html"
-        class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-clock fs-5" aria-hidden="true"></i><span>Schedules</span>
+        <a href="#bookings"
+           class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-calendar-check fs-5" aria-hidden="true"></i>
+            <span>Bookings</span>
         </a>
 
-        <a href="routes-and-maps.html"
-        class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i><span>Routes</span>
+        <a href="#profiles"
+           class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-people fs-5" aria-hidden="true"></i>
+            <span>Profiles</span>
         </a>
+
+        <a href="#vehicles"
+           class="dashboard-mobile-item text-decoration-none text-muted">
+            <i class="bi bi-bus-front fs-5" aria-hidden="true"></i>
+            <span>Vehicles</span>
+        </a>
+
     </div>
 </nav>
+
+<!-- CONFIRM MODAL -->
+<div class="modal fade" id="confirmModal" tabindex="-1"
+     aria-labelledby="confirmModalTitle" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="confirmModalTitle">
+                    Confirm Action
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" id="confirmModalMessage">
+                Are you sure you want to continue?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                        id="confirmModalButton">
+                    Confirm
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- CAPACITY EDIT MODAL -->
+<div class="modal fade" id="capacityModal" tabindex="-1"
+    aria-labelledby="capacityModalTitle" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="capacityModalTitle">
+                    Edit Trip Capacity
+                </h5>
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <label for="newCapacity" class="form-label">
+                    New Capacity
+                </label>
+
+                <input type="number" class="form-control"
+                    id="newCapacity" min="1" required>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-success"
+                    id="saveCapacity">
+                    Save Changes
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/theme-toggle.js"></script>
+
 </body>
 </html>
