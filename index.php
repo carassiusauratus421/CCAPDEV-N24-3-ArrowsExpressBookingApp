@@ -67,7 +67,7 @@
                         <img src="assets/images/logo.png" alt="De La Salle University" class="logo-slot d-lg-none">
                         <small class="ms-auto text-end">
                             Don't have an account?
-                            <a href="signup.html" class="fw-semibold login-text-button">Sign up</a>
+                            <a href="signup.php" class="fw-semibold login-text-button">Sign up</a>
                         </small>
                     </div>
 
@@ -102,7 +102,7 @@
                                 </div>
 
                                 <div class="text-end mb-3">
-                                    <a href="forgot-password.html" class="small login-text-button">Forgot password?</a>
+                                    <a href="forgot-password.php" class="small login-text-button">Forgot password?</a>
                                 </div>
 
                                 <button type="submit" id="login-button" class="btn btn-success w-100">Log In</button>

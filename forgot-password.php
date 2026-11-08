@@ -35,7 +35,7 @@
                 <main class="col-12 col-lg-6 d-flex flex-column divider">
                     <div class="d-flex justify-content-between align-items-center gap-3 pt-3 px-3 px-lg-4">
                         <img src="assets/images/logo.png" alt="De La Salle University" class="logo-slot d-lg-none">
-                        <small class="ms-auto text-end">Don't have an account? <a href="signup.html" class="fw-semibold forgot-password-link">Sign up</a></small>
+                        <small class="ms-auto text-end">Don't have an account? <a href="signup.php" class="fw-semibold forgot-password-link">Sign up</a></small>
                     </div>
 
                     <div class="my-auto px-3 px-sm-4 px-lg-5 py-4">
@@ -59,7 +59,7 @@
                             </form>
 
                             <div class="text-center mt-4">
-                                <a href="index.html" class="fw-semibold forgot-password-link">Back to Log In</a>
+                                <a href="index.php" class="fw-semibold forgot-password-link">Back to Log In</a>
                             </div>
                         </div>
                     </div>

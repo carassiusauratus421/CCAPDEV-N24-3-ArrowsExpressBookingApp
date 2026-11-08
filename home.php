@@ -16,69 +16,7 @@
     <div class="d-flex vh-100 overflow-hidden">
 
         <!-- DESKTOP SIDEBAR -->
-        <aside class="sidebar d-none d-lg-flex flex-column border-end p-3 pt-4">
-            <div class="mb-4 px-3">
-                <img src="assets/images/logo.png"
-                     alt="DLSU Logo"
-                     class="img-fluid"
-                     style="max-height: 40px;">
-            </div>
-
-            <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Passenger navigation">
-                <a href="home.html"
-                   class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
-                   aria-current="page">
-                    <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i>
-                    Home
-                </a>
-
-                <a href="my-bookings.html#my-bookings"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                    <i class="bi bi-calendar-event me-3 fs-5" aria-hidden="true"></i>
-                    My Bookings
-                </a>
-
-                <a href="schedules.html"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
-                   style="font-size: 0.9rem;">
-                    <i class="bi bi-clock me-3 fs-5"></i>
-                    Schedules
-                </a>
-
-                <a href="routes-and-maps.html"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
-                   style="font-size: 0.9rem;">
-                    <i class="bi bi-geo-alt me-3 fs-5"></i>
-                    Passenger Guide
-                </a>
-
-                <a href="notifications.html"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
-                   data-notification-link>
-                    <i class="bi bi-bell me-3 fs-5" aria-hidden="true"></i>
-                    Notifications
-                    <span class="badge bg-success-subtle text-success rounded-pill ms-auto"
-                          data-notification-count hidden>0</span>
-                </a>
-
-                <a href="profile.html"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                    <i class="bi bi-person me-3 fs-5" aria-hidden="true"></i>
-                    Profile
-                </a>
-            </nav>
-
-            <div class="px-2">
-                <hr class="my-3 opacity-25">
-
-                <a href="index.html"
-                   class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold"
-                   style="font-size: 0.9rem;">
-                    <i class="bi bi-box-arrow-right me-3 fs-5"></i>
-                    Log Out
-                </a>
-            </div>
-        </aside>
+        <?php include 'navDesktop.php';?>
 
         <!-- MAIN CONTENT AREA -->
         <main class="main-content flex-grow-1 p-4 px-xl-5 pt-xl-4 position-relative overflow-y-auto">
@@ -95,7 +33,7 @@
                 <i class="bi bi-moon" aria-hidden="true"></i>
             </button>
             <!-- MOBILE NOTIFICATIONS -->
-            <a href="notifications.html"
+            <a href="notifications.php"
             class="notification-bell btn btn-white border rounded-circle d-lg-none"
             aria-label="Notifications"
             data-notification-link>
@@ -105,7 +43,7 @@
             </a>
 
                     <!-- PROFILE LINK -->
-                    <a href="profile.html"
+                    <a href="profile.php"
                        class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
@@ -115,7 +53,7 @@
                     </a>
 
                     <!-- MOBILE LOG OUT -->
-                    <a href="index.html"
+                    <a href="index.php"
                        class="btn btn-sm btn-light border d-lg-none"
                        aria-label="Log out">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
@@ -140,7 +78,7 @@
 
                         <!-- BOOK A RIDE -->
                         <div class="col-12 col-md-4">
-                            <a href="my-bookings.html" class="text-decoration-none">
+                            <a href="my-bookings.php" class="text-decoration-none">
                                 <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
                                     <i class="bi bi-calendar-plus text-dlsu-green fs-4 mb-3"></i>
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
@@ -155,7 +93,7 @@
 
                         <!-- VIEW SCHEDULES -->
                         <div class="col-12 col-md-4">
-                            <a href="schedules.html" class="text-decoration-none">
+                            <a href="schedules.php" class="text-decoration-none">
                                 <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
                                     <i class="bi bi-calendar-check text-dlsu-green fs-4 mb-3"></i>
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
@@ -170,7 +108,7 @@
 
                         <!-- ROUTES & MAPS -->
                         <div class="col-12 col-md-4">
-                            <a href="routes-and-maps.html" class="text-decoration-none">
+                            <a href="routes-and-maps.php" class="text-decoration-none">
                                 <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
                                     <i class="bi bi-map text-dlsu-green fs-4 mb-3"></i>
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
@@ -225,14 +163,14 @@
                             </button>
 
                             <a id="booking-reminder-details"
-                            href="my-bookings.html"
+                            href="my-bookings.php"
                             class="btn btn-outline-success btn-sm">
                                 Booking Details
                             </a>
                         </div>
                     </div>
 
-                    <a href="notifications.html"
+                    <a href="notifications.php"
                     class="text-dlsu-green"
                     aria-label="View all notifications">
                         <i class="bi bi-arrow-right fw-bold fs-5" aria-hidden="true"></i>
@@ -356,7 +294,7 @@
                             </div>
 
                             <a id="next-trip-details"
-                            href="my-bookings.html"
+                            href="my-bookings.php"
                             class="btn btn-dlsu-green w-100 py-2 mt-4 rounded-3 fw-bold"
                             style="font-size: 0.85rem;">
                                 View Booking Details
@@ -374,7 +312,7 @@
                 Upcoming Trips
             </h6>
 
-            <a href="my-bookings.html#my-bookings"
+            <a href="my-bookings.php#my-bookings"
                class="text-dark fw-bold text-decoration-none"
                style="font-size: 0.8rem;">
                 View All
@@ -434,32 +372,32 @@
 <nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
      aria-label="Mobile passenger navigation">
     <div class="d-flex justify-content-around align-items-center py-2">
-        <a href="home.html"
+        <a href="home.php"
            class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold"
            aria-current="page">
             <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i>
             <span>Home</span>
         </a>
 
-        <a href="my-bookings.html"
+        <a href="my-bookings.php"
            class="dashboard-mobile-item text-decoration-none text-muted">
             <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i>
             <span>Book</span>
         </a>
 
-        <a href="my-bookings.html#my-bookings"
+        <a href="my-bookings.php#my-bookings"
            class="dashboard-mobile-item text-decoration-none text-muted">
             <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i>
             <span>My Bookings</span>
         </a>
 
-        <a href="schedules.html"
+        <a href="schedules.php"
            class="dashboard-mobile-item text-decoration-none text-muted">
             <i class="bi bi-clock fs-5" aria-hidden="true"></i>
             <span>Schedules</span>
         </a>
 
-        <a href="routes-and-maps.html"
+        <a href="routes-and-maps.php"
            class="dashboard-mobile-item text-decoration-none text-muted">
             <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i>
             <span>Passenger Guide</span>
