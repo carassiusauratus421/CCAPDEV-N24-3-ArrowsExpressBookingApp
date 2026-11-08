@@ -128,34 +128,7 @@
     </div>
 
     <!-- MOBILE NAVIGATION BAR -->
-    <nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
-        aria-label="Mobile passenger navigation">
-        <div class="d-flex justify-content-around align-items-center py-2">
-            <a href="home.html" class="dashboard-mobile-item text-decoration-none text-muted">
-                <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i><span>Home</span>
-            </a>
-
-            <a href="my-bookings.html" class="dashboard-mobile-item text-decoration-none text-muted">
-                <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i><span>Book</span>
-            </a>
-
-            <a href="my-bookings.html#my-bookings"
-            class="dashboard-mobile-item text-decoration-none text-muted">
-                <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i><span>My Bookings</span>
-            </a>
-
-            <a href="schedules.html"
-            class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold"
-            aria-current="page">
-                <i class="bi bi-clock fs-5" aria-hidden="true"></i><span>Schedules</span>
-            </a>
-
-            <a href="routes-and-maps.html"
-            class="dashboard-mobile-item text-decoration-none text-muted">
-                <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i><span>Passenger Guide</span>
-            </a>
-        </div>
-    </nav>
+    <?php require 'navMobile.php';?>
 
     <!-- AVAILABLE TRIP ROW -->
     <template id="trip-row-template">

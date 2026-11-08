@@ -369,41 +369,7 @@
 </div>
 
 <!-- MOBILE NAVIGATION -->
-<nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
-     aria-label="Mobile passenger navigation">
-    <div class="d-flex justify-content-around align-items-center py-2">
-        <a href="home.php"
-           class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold"
-           aria-current="page">
-            <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i>
-            <span>Home</span>
-        </a>
-
-        <a href="my-bookings.php"
-           class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-calendar-plus fs-5" aria-hidden="true"></i>
-            <span>Book</span>
-        </a>
-
-        <a href="my-bookings.php#my-bookings"
-           class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i>
-            <span>My Bookings</span>
-        </a>
-
-        <a href="schedules.php"
-           class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-clock fs-5" aria-hidden="true"></i>
-            <span>Schedules</span>
-        </a>
-
-        <a href="routes-and-maps.php"
-           class="dashboard-mobile-item text-decoration-none text-muted">
-            <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i>
-            <span>Passenger Guide</span>
-        </a>
-    </div>
-</nav>
+<?php require 'navMobile.php';?>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/booking-lifecycle.js"></script>
