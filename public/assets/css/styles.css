@@ -16,8 +16,6 @@
     --bg-main: rgb(255, 255, 255);
     --bg-secondary: rgb(238, 244, 241);
     --bg-hover: #e3ede7;
-
-    --school-logo: url(../images/logo.png);
 }
 
 html, body {
