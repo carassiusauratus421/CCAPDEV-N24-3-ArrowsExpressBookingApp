@@ -16,7 +16,7 @@
     <div class="d-flex vh-100 overflow-hidden">
 
         <!-- DESKTOP SIDEBAR -->
-        <?php include 'navDesktop.php';?>
+        <?php include 'nav-desktop.php';?>
 
         <!-- MAIN CONTENT AREA -->
         <main class="main-content flex-grow-1 p-4 px-xl-5 pt-xl-4 position-relative overflow-y-auto">
@@ -369,7 +369,7 @@
 </div>
 
 <!-- MOBILE NAVIGATION -->
-<?php require 'navMobile.php';?>
+<?php require 'nav-mobile.php';?>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/booking-lifecycle.js"></script>

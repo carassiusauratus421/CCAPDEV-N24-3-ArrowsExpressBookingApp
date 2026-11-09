@@ -32,8 +32,8 @@
             Schedules
         </a>
 
-        <a href="routes-and-maps.php"
-            class="nav-link <?= $pagename === 'routes-and-maps.php' ? 'nav-item-active' : 'nav-item-default' ?> rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
+        <a href="passenger-guide.php"
+            class="nav-link <?= $pagename === 'passenger-guide.php' ? 'nav-item-active' : 'nav-item-default' ?> rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
             style="font-size: 0.9rem;">
             <i class="bi bi-geo-alt me-3 fs-5"></i>
             Passenger Guide

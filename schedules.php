@@ -13,7 +13,7 @@
     <div class="container-fluid p-0">
         <div class="d-flex bookings-layout">
             <!-- DESKTOP SIDEBAR -->
-            <?php include 'navDesktop.php';?>
+            <?php include 'nav-desktop.php';?>
 
             <!-- MAIN CONTENT AREA -->
             <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
@@ -128,7 +128,7 @@
     </div>
 
     <!-- MOBILE NAVIGATION BAR -->
-    <?php require 'navMobile.php';?>
+    <?php require 'nav-mobile.php';?>
 
     <!-- AVAILABLE TRIP ROW -->
     <template id="trip-row-template">

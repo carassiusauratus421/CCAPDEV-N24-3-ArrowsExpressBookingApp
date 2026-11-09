@@ -79,7 +79,7 @@ function clearDashboardTrip(message) {
     document.getElementById("next-trip-confirmation").hidden = true;
 
     const detailsLink = document.getElementById("next-trip-details");
-    detailsLink.href = "my-bookings.html";
+    detailsLink.href = "my-bookings.php";
     detailsLink.firstChild.textContent = "View My Bookings ";
 }
 
@@ -293,7 +293,7 @@ function renderDashboard(data) {
 
     const detailsLink = document.getElementById("next-trip-details");
     detailsLink.href =
-        "my-bookings.html?booking=" + encodeURIComponent(booking.id);
+        "my-bookings.php?booking=" + encodeURIComponent(booking.id);
     detailsLink.firstChild.textContent = "View Booking Details ";
 }
 

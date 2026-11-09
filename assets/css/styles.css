@@ -1,8 +1,43 @@
 /* ========================================================
-   EXISTING CSS
+   VARIABLES & BASE
    ======================================================== */
+:root {
+    /* Main DLSU Color Palette*/
+    --dlsu-green: #084c34;
+    --dlsu-green-hover: #063927;
+    --dlsu-light: #eef4f1;
+    --dlsu-light-hover: #e3ede7;
+
+    /* Text Colors */
+    --text-main: #1d2125;
+    --text-secondary: #5e6c79;
+
+    /* Background Colors */
+    --bg-main: rgb(255, 255, 255);
+    --bg-secondary: rgb(238, 244, 241);
+    --bg-hover: #e3ede7;
+
+    --school-logo: url(../images/logo.png);
+}
+
+html, body {
+    background-color: var(--bg-main);
+}
+
+.dark-mode {
+    filter: invert(0.92) hue-rotate(160deg);
+}
+
+.dashboard-body {
+    background-color: var(--bg-main);
+    padding-bottom: 0;
+    overflow: hidden;
+    font-family: var(--bs-body-font-family);
+}
+
 .logo-slot {
-    max-height: 50px;
+    max-height: 40px;
+    max-width: 160px;
     object-fit: contain;
 }
 
@@ -17,53 +52,27 @@
 }
 
 /* ========================================================
-   NEW CSS FOR FOR home.html
+   UTILITIES & SHARED COMPONENTS
    ======================================================== */
-:root {
-    /* Main DLSU Color Palette*/
-    --dlsu-green: #084c34;
-    --dlsu-green-hover: #063927;
-    --dlsu-light: #eef4f1;
-    --dlsu-light-hover: #e3ede7;
-
-    /* Text Colors */
-    --text-main: #1d2125;
-    --text-secondary: #5e6c79;
-
-   /* Background Colors */
-    --bg-main: rgb(255, 255, 255);
-    --bg-secondary: rgb(238, 244, 241);
-    --bg-hover: #e3ede7;
-
-    --school-logo: url(../images/logo.png);
-}
-
-html, body{
-    background-color: var(--bg-main);
-}
-
-.dark-mode {
-    filter: invert(0.92) hue-rotate(160deg);
-}
-
-.dashboard-body {
-    background-color: var(--bg-main);
-    padding-bottom: 70px;
-}
-
-@media (min-width: 992px) {
-    .dashboard-body,
-    .dashboard-body html {
-        padding-bottom: 0;
-    }
-}
-
-/* Base Typography utilities */
 .text-dlsu-green { color: var(--dlsu-green) !important; }
 .bg-dlsu-green { background-color: var(--dlsu-green) !important; }
 .bg-dlsu-light { background-color: var(--dlsu-light) !important; }
 
-/* Dashboard Buttons */
+.bg-success-subtle {
+    background-color: #e4f2ea !important;
+}
+.text-success {
+    color: #1b6d3d !important;
+}
+.border-success-subtle {
+    border-color: #cde6d7 !important;
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Buttons */
 .btn-dlsu-green {
     background-color: var(--dlsu-green);
     color: #ffffff;
@@ -76,7 +85,16 @@ html, body{
     color: #ffffff;
 }
 
-/* Sidebar Specific */
+.signup-body .btn-dlsu-green,
+.forgot-password-body .btn-dlsu-green,
+.bookings-body .btn-dlsu-green,
+.driver-body .btn-dlsu-green {
+    --bs-btn-disabled-bg: var(--dlsu-green);
+    --bs-btn-disabled-color: #ffffff;
+    --bs-btn-disabled-border-color: var(--dlsu-green);
+}
+
+/* Sidebar */
 .sidebar {
     width: 240px;
     background-color: var(--bg-secondary);
@@ -87,7 +105,7 @@ html, body{
     color: var(--dlsu-green);
 }
 
-.nav-item-default{
+.nav-item-default {
     color: var(--text-secondary);
     transition: all 0.2s ease;
 }
@@ -110,45 +128,50 @@ html, body{
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
 }
 
-.bg-success-subtle {
-    background-color: #e4f2ea !important;
-}
-.text-success {
-    color: #1b6d3d !important;
-}
-.border-success-subtle {
-    border-color: #cde6d7 !important;
-}
-
-.pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
-}
-
 /* ========================================================
-   LOGIN PAGE
+   LOGIN / SIGNUP / FORGOT PASSWORD
    ======================================================== */
-.login-body {
+.login-body,
+.signup-body,
+.forgot-password-body {
     background-color: var(--bg-main);
     color: var(--text-main);
+}
+
+.login-body,
+.signup-body {
     background-image: url(../images/bg.png);
     background-repeat: no-repeat;
     background-position: left bottom;
     background-size: auto 60%;
 }
 
-.login-form-container {
+.login-form-container,
+.forgot-password-form-container {
     width: 100%;
     max-width: 400px;
+}
+
+.signup-form-container {
+    width: 100%;
+    max-width: 560px;
+}
+
+.login-text-button,
+.signup-link,
+.forgot-password-link {
+    color: var(--dlsu-green);
+}
+
+.login-text-button:hover,
+.signup-link:hover,
+.forgot-password-link:hover {
+    color: var(--dlsu-green-hover);
 }
 
 .login-text-button {
     font-size: inherit;
     vertical-align: baseline;
-    color: var(--dlsu-green);
-}
-
-.login-text-button:hover {
-    color: var(--dlsu-green-hover);
 }
 
 .login-body .btn-success {
@@ -177,81 +200,37 @@ html, body{
     overflow-wrap: anywhere;
 }
 
-@media (max-width: 575.98px) {
-    .login-body .logo-slot {
-        max-height: 38px;
-        max-width: 110px;
+.login-form-container > h2,
+.signup-form-container > h2,
+.forgot-password-form-container > h2 {
+    font-size: calc(1.3rem + 0.6vw);
+}
+
+.login-form-container > p,
+.signup-form-container > p,
+.forgot-password-form-container > p {
+    font-size: 0.85rem;
+}
+
+.login-body .form-label,
+.signup-body .form-label,
+.forgot-password-body .form-label {
+    font-size: 0.85rem;
+}
+
+@media (min-width: 1200px) {
+    .login-form-container > h2,
+    .signup-form-container > h2,
+    .forgot-password-form-container > h2 {
+        font-size: 1.75rem;
     }
 }
 
-/* ========================================================
-   SIGNUP PAGE
-   ======================================================== */
-.signup-body {
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    background-image: url(../images/bg.png);
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    background-size: auto 60%;
-}
-
-.signup-form-container {
-    width: 100%;
-    max-width: 560px;
-}
-
-.signup-link {
-    color: var(--dlsu-green);
-}
-
-.signup-link:hover {
-    color: var(--dlsu-green-hover);
-}
-
-.signup-body .btn-dlsu-green {
-    --bs-btn-disabled-bg: var(--dlsu-green);
-    --bs-btn-disabled-color: #ffffff;
-    --bs-btn-disabled-border-color: var(--dlsu-green);
-}
-
-@media (max-width: 575.98px) {
-    .signup-body .logo-slot {
-        max-height: 38px;
-        max-width: 110px;
-    }
-}
-
-/* ========================================================
-   FORGOT PASSWORD PAGE
-   ======================================================== */
-.forgot-password-body {
-    background-color: var(--bg-main);
-    color: var(--text-main);
-}
-
-.forgot-password-form-container {
-    width: 100%;
-    max-width: 400px;
-}
-
-.forgot-password-link {
-    color: var(--dlsu-green);
-}
-
-.forgot-password-link:hover {
-    color: var(--dlsu-green-hover);
-}
-
-.forgot-password-body .btn-dlsu-green {
-    --bs-btn-disabled-bg: var(--dlsu-green);
-    --bs-btn-disabled-color: #ffffff;
-    --bs-btn-disabled-border-color: var(--dlsu-green);
-}
-
-@media (max-width: 575.98px) {
+@media (max-width: 991.98px) {
+    .login-body .logo-slot,
+    .signup-body .logo-slot,
     .forgot-password-body .logo-slot {
-        max-height: 38px;
+        max-height: 30px;
         max-width: 110px;
     }
 }
@@ -289,28 +268,12 @@ html, body{
     font-size: 0.9rem;
 }
 
-.bookings-sidebar [aria-disabled="true"],
-.bookings-mobile-item[aria-disabled="true"] {
-    opacity: 0.55;
-    pointer-events: none;
-}
-
-.bookings-sidebar nav {
-    margin-bottom: auto !important;
-}
-
 .bookings-main {
     min-width: 0;
 }
 
 .bookings-body .bookings-main {
     padding: 1.5rem !important;
-}
-
-.bookings-main header {
-    min-height: 36px;
-    border-bottom: none;
-    padding-bottom: 0;
 }
 
 .bookings-logo {
@@ -339,6 +302,16 @@ html, body{
 
 .booking-date-block {
     min-width: 48px;
+}
+
+.booking-date-block .small {
+    font-size: 0.65rem;
+    line-height: 1.25;
+}
+
+.booking-date-block .booking-day {
+    font-size: 1.25rem !important;
+    line-height: 1.4;
 }
 
 .booking-card-info {
@@ -375,16 +348,6 @@ html, body{
     font-size: 0.78rem;
 }
 
-.booking-date-block .small {
-    font-size: 0.65rem;
-    line-height: 1.25;
-}
-
-.booking-date-block .booking-day {
-    font-size: 1.25rem !important;
-    line-height: 1.4;
-}
-
 .booking-status {
     min-width: 100px;
     border-radius: 0.25rem !important;
@@ -394,29 +357,11 @@ html, body{
     background-color: #95d6ab !important;
 }
 
-.booking-user-avatar {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--dlsu-green);
-    color: #ffffff;
-    font-size: 0.8rem;
-}
-
 .bookings-body .btn-outline-success {
     --bs-btn-color: var(--dlsu-green);
     --bs-btn-border-color: var(--dlsu-green);
     --bs-btn-hover-bg: var(--dlsu-green);
     --bs-btn-hover-border-color: var(--dlsu-green);
-}
-
-.bookings-body .btn-dlsu-green {
-    --bs-btn-disabled-bg: var(--dlsu-green);
-    --bs-btn-disabled-color: #ffffff;
-    --bs-btn-disabled-border-color: var(--dlsu-green);
 }
 
 .direction-button {
@@ -441,7 +386,8 @@ html, body{
     outline-offset: 2px;
 }
 
-#trip-date, #timeslot-filter {
+#trip-date,
+#timeslot-filter {
     min-height: 48px;
     color: var(--dlsu-green);
     font-weight: 600;
@@ -498,31 +444,9 @@ html, body{
     scroll-margin-top: 1rem;
 }
 
-/* Match the dashboard's horizontal padding on large screens. */
 @media (min-width: 1200px) {
     .bookings-body .bookings-main {
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
         background-color: var(--bg-main);
-    }
-}
-
-.bookings-mobile-item {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    font-size: 0.65rem;
-    text-align: center;
-}
-
-/* Leave space for the fixed mobile navigation. */
-@media (max-width: 991.98px) {
-    .bookings-body .bookings-main {
-        padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
     }
 }
 
@@ -580,7 +504,6 @@ html, body{
     overflow: hidden;
 }
 
-/* Match the dashboard frame; the main area handles scrolling. */
 .profile-layout {
     width: 100%;
     max-width: none;
@@ -598,33 +521,12 @@ html, body{
     font-size: 0.9rem;
 }
 
-.profile-sidebar .nav-link {
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.profile-sidebar nav {
-    margin-bottom: auto !important;
-}
-
-.profile-sidebar [aria-disabled="true"],
-.profile-mobile-item[aria-disabled="true"] {
-    opacity: 0.55;
-    pointer-events: none;
-}
-
 .profile-body .profile-main {
     min-width: 0;
     min-height: 0;
     position: relative;
     overflow-y: auto;
     padding: 1.5rem !important;
-}
-
-.profile-main header {
-    min-height: 36px;
-    padding-bottom: 0;
-    border-bottom: none;
 }
 
 .profile-logo {
@@ -647,19 +549,6 @@ html, body{
     font-size: 1rem !important;
 }
 
-.profile-header-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background-color: var(--dlsu-green);
-    color: #ffffff;
-    font-size: 0.8rem;
-}
-
 .profile-body .form-control,
 .profile-body .form-select {
     min-height: 38px;
@@ -673,38 +562,6 @@ html, body{
     opacity: 1;
 }
 
-.profile-mobile-item {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    font-size: 0.65rem;
-    text-align: center;
-}
-
-/* Match the dashboard's large-screen horizontal padding. */
-@media (min-width: 1200px) {
-    .profile-body .profile-main {
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
-    }
-}
-
-/* Leave room for the fixed mobile navigation. */
-@media (max-width: 991.98px) {
-    .profile-body .profile-main {
-        padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
-    }
-
-    .profile-logo {
-        max-height: 30px;
-        max-width: 110px;
-    }
-}
-
 @media (max-width: 575.98px) {
     .profile-body .form-control,
     .profile-body .form-select {
@@ -714,13 +571,8 @@ html, body{
 
 /* ========================================================
    SHARED PAGE LAYOUT
+   (sidebar, header, mobile nav, avatars, responsive padding)
    ======================================================== */
-.dashboard-body {
-    padding-bottom: 0;
-    overflow: hidden;
-    font-family: var(--bs-body-font-family);
-}
-
 .dashboard-body > .container-fluid > .d-flex {
     width: 100%;
     max-width: none;
@@ -741,16 +593,23 @@ html, body{
     font-size: 0.9rem;
 }
 
+.profile-sidebar .nav-link,
 .dashboard-body .sidebar .nav-link {
     font-size: 0.9rem;
     font-weight: 600;
 }
 
+.bookings-sidebar nav,
+.profile-sidebar nav,
 .dashboard-body .sidebar nav {
     margin-bottom: auto !important;
 }
 
+.bookings-sidebar [aria-disabled="true"],
+.profile-sidebar [aria-disabled="true"],
 .dashboard-body .sidebar [aria-disabled="true"],
+.bookings-mobile-item[aria-disabled="true"],
+.profile-mobile-item[aria-disabled="true"],
 .dashboard-mobile-item[aria-disabled="true"] {
     opacity: 0.55;
     pointer-events: none;
@@ -764,6 +623,8 @@ html, body{
     padding: 1.5rem !important;
 }
 
+.bookings-main header,
+.profile-main header,
 .dashboard-header {
     min-height: 36px;
     padding-bottom: 0;
@@ -788,33 +649,33 @@ html, body{
     color: var(--dlsu-green);
 }
 
+/* Avatars */
+.booking-user-avatar,
+.profile-header-avatar,
 .dashboard-user-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
     width: 26px;
     height: 26px;
     border-radius: 50%;
+    align-items: center;
+    justify-content: center;
     background-color: var(--dlsu-green);
     color: #ffffff;
     font-size: 0.8rem;
 }
 
-.dashboard-body main > p,
-.dashboard-body main .form-label,
-.login-body .form-label,
-.signup-body .form-label,
-.forgot-password-body .form-label {
-    font-size: 0.85rem;
+.booking-user-avatar {
+    display: inline-flex;
 }
 
-.dashboard-body .form-control,
-.dashboard-body .form-select {
-    min-height: 38px;
-    font-size: 1rem;
+.profile-header-avatar,
+.dashboard-user-avatar {
+    display: flex;
+    flex-shrink: 0;
 }
 
+/* Mobile  nav */
+.bookings-mobile-item,
+.profile-mobile-item,
 .dashboard-mobile-item {
     flex: 1;
     min-width: 0;
@@ -825,7 +686,9 @@ html, body{
     padding: 0.25rem;
     font-size: 0.65rem;
     text-align: center;
-    
+}
+
+.dashboard-mobile-item {
     border: none;
     background: transparent;
     color: inherit;
@@ -838,45 +701,35 @@ html, body{
     white-space: nowrap;
 }
 
-/* Shared branding and heading sizes for the existing account pages. */
-.logo-slot {
-    max-height: 40px;
-    max-width: 160px;
-}
-
-.login-form-container > h2,
-.signup-form-container > h2,
-.forgot-password-form-container > h2 {
-    font-size: calc(1.3rem + 0.6vw);
-}
-
-.login-form-container > p,
-.signup-form-container > p,
-.forgot-password-form-container > p {
+/* Forms */
+.dashboard-body main > p,
+.dashboard-body main .form-label {
     font-size: 0.85rem;
 }
 
+.dashboard-body .form-control,
+.dashboard-body .form-select {
+    min-height: 38px;
+    font-size: 1rem;
+}
+
 @media (min-width: 1200px) {
+    .bookings-body .bookings-main,
+    .profile-body .profile-main,
     .dashboard-body > .container-fluid > .d-flex > main {
         padding-left: 3rem !important;
         padding-right: 3rem !important;
     }
-
-    .login-form-container > h2,
-    .signup-form-container > h2,
-    .forgot-password-form-container > h2 {
-        font-size: 1.75rem;
-    }
 }
 
 @media (max-width: 991.98px) {
+    .bookings-body .bookings-main,
+    .profile-body .profile-main,
     .dashboard-body > .container-fluid > .d-flex > main {
         padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
     }
 
-    .login-body .logo-slot,
-    .signup-body .logo-slot,
-    .forgot-password-body .logo-slot {
+    .profile-logo {
         max-height: 30px;
         max-width: 110px;
     }
@@ -885,7 +738,6 @@ html, body{
 /* ========================================================
    PASSENGER NOTIFICATIONS
    ======================================================== */
-
 .notification-header-actions {
     max-width: 100%;
 }
@@ -968,69 +820,72 @@ html, body{
     scroll-margin-top: 1rem;
 }
 
-.driver-body .btn-dlsu-green {
-    --bs-btn-disabled-bg: var(--dlsu-green);
-    --bs-btn-disabled-color: #ffffff;
-    --bs-btn-disabled-border-color: var(--dlsu-green);
-}
-
 /* ========================================================
    ADMIN DASHBOARD
    ======================================================== */
 .admin-body main {
     overflow-wrap: anywhere;
 }
+
 .admin-body .admin-table-wrapper {
     min-width: 0;
     overflow-x: auto;
 }
+
 .admin-body .admin-table {
     font-size: 0.85rem;
 }
+
 .admin-body .admin-table th {
     color: var(--dlsu-green);
     background-color: var(--dlsu-light);
 }
+
 .admin-body .admin-table th,
 .admin-body .admin-table td {
     padding: 0.85rem;
     vertical-align: middle;
 }
+
 .admin-body .admin-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
 }
+
 .admin-body .admin-actions .btn {
     font-size: 0.75rem;
 }
+
 .admin-body .form-control,
 .admin-body .form-select {
     min-width: 0;
 }
+
 @media (max-width: 767.98px) {
     .admin-body .admin-table thead {
         display: none;
     }
+
     .admin-body .admin-table tbody tr {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         border-bottom: 1px solid #dfe8e3;
+        padding: 0.75rem 0;
     }
+
     .admin-body .admin-table td {
         display: block;
         border: 0;
         padding: 0.5rem 0;
         overflow-wrap: anywhere;
     }
+
     .admin-body .admin-table td[data-label]::before {
         content: attr(data-label);
         display: block;
         color: var(--text-secondary);
         font-size: 0.7rem;
         margin-bottom: 0.2rem;
-    }
-    .admin-body .admin-table tbody tr {
-        padding: 0.75rem 0;
     }
 }

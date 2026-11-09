@@ -31,7 +31,7 @@
             <span>Schedules</span>
         </a>
 
-        <a href="routes-and-maps.php"
+        <a href="passenger-guide.php"
            class="dashboard-mobile-item text-decoration-none <?= $pagename === 'routes-and-maps.php' ? 'text-dlsu-green fw-bold' : 'text-muted' ?>">
             <i class="bi bi-geo-alt fs-5" aria-hidden="true"></i>
             <span>Passenger Guide</span>

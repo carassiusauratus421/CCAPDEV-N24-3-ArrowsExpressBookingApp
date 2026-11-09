@@ -223,7 +223,7 @@ function renderAdminDashboard() {
         function (v) { return v.type; }, function (v) { return v.capacity; },
         function () {
             const link = document.createElement("a");
-            link.href = "admin-vehicles.html";
+            link.href = "admin-vehicles.php";
             link.textContent = "Manage";
             link.className = "text-dlsu-green";
             return link;

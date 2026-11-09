@@ -266,7 +266,7 @@ function updateDashboardReminder() {
     button.hidden = reminder.details.booking.attendanceConfirmed;
 
     document.getElementById("booking-reminder-details").href =
-        "my-bookings.html?booking=" +
+        "my-bookings.php?booking=" +
         encodeURIComponent(reminder.details.booking.id);
 }
 
@@ -335,7 +335,7 @@ function renderNotificationList() {
 
         card.querySelector(".notification-confirmed").hidden = !isConfirmed;
         card.querySelector(".notification-actions a").href =
-            "my-bookings.html?booking=" + encodeURIComponent(details.booking.id);
+            "my-bookings.php?booking=" + encodeURIComponent(details.booking.id);
 
         const readButton = card.querySelector("[data-read-notification]");
         readButton.dataset.readNotification = notification.id;

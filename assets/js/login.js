@@ -108,7 +108,7 @@ function completeMockLogin(message, account = demoAccount) {
         }));
     } catch (error) { /* Browser storage may be unavailable in this demo. */ }
     showMessage(message, "success");
-    const destinations = { passenger: "home.html", driver: "driver-home.html", admin: "admin.html" };
+    const destinations = { passenger: "home.php", driver: "driver-home.php", admin: "admin.php" };
     window.setTimeout(function () { window.location.href = destinations[account.role]; }, 800);
 }
 
