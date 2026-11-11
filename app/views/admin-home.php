@@ -12,34 +12,8 @@
         <div class="container-fluid p-0">
             <div class="d-flex bookings-layout">
                 <!-- ADMIN DESKTOP NAVIGATION -->
-                <aside class="sidebar bookings-sidebar d-none d-lg-flex flex-column border-end p-3 pt-4">
-                    <div class="mb-4 px-3">
-                        <img src="assets/images/logo.png" alt="DLSU Logo" class="img-fluid bookings-logo">
-                    </div>
-                    <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Admin navigation">
-                        <a href="admin.html" class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1" aria-current="page">
-                            <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i> Dashboard
-                        </a>
-                        <a href="admin-bookings.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                            <i class="bi bi-calendar-event me-3 fs-5" aria-hidden="true"></i> Bookings & Slots
-                        </a>
-                        <a href="admin-profiles.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                            <i class="bi bi-people me-3 fs-5" aria-hidden="true"></i> User Profiles
-                        </a>
-                        <a href="admin-vehicles.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                            <i class="bi bi-bus-front me-3 fs-5" aria-hidden="true"></i> Vehicles
-                        </a>
-                        <a href="admin-accounts.html" class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
-                            <i class="bi bi-person-gear me-3 fs-5" aria-hidden="true"></i> Admin Accounts
-                        </a>
-                    </nav>
-                    <div class="px-2">
-                        <hr class="my-3 opacity-25">
-                        <a href="index.html" data-admin-logout class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
-                            <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i> Log Out
-                        </a>
-                    </div>
-                </aside>
+                <?php include __DIR__ . '/admin-nav-desktop.php';?>
+
                 <!-- MAIN CONTENT -->
                 <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
                     <!-- PAGE HEADER -->
@@ -172,31 +146,9 @@
                 </main>
             </div>
         </div>
-        <!-- FIVE LINKS KEEP THE MOBILE NAVIGATION CONSISTENT. -->
-        <nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3" aria-label="Mobile admin navigation">
-            <div class="d-flex justify-content-around align-items-center py-2">
-                <a href="admin.html" class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold" aria-current="page">
-                    <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i>
-                    <span>Home</span>
-                </a>
-                <a href="admin-bookings.html" class="dashboard-mobile-item text-decoration-none text-muted">
-                    <i class="bi bi-calendar-event fs-5" aria-hidden="true"></i>
-                    <span>Bookings</span>
-                </a>
-                <a href="admin-profiles.html" class="dashboard-mobile-item text-decoration-none text-muted">
-                    <i class="bi bi-people fs-5" aria-hidden="true"></i>
-                    <span>Profiles</span>
-                </a>
-                <a href="admin-vehicles.html" class="dashboard-mobile-item text-decoration-none text-muted">
-                    <i class="bi bi-bus-front fs-5" aria-hidden="true"></i>
-                    <span>Vehicles</span>
-                </a>
-                <a href="admin-accounts.html" class="dashboard-mobile-item text-decoration-none text-muted">
-                    <i class="bi bi-person-gear fs-5" aria-hidden="true"></i>
-                    <span>Admins</span>
-                </a>
-            </div>
-        </nav>
+        <!-- MOBILE NAV -->
+        <?php include __DIR__ . '/admin-nav-mobile.php';?>
+        
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/booking-lifecycle.js"></script>

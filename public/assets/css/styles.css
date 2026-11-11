@@ -134,10 +134,7 @@ html, body {
 .forgot-password-body {
     background-color: var(--bg-main);
     color: var(--text-main);
-}
-
-.login-body,
-.signup-body {
+    
     background-image: url(../images/bg.png);
     background-repeat: no-repeat;
     background-position: left bottom;

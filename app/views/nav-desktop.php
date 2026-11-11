@@ -13,8 +13,7 @@
 
     <nav class="nav flex-column gap-1 mb-auto px-2" aria-label="Passenger navigation">
         <a href="home.php"
-            class="nav-link <?= $pagename === 'home.php' ? 'nav-item-active' : 'nav-item-default' ?> rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
-            aria-current="page">
+            class="nav-link <?= $pagename === 'home.php' ? 'nav-item-active' : 'nav-item-default' ?> rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1">
             <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i>
             Home
         </a>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <title>Passenger Dashboard - Arrows Express Booking App</title>
+</head>
+<body class="dashboard-body bg-white">
+
+<div class="container-fluid p-0">
+    <div class="d-flex vh-100 overflow-hidden">
+
+        <!-- DESKTOP SIDEBAR -->
+        <?php include __DIR__ . '/nav-desktop.php';?>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content flex-grow-1 p-4 px-xl-5 pt-xl-4 position-relative overflow-y-auto">
+
+            <!-- TOP HEADER -->
+            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
+                <img src="assets/images/logo.png"
+                     alt="DLSU Logo"
+                     class="dashboard-logo d-lg-none">
+
+                <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
+
+            <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+                <i class="bi bi-moon" aria-hidden="true"></i>
+            </button>
+            <!-- MOBILE NOTIFICATIONS -->
+            <a href="notifications.php"
+            class="notification-bell btn btn-white border rounded-circle d-lg-none"
+            aria-label="Notifications"
+            data-notification-link>
+                <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                <span class="notification-count badge bg-success rounded-pill"
+                    data-notification-count hidden>0</span>
+            </a>
+
+                    <!-- PROFILE LINK -->
+                    <a href="profile.php"
+                       class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                        <span class="dashboard-user-avatar me-2">
+                            <i class="bi bi-person-fill" aria-hidden="true"></i>
+                        </span>
+                        <span id="dashboard-user-name" class="fw-semibold me-2">Loading...</span>
+                        <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
+                    </a>
+
+                    <!-- MOBILE LOG OUT -->
+                    <a href="index.php"
+                       class="btn btn-sm btn-light border d-lg-none"
+                       aria-label="Log out">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </header>
+
+            <!-- GREETING SECTION & QUICK ACTIONS -->
+            <div class="row mb-4 position-relative z-2">
+                <div class="col-12 col-xl-5 mb-3 mb-xl-0 d-flex flex-column justify-content-center pe-xl-4">
+                <h1 class="fs-3 fw-bold text-dlsu-green mb-1">
+                    Good morning,<br><span id="dashboard-first-name">Loading...</span>!
+                </h1>
+                    <p class="text-secondary mb-0" style="font-size: 0.85rem;">
+                        Book your shuttle, check your schedules,<br>
+                        and stay updated on your trips.
+                    </p>
+                </div>
+
+                <div class="col-12 col-xl-7">
+                    <div class="row g-3">
+
+                        <!-- BOOK A RIDE -->
+                        <div class="col-12 col-md-4">
+                            <a href="my-bookings.php" class="text-decoration-none">
+                                <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
+                                    <i class="bi bi-calendar-plus text-dlsu-green fs-4 mb-3"></i>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="fw-bold text-dark" style="font-size: 0.8rem;">
+                                            Book a Ride
+                                        </span>
+                                        <i class="bi bi-arrow-right text-dlsu-green fw-bold small"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- VIEW SCHEDULES -->
+                        <div class="col-12 col-md-4">
+                            <a href="schedules.php" class="text-decoration-none">
+                                <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
+                                    <i class="bi bi-calendar-check text-dlsu-green fs-4 mb-3"></i>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="fw-bold text-dark" style="font-size: 0.8rem;">
+                                            View Schedules
+                                        </span>
+                                        <i class="bi bi-arrow-right text-dlsu-green fw-bold small"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- ROUTES & MAPS -->
+                        <div class="col-12 col-md-4">
+                            <a href="routes-and-maps.php" class="text-decoration-none">
+                                <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
+                                    <i class="bi bi-map text-dlsu-green fs-4 mb-3"></i>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="fw-bold text-dark" style="font-size: 0.8rem;">
+                                            Passenger Guide
+                                        </span>
+                                        <i class="bi bi-arrow-right text-dlsu-green fw-bold small"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 position-relative z-2">
+
+                <!-- IMPORTANT REMINDERS & NEXT TRIP -->
+                <div class="col-12 col-xl-7 d-flex flex-column">
+
+            <!-- BOOKING CONFIRMATION REMINDER -->
+            <section id="booking-confirmation-reminder"
+                    class="bg-dlsu-light border rounded-4 p-3 mb-3 border-light-subtle"
+                    aria-labelledby="booking-reminder-title"
+                    hidden>
+
+                <div class="d-flex align-items-start gap-3 px-1">
+                    <div class="notification-icon bg-success-subtle rounded-circle">
+                        <i class="bi bi-bell text-dlsu-green fs-6" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="notification-copy flex-grow-1">
+                        <h2 id="booking-reminder-title"
+                            class="notification-reminder-title fw-bold text-dark mb-1">
+                            Loading reminder...
+                        </h2>
+
+                        <p id="booking-reminder-text"
+                        class="notification-reminder-text text-secondary mb-2">
+                            Loading trip details...
+                        </p>
+
+                        <p id="booking-reminder-time"
+                        class="notification-reminder-text text-secondary mb-2"></p>
+
+                        <div class="notification-actions d-flex flex-wrap gap-2">
+                            <button type="button"
+                                    class="btn btn-dlsu-green btn-sm"
+                                    data-confirm-booking>
+                                Confirm Booking
+                            </button>
+
+                            <a id="booking-reminder-details"
+                            href="my-bookings.php"
+                            class="btn btn-outline-success btn-sm">
+                                Booking Details
+                            </a>
+                        </div>
+                    </div>
+
+                    <a href="notifications.php"
+                    class="text-dlsu-green"
+                    aria-label="View all notifications">
+                        <i class="bi bi-arrow-right fw-bold fs-5" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </section>
+
+                    <!-- CONFIRMATION FEEDBACK -->
+                    <div id="notification-feedback"
+                         class="alert d-none"
+                         role="status"
+                         aria-live="polite"
+                         aria-atomic="true"
+                         tabindex="-1"></div>
+
+                    <!-- NEXT TRIP -->
+                    <div class="bg-dlsu-light rounded-4 p-3 p-xl-4 mb-3 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <span class="text-dark fw-bold" style="font-size: 0.8rem;">
+                                    Next Trip
+                                </span>
+
+                            <h5 id="next-trip-route"
+                                class="fw-bold text-dlsu-green mt-1 mb-0 fs-6">
+                                Loading...
+                            </h5>
+                            </div>
+
+                        <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1 fw-semibold border border-success-subtle"
+                            style="font-size: 0.75rem;">
+                            <i class="bi bi-circle-fill me-1"
+                            style="font-size: 0.35rem; vertical-align: middle;"
+                            aria-hidden="true"></i>
+                            <span id="next-trip-status">Loading...</span>
+                        </span>
+                        </div>
+
+                        <div class="bg-white rounded-4 p-3 p-xl-4 shadow-sm">
+                        <h1 id="next-trip-time"
+                            class="fw-bold text-dlsu-green mb-0"
+                            style="font-size: 2.2rem;">
+                            Loading...
+                        </h1>
+
+                        <p id="next-trip-date"
+                        class="text-secondary mb-3"
+                        style="font-size: 0.85rem;">
+                            Loading...
+                        </p>
+
+                            <span id="next-trip-confirmation"
+                                class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2">
+                                Loading attendance status...
+                            </span>
+
+                            <hr class="text-muted opacity-25 my-3">
+
+                            <div class="row g-2 my-2">
+
+                                <!-- VEHICLE -->
+                                <div class="col-12 col-md-4 d-flex align-items-start">
+                                    <i class="bi bi-bus-front text-dlsu-green fs-5 me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block mb-1" style="font-size: 0.7rem;">
+                                            Vehicle
+                                        </small>
+                                    <span id="next-trip-plate"
+                                        class="fw-bold text-dark d-block"
+                                        style="font-size: 0.85rem;">
+                                        Loading...
+                                    </span>
+                                    <small id="next-trip-vehicle"
+                                        class="text-muted"
+                                        style="font-size: 0.7rem;">
+                                        Loading...
+                                    </small>
+                                    </div>
+                                </div>
+
+                                <!-- DRIVER -->
+                                <div class="col-12 col-md-4 d-flex align-items-start">
+                                    <i class="bi bi-person text-dlsu-green fs-5 me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block mb-1" style="font-size: 0.7rem;">
+                                            Driver
+                                        </small>
+                                    <span id="next-trip-driver"
+                                        class="fw-bold text-dark d-block"
+                                        style="font-size: 0.85rem;">
+                                        Loading...
+                                    </span>
+                                    <small id="next-trip-driver-id"
+                                        class="text-muted"
+                                        style="font-size: 0.7rem;">
+                                        Loading...
+                                    </small>
+                                    </div>
+                                </div>
+
+                                <!-- PICK-UP POINT -->
+                                <div class="col-12 col-md-4 d-flex align-items-start">
+                                    <i class="bi bi-geo-alt text-dlsu-green fs-5 me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block mb-1" style="font-size: 0.7rem;">
+                                            Pick-up Point
+                                        </small>
+                                    <span id="next-trip-pickup-campus"
+                                        class="fw-bold text-dark d-block"
+                                        style="font-size: 0.85rem;">
+                                        Loading...
+                                    </span>
+                                    <small id="next-trip-pickup"
+                                        class="text-muted"
+                                        style="font-size: 0.7rem;">
+                                        Loading...
+                                    </small>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <a id="next-trip-details"
+                            href="my-bookings.php"
+                            class="btn btn-dlsu-green w-100 py-2 mt-4 rounded-3 fw-bold"
+                            style="font-size: 0.85rem;">
+                                View Booking Details
+                                <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+<!-- UPCOMING TRIPS -->
+<div class="col-12 col-xl-5 d-flex">
+    <div class="card border rounded-4 p-4 shadow-sm border-light-subtle w-100 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h6 class="fw-bold text-dark mb-0 fs-6">
+                Upcoming Trips
+            </h6>
+
+            <a href="my-bookings.php#my-bookings"
+               class="text-dark fw-bold text-decoration-none"
+               style="font-size: 0.8rem;">
+                View All
+                <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <!-- JavaScript fills this list using the shared booking data. -->
+        <div id="dashboard-upcoming-list"
+             class="d-flex flex-column"
+             aria-live="polite"
+             aria-busy="true">
+            <p class="text-secondary small mb-0">
+                Loading upcoming trips...
+            </p>
+        </div>
+
+        <!-- Reusable layout for each upcoming booking. -->
+        <template id="dashboard-upcoming-template">
+            <div class="dashboard-upcoming-record d-flex align-items-center">
+                <div class="text-center me-3" style="min-width: 35px;">
+                    <small class="dashboard-trip-month text-dlsu-green fw-bold d-block"
+                           style="font-size: 0.6rem; letter-spacing: 1px;"></small>
+
+                    <span class="dashboard-trip-day fs-5 fw-bold text-dark"></span>
+                </div>
+
+                <div class="flex-grow-1">
+                    <h6 class="dashboard-trip-route fw-bold text-dark mb-0"
+                        style="font-size: 0.85rem;"></h6>
+
+                    <small class="dashboard-trip-time text-muted"
+                           style="font-size: 0.7rem;"></small>
+                </div>
+
+                <div class="ms-1 d-flex align-items-center">
+                    <span class="dashboard-trip-status badge rounded-pill px-2 py-1"
+                          style="font-size: 0.65rem;"></span>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+            </div>
+
+            <!-- DECORATIVE BACKGROUND -->
+            <img src="assets/images/wave-bg.png"
+                 alt=""
+                 class="position-absolute bottom-0 end-0 d-none d-lg-block"
+                 style="width: 320px; opacity: 0.9; z-index: 0; pointer-events: none;">
+
+        </main>
+    </div>
+</div>
+
+<!-- MOBILE NAVIGATION -->
+<?php include __DIR__ . '/nav-mobile.php';?>
+
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/booking-lifecycle.js"></script>
+<script src="assets/js/notifications.js"></script>
+<script src="assets/js/home.js"></script>
+<script src="assets/js/theme-toggle.js"></script>
+
+</body>
+</html>
