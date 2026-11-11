@@ -13,7 +13,7 @@
             <div class="d-flex bookings-layout">
                 <!-- ADMIN DESKTOP NAVIGATION -->
                 <?php include __DIR__ . '/admin-nav-desktop.php';?>
-
+                
                 <!-- MAIN CONTENT -->
                 <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
                     <!-- PAGE HEADER -->
