@@ -44,27 +44,56 @@
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                                 <h2 class="fs-5 fw-bold text-dlsu-green mb-0">Create Admin Account</h2>
                             </div>
-                            <form id="admin-account-form" novalidate>
+
+
+
+                            <form id="admin-account-form" method = "POST" action="signup.php" >
                                 <div class="row g-3">
-                                    <div class="col-12 col-md-6">
-                                        <label for="admin-first-name" class="form-label">First name</label>
-                                        <input type="text" id="admin-first-name" class="form-control" required maxlength="50">
+                                    <div class="col-12 col-sm-6">
+                                        <label for="first-name" class="form-label fw-bold">First Name</label>
+                                        <input required type="text" class="form-control" id="first-name" name="firstName" placeholder="Juan" autocomplete="given-name">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label for="admin-last-name" class="form-label">Last name</label>
-                                        <input type="text" id="admin-last-name" class="form-control" required maxlength="50">
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="last-name" class="form-label fw-bold">Last Name</label>
+                                        <input required type="text" class="form-control" id="last-name" name="lastName" placeholder="Dela Cruz" autocomplete="family-name">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label for="admin-email" class="form-label">DLSU email</label>
-                                        <input type="email" id="admin-email" class="form-control" required maxlength="254" autocomplete="off">
-                                    </div>
+
                                     <div class="col-12">
-                                        <p class="small text-secondary">Public demo password: <strong data-admin-demo-password>
-                                            </strong>. This creates a mock admin login only.</p>
-                                        <button type="submit" class="btn btn-dlsu-green">Create Admin Account</button>
+                                        <label for="signup-email" class="form-label fw-bold">DLSU Email</label>
+                                        <input required type="email" class="form-control" id="signup-email" name="email" placeholder="username@dlsu.edu.ph" autocomplete="email" autocapitalize="none" spellcheck="false" aria-describedby="signup-email-help">
+                                        <div id="signup-email-help" class="form-text">Use your university email address.</div>
                                     </div>
-                                </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="id-number" class="form-label fw-bold">ID Number</label>
+                                        <input required type="text" class="form-control" id="id-number" name="idNumber" placeholder="Enter your university ID number">
+                                    </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="sex" class="form-label fw-bold">Sex</label>
+                                        <select required class="form-select" id="sex" name="sex">
+                                            <option value="" selected>Select sex</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="prefer-not-to-say">Prefer not to say</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="signup-password" class="form-label fw-bold">Password</label>
+                                        <input required type="password" class="form-control" id="signup-password" name="password" placeholder="Create a password" autocomplete="new-password">
+                                    </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="confirm-password" class="form-label fw-bold">Confirm Password</label>
+                                        <input required type="password" class="form-control" id="confirm-password" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
+                                    </div>
+                                    <button type="submit" class="btn btn-dlsu-green w-100" aria-describedby="registration-note">Create Admin Account</button>
                             </form>
+
+
+
                         </section>
                         <section class="border rounded-4 p-3 p-md-4 bg-white mb-4">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
@@ -76,12 +105,11 @@
                                         <tr>
                                             <th scope="col">Name</th>
                                             <th scope="col">Email</th>
-                                            <th scope="col">Created By</th>
                                         </tr>
                                     </thead>
                                     <tbody id="admin-account-list">
                                         <tr>
-                                            <td colspan="3">Loading data...</td>
+                                            <td colspan="2">Loading data...</td>
                                         </tr>
                                     </tbody>
                                 </table>
