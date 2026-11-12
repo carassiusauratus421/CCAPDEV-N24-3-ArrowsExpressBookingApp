@@ -2,7 +2,7 @@
     $host = "localhost";
     $dbname = "arrows_express";
     $username = "root";
-    $password = "Pokemon0608!";
+    $password = "";
 
     try {
         $pdo = new PDO(
