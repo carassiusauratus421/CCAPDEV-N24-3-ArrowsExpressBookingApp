@@ -17,7 +17,7 @@
                 'password'          => $_POST['password'] ?? '',
             ];
 
-            if (in_array('', $data, true)) {
+            if (in_array('', $data)) {
                 $error = 'Please fill in all fields.';
             } elseif ($data['password'] !== ($_POST['confirmPassword'] ?? '')) {
                 $error = 'Passwords do not match.';
