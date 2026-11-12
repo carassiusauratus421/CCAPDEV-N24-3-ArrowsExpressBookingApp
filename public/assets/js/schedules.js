@@ -10,10 +10,14 @@ const routeFilter = document.getElementById("route-filter");
 const tripList = document.getElementById("available-trip-list");
 const tripRowTemplate = document.getElementById("trip-row-template");
 const tripDetailsModal = document.getElementById("trip-details-modal");
+const confirmBookingButton = document.getElementById(
+    "confirm-booking-button"
+);
 
 let scheduleTrips = [];
 let selectedScheduleTripId = null;
 let scheduleRequestNumber = 0;
+let bookingInProgress = false;
 
 
 // Date and time formatting
@@ -80,6 +84,42 @@ function hideBookingMessage() {
 
     feedback.textContent = "";
     feedback.className = "alert d-none";
+}
+
+function showModalBookingMessage(message, type = "danger") {
+    if (!confirmBookingButton) {
+        showBookingMessage(message, type);
+        return;
+    }
+
+    let feedback = document.getElementById(
+        "modal-booking-message"
+    );
+
+    if (!feedback) {
+        feedback = document.createElement("div");
+        feedback.id = "modal-booking-message";
+        feedback.setAttribute("role", "alert");
+
+        confirmBookingButton.parentElement.insertBefore(
+            feedback,
+            confirmBookingButton
+        );
+    }
+
+    feedback.textContent = message;
+    feedback.className = "alert alert-" + type + " mb-2";
+}
+
+function hideModalBookingMessage() {
+    const feedback = document.getElementById(
+        "modal-booking-message"
+    );
+
+    if (feedback) {
+        feedback.textContent = "";
+        feedback.className = "alert d-none";
+    }
 }
 
 function showTripMessage(message) {
@@ -264,7 +304,8 @@ async function loadScheduleTrips() {
 
     try {
         const response = await fetch(url, {
-            cache: "no-store"
+            cache: "no-store",
+            credentials: "same-origin"
         });
 
         const data = await response.json();
@@ -317,6 +358,158 @@ async function loadScheduleTrips() {
             "Unable to load trip schedules from the database.",
             "danger"
         );
+
+        throw error;
+    }
+}
+
+
+// Retrieve the booking security token
+
+async function getBookingCsrfToken() {
+    const response = await fetch("api/bookings.php", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store"
+    });
+
+    if (response.status === 401) {
+        throw new Error(
+            "Your login session has expired. Please log in again."
+        );
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Unable to verify your passenger account."
+        );
+    }
+
+    if (!data.csrf_token) {
+        throw new Error(
+            "Unable to obtain a booking security token."
+        );
+    }
+
+    return data.csrf_token;
+}
+
+
+// Create a booking through the PHP API
+
+async function createScheduleBooking(tripId) {
+    const csrfToken = await getBookingCsrfToken();
+
+    const response = await fetch("api/bookings.php", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrfToken
+        },
+        body: JSON.stringify({
+            trip_id: tripId
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Unable to complete your booking."
+        );
+    }
+
+    if (data.success !== true) {
+        throw new Error(
+            "The server did not confirm the reservation."
+        );
+    }
+
+    return data;
+}
+
+
+// Process the booking confirmation
+
+async function confirmScheduleBooking() {
+    if (bookingInProgress) {
+        return;
+    }
+
+    if (!selectedScheduleTripId) {
+        showModalBookingMessage(
+            "Please select a trip before booking."
+        );
+        return;
+    }
+
+    const tripId = Number(selectedScheduleTripId);
+
+    if (!Number.isInteger(tripId) || tripId <= 0) {
+        showModalBookingMessage(
+            "The selected trip is invalid."
+        );
+        return;
+    }
+
+    bookingInProgress = true;
+    hideModalBookingMessage();
+
+    if (confirmBookingButton) {
+        confirmBookingButton.disabled = true;
+        confirmBookingButton.textContent = "Booking...";
+    }
+
+    try {
+        const result = await createScheduleBooking(tripId);
+
+        // Close the modal after a successful booking.
+        if (tripDetailsModal && window.bootstrap) {
+            const modal = bootstrap.Modal.getInstance(
+                tripDetailsModal
+            );
+
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+        // Refresh trip seats from the database.
+        try {
+            await loadScheduleTrips();
+
+            showBookingMessage(
+                result.message ||
+                "Your booking has been confirmed.",
+                "success"
+            );
+        } catch (refreshError) {
+            showBookingMessage(
+                "Your booking was confirmed, but the schedules " +
+                "could not be refreshed. Reload the page to " +
+                "view updated availability.",
+                "warning"
+            );
+        }
+
+    } catch (error) {
+        console.error("Booking request failed:", error);
+
+        showModalBookingMessage(
+            error.message || "Unable to complete your booking."
+        );
+
+    } finally {
+        bookingInProgress = false;
+
+        if (confirmBookingButton) {
+            confirmBookingButton.disabled = false;
+            confirmBookingButton.textContent = "Book Trip";
+        }
     }
 }
 
@@ -340,14 +533,39 @@ if (tripDetailsModal) {
             selectedScheduleTripId = selected.trip_id;
 
             fillScheduleDetails(selected);
+            hideModalBookingMessage();
+
+            if (confirmBookingButton) {
+                confirmBookingButton.disabled =
+                    bookingInProgress ||
+                    Number(selected.available_slots) <= 0;
+            }
         }
     );
 
     tripDetailsModal.addEventListener(
         "hidden.bs.modal",
         function () {
-            selectedScheduleTripId = null;
+            if (!bookingInProgress) {
+                selectedScheduleTripId = null;
+            }
+
+            hideModalBookingMessage();
         }
+    );
+}
+
+
+// Booking confirmation event
+
+if (confirmBookingButton) {
+    confirmBookingButton.addEventListener(
+        "click",
+        confirmScheduleBooking
+    );
+} else {
+    console.warn(
+        "Booking confirmation button was not found."
     );
 }
 
@@ -373,7 +591,9 @@ window.addEventListener(
     "pageshow",
     function (event) {
         if (event.persisted) {
-            loadScheduleTrips();
+            loadScheduleTrips().catch(function () {
+                // The loading function displays the error.
+            });
         }
     }
 );
@@ -381,4 +601,6 @@ window.addEventListener(
 
 // Initialize schedules
 
-loadScheduleTrips();
+loadScheduleTrips().catch(function () {
+    // The loading function displays the error.
+});

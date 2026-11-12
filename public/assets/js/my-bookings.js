@@ -369,37 +369,65 @@ function getBookingCategory(booking) {
     return "upcoming";
 }
 
+
 function getBookingStatusLabel(booking) {
     const category = getBookingCategory(booking);
 
-    if (category === "cancelled") {
-        return "Cancelled";
-    }
+    const status = String(
+        booking.booking_status || "pending"
+    ).toLowerCase().replace(/[\s-]+/g, "_");
 
-    if (category === "completed") {
+    const statusLabels = {
+        pending: "Pending Approval",
+        confirmed: "Confirmed",
+        accepted: "Accepted",
+        on_hold: "On Hold",
+        waitlisted: "Waitlisted",
+        rejected: "Rejected",
+        cancelled: "Cancelled",
+        canceled: "Cancelled",
+        forfeited: "Forfeited",
+        completed: "Completed"
+    };
+
+    // Show past confirmed bookings under Completed.
+    if (
+        category === "completed" &&
+        (status === "confirmed" || status === "accepted")
+    ) {
         return "Completed";
     }
 
-    const status = String(
-        booking.booking_status || "pending"
-    ).toLowerCase();
-
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return statusLabels[status] || "Unknown";
 }
+
+
 
 function getBookingStatusClass(booking) {
-    const category = getBookingCategory(booking);
+    const status = String(
+        booking.booking_status || ""
+    ).toLowerCase().replace(/[\s-]+/g, "_");
 
-    if (category === "cancelled") {
-        return "bg-danger-subtle text-danger-emphasis";
+    const statusClasses = {
+        pending: "booking-status--pending",
+        confirmed: "booking-status--confirmed",
+        accepted: "booking-status--confirmed",
+        on_hold: "booking-status--on-hold",
+        waitlisted: "booking-status--waitlisted",
+        rejected: "booking-status--rejected",
+        cancelled: "booking-status--cancelled",
+        canceled: "booking-status--cancelled",
+        forfeited: "booking-status--forfeited",
+        completed: "booking-status--completed"
+    };
+
+    if (statusClasses[status]) {
+        return statusClasses[status];
     }
 
-    if (category === "completed") {
-        return "bg-secondary-subtle text-secondary-emphasis";
-    }
-
-    return "bg-success-subtle text-success-emphasis";
+    return "booking-status--default";
 }
+
 
 
 // Display passenger bookings
@@ -742,11 +770,235 @@ tripDateInput.addEventListener("change", loadAvailableTrips);
 
 // Keep unfinished booking actions disabled
 
+
+ // Booking creation
+
+let bookingInProgress = false;
+
+function showTripBookingFeedback(message, type = "danger") {
+    if (!tripDetailsModal) {
+        showBookingMessage(message, type);
+        return;
+    }
+
+    const modalBody = tripDetailsModal.querySelector(".modal-body");
+
+    if (!modalBody) {
+        showBookingMessage(message, type);
+        return;
+    }
+
+    let feedback = document.getElementById(
+        "trip-booking-feedback"
+    );
+
+    if (!feedback) {
+        feedback = document.createElement("div");
+        feedback.id = "trip-booking-feedback";
+        feedback.setAttribute("role", "alert");
+        modalBody.appendChild(feedback);
+    }
+
+    feedback.textContent = message;
+    feedback.className = "alert alert-" + type + " mt-3";
+}
+
+function hideTripBookingFeedback() {
+    const feedback = document.getElementById(
+        "trip-booking-feedback"
+    );
+
+    if (feedback) {
+        feedback.textContent = "";
+        feedback.className = "alert d-none";
+    }
+}
+
+
+// Retrieve the booking security token
+
+async function getMyBookingsCsrfToken() {
+    const response = await fetch("api/bookings.php", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Unable to verify your passenger account."
+        );
+    }
+
+    if (!data.csrf_token) {
+        throw new Error(
+            "Unable to obtain the booking security token."
+        );
+    }
+
+    return data.csrf_token;
+}
+
+
+// Submit a reservation to MySQL
+
+async function createMyBooking(tripId) {
+    const csrfToken = await getMyBookingsCsrfToken();
+
+    const response = await fetch("api/bookings.php", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrfToken
+        },
+        body: JSON.stringify({
+            trip_id: tripId
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Unable to create your booking."
+        );
+    }
+
+    if (data.success !== true) {
+        throw new Error(
+            "The server did not confirm your reservation."
+        );
+    }
+
+    return data;
+}
+
+
+// Confirm booking from My Bookings
+
+async function handleBookTrip() {
+    if (bookingInProgress) {
+        return;
+    }
+
+    const tripId = Number(selectedTripId);
+
+    if (!Number.isInteger(tripId) || tripId <= 0) {
+        showTripBookingFeedback(
+            "Please select a valid trip."
+        );
+        return;
+    }
+
+    const selectedTrip = availableTrips.find(function (trip) {
+        return Number(trip.trip_id) === tripId;
+    });
+
+    if (!selectedTrip || Number(selectedTrip.available_slots) <= 0) {
+        showTripBookingFeedback(
+            "This trip is no longer available."
+        );
+        return;
+    }
+
+    bookingInProgress = true;
+    hideTripBookingFeedback();
+
+    if (bookTripButton) {
+        bookTripButton.disabled = true;
+        bookTripButton.textContent = "Booking...";
+    }
+
+    try {
+        const result = await createMyBooking(tripId);
+
+        if (tripDetailsModal && window.bootstrap) {
+            const modal = bootstrap.Modal.getInstance(
+                tripDetailsModal
+            );
+
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+        showBookingMessage(
+            result.message || "Your booking has been confirmed.",
+            "success"
+        );
+
+        await Promise.all([
+            loadAvailableTrips(),
+            loadPassengerBookings()
+        ]);
+
+    } catch (error) {
+        console.error("Booking creation error:", error);
+
+        showTripBookingFeedback(
+            error.message || "Unable to complete your booking."
+        );
+
+    } finally {
+        bookingInProgress = false;
+
+        if (bookTripButton) {
+            bookTripButton.textContent = "Book Trip";
+
+            const currentTrip = availableTrips.find(function (trip) {
+                return Number(trip.trip_id) ===
+                    Number(selectedTripId);
+            });
+
+            bookTripButton.disabled = !currentTrip ||
+                Number(currentTrip.available_slots) <= 0;
+        }
+    }
+}
+
+
+// Book Trip button
+
 if (bookTripButton) {
     bookTripButton.disabled = true;
-    bookTripButton.title =
-        "Database booking creation is not available yet.";
+    bookTripButton.removeAttribute("title");
+
+    bookTripButton.addEventListener(
+        "click",
+        handleBookTrip
+    );
 }
+
+
+// Update booking button when a trip is selected
+
+if (tripDetailsModal) {
+    tripDetailsModal.addEventListener(
+        "show.bs.modal",
+        function () {
+            hideTripBookingFeedback();
+
+            const trip = availableTrips.find(function (item) {
+                return Number(item.trip_id) ===
+                    Number(selectedTripId);
+            });
+
+            if (bookTripButton) {
+                bookTripButton.disabled =
+                    bookingInProgress ||
+                    !trip ||
+                    Number(trip.available_slots) <= 0;
+            }
+        }
+    );
+}
+
+
+// Keep unfinished cancellation actions disabled
 
 const cancelBookingButton = document.getElementById(
     "cancel-booking-button"
