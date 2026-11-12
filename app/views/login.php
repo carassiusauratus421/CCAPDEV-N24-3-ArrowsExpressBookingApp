@@ -14,45 +14,43 @@
         <!-- MAIN CONTENT -->
         <main class="container-fluid">
             <div class="row min-vh-100">
-                <!-- LEFT SIDE: DESKTOP BRANDING -->
+                <!-- LEFT SIDE -->
                 <section class="col-lg-6 d-none d-lg-flex flex-column" aria-label="About Arrows Express">
                     <div class="pt-2 ps-2">
                         <img src="assets/images/logo.png" alt="De La Salle University" class="logo-slot">
                     </div>
-
+                    
                     <div class="my-auto px-5 py-4">
                         <div class="row mt-4">
                             <div class="col-3"> <!-- spacer column --> </div>
                             <div class="col-6">
                                 <h1 class="display-2 fw-bold">ARROWS<br>EXPRESS</h1>
                                 <p class="lead text-secondary fw-medium">Your inter-campus shuttle<br>booking platform</p>
-                            </div>
-                            <div class="col-3"> <!-- spacer column --> </div>
-                        </div>
 
-                        <div class="row text-center mt-4">
-                            <div class="col-3"> <!-- spacer column --> </div>
-                            <div class="col-2">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <img src="assets/images/calendar.png" alt="" width="32" class="d-block mx-auto mb-2">
-                                        View<br>Schedules
+                                <div class="row g-3 text-center mt-2">
+                                    <div class="col-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <i class="bi bi-calendar-check fs-2 d-block mb-2"></i>
+                                                View<br>Schedules
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <img src="assets/images/bus.png" alt="" width="32" class="d-block mx-auto mb-2">
-                                        Book<br>Your Ride
+                                    <div class="col-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <i class="bi bi-bus-front fs-2 d-block mb-2"></i>
+                                                Book<br>Your Ride
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <img src="assets/images/bell.png" alt="" width="32" class="d-block mx-auto mb-2">
-                                        Live<br> Updates
+                                    <div class="col-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <i class="bi bi-bell fs-2 d-block mb-2"></i>
+                                                Live<br>Updates
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +58,7 @@
                         </div>
                     </div>
                 </section>
-
+                
                 <!-- RIGHT SIDE: LOGIN FORM -->
                 <section class="col-12 col-lg-6 d-flex flex-column divider" aria-labelledby="login-heading">
                     <div class="d-flex justify-content-between align-items-center gap-3 pt-3 px-3 px-lg-4">
