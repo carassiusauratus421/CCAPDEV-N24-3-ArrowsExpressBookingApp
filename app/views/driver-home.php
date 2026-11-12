@@ -43,7 +43,7 @@
 
             <div class="px-2">
                 <hr class="my-3 opacity-25">
-                <a href="index.php"
+                <a href="api/logout.php"
                    class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
                     <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i>
                     Log Out
@@ -69,7 +69,7 @@
                         <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
                     </a>
 
-                    <a href="index.php"
+                    <a href="api/logout.php"
                        class="btn btn-sm btn-light border d-lg-none"
                        aria-label="Log out">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
@@ -286,7 +286,6 @@
 </nav>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/booking-lifecycle.js"></script>
 <script src="assets/js/driver-home.js"></script>
 <script src="assets/js/theme-toggle.js"></script>
 </body>
