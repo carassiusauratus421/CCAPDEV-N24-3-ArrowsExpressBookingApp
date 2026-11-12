@@ -24,7 +24,11 @@
             <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                 <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
-        
+                
+                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+                        <i class="bi bi-moon" aria-hidden="true"></i>
+                    </button>
+
                     <!-- MOBILE NOTIFICATIONS -->
                     <a href="notifications.php"
                        class="notification-bell btn btn-white border rounded-circle d-lg-none"
@@ -34,10 +38,6 @@
                         <span class="notification-count badge bg-success rounded-pill"
                               data-notification-count hidden>0</span>
                     </a>
-                    
-                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border d-lg-none" aria-label="Toggle theme" aria-pressed="false">
-                        <i class="bi bi-moon" aria-hidden="true"></i>
-                    </button>
                     
                     <a href="profile.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                         <span class="dashboard-user-avatar me-2">
@@ -63,7 +63,7 @@
 
             <noscript>
                 <p class="alert alert-warning">
-                    Enable JavaScript to view and edit your demo profile.
+                    Enable JavaScript to view and edit your profile.
                 </p>
             </noscript>
 
@@ -74,7 +74,7 @@
                          aria-labelledby="profile-summary-name">
                     <div class="bg-dlsu-light rounded-4 p-4 text-center profile-summary">
 
-                        <!-- The ID number updates after saving profile changes. -->
+                        <!-- The ID number comes from the authenticated account. -->
                         <p class="small text-secondary mb-3">
                             ID Number:
                             <span id="profile-summary-id"
@@ -96,13 +96,6 @@
                             Loading...
                         </span>
 
-                        <hr class="opacity-25 my-4">
-
-                        <p class="small text-secondary mb-1">Campus</p>
-                        <p id="profile-summary-campus"
-                           class="fw-semibold text-dlsu-green mb-0">
-                            Loading...
-                        </p>
                     </div>
                 </section>
 
@@ -247,48 +240,16 @@
                                            id="college-department"
                                            name="collegeDepartment"
                                            class="form-control"
-                                           maxlength="100"
+                                           maxlength="45"
                                            aria-describedby="college-department-error"
                                            required readonly>
                                     <div id="college-department-error"
                                          class="invalid-feedback"></div>
                                 </div>
 
-                                <div class="col-12 col-md-6">
-                                    <label for="contact-number"
-                                           class="form-label fw-semibold">
-                                        Contact Number
-                                    </label>
-                                    <input type="tel"
-                                           id="contact-number"
-                                           name="contactNumber"
-                                           class="form-control"
-                                           autocomplete="tel"
-                                           maxlength="25"
-                                           aria-describedby="contact-number-error"
-                                           required readonly>
-                                    <div id="contact-number-error"
-                                         class="invalid-feedback"></div>
-                                </div>
 
-                                <div class="col-12 col-md-6">
-                                    <label for="profile-campus"
-                                           class="form-label fw-semibold">
-                                        Campus
-                                    </label>
-                                    <select id="profile-campus"
-                                            name="campus"
-                                            class="form-select"
-                                            aria-describedby="profile-campus-error"
-                                            required disabled>
-                                        <option value="Manila">Manila</option>
-                                        <option value="Laguna">Laguna</option>
-                                    </select>
-                                    <div id="profile-campus-error"
-                                         class="invalid-feedback"></div>
-                                </div>
 
-                                <!-- Only the document filename is saved. -->
+                                <!-- Verification documents are displayed only, not uploaded by this form. -->
                                 <div class="col-12">
                                     <label for="verification-document"
                                            class="form-label fw-semibold">
@@ -300,67 +261,15 @@
                                         Loading...
                                     </p>
 
-                                    <div id="profile-document-edit" class="d-none">
-                                        <input type="file"
-                                               id="verification-document"
-                                               name="verificationDocument"
-                                               class="form-control"
-                                               accept=".pdf,.jpg,.jpeg,.png"
-                                               aria-describedby="verification-document-help verification-document-error"
-                                               disabled>
-                                        <div id="verification-document-error"
-                                             class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div id="verification-document-help"
-                                         class="form-text">
-                                        Demo document record. Replacements accept PDF,
-                                        JPG, or PNG up to 5 MB. Only the filename is
-                                        saved; files are not uploaded.
-                                    </div>
+                                    <div class="form-text">Document updates are managed separately. This form does not upload or replace files.</div>
                                 </div>
 
-                                <div class="col-12 col-md-6">
-                                    <label for="profile-password"
-                                           class="form-label fw-semibold">
-                                        Password
-                                    </label>
-                                    <input type="password"
-                                           id="profile-password"
-                                           name="password"
-                                           class="form-control"
-                                           autocomplete="new-password"
-                                           maxlength="128"
-                                           aria-describedby="profile-password-error"
-                                           required readonly>
-                                    <div id="profile-password-error"
-                                         class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="col-12 col-md-6">
-                                    <label for="confirm-password"
-                                           class="form-label fw-semibold">
-                                        Confirm Password
-                                    </label>
-                                    <input type="password"
-                                           id="confirm-password"
-                                           name="confirmPassword"
-                                           class="form-control"
-                                           autocomplete="new-password"
-                                           maxlength="128"
-                                           aria-describedby="confirm-password-error"
-                                           required readonly>
-                                    <div id="confirm-password-error"
-                                         class="invalid-feedback"></div>
-                                </div>
-
-                                <!-- <div class="col-12">
+                                <div class="col-12">
                                     <p class="small text-secondary mb-0">
-                                        Password fields show masked demo values.
-                                        Password edits apply only to this visit and
-                                        do not change the demo login credentials.
+                                        DLSU email and ID number are account identifiers and cannot be edited here.
+                                        Password changes and document uploads are not available in this form.
                                     </p>
-                                </div> -->
+                                </div>
                             </div>
 
                             <div id="profile-edit-actions"
@@ -392,5 +301,6 @@
 
 <script src="assets/js/theme-toggle.js"></script>
 <script src="assets/js/passenger-identity.js"></script>
+<script src="assets/js/profile.js"></script>
 </body>
 </html>

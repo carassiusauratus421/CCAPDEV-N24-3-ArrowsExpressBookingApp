@@ -1,431 +1,180 @@
-/* PASSENGER PROFILE: JSON DEFAULTS AND SHARED BROWSER CHANGES */
-const profileStorageKey = "arrowsExpressDemoChanges:v1";
-let profileData = null;
-let profileSeed = null;
-let profileChanges = {};
-let profileStorageAvailable = true;
+/* My Profile: authenticated MySQL profile data, no Phase 1 demo storage. */
+(() => {
+    "use strict";
 
-const passengerTypeLabels = {
-    student: "Student",
-    faculty: "Faculty",
-    "employee-staff": "Employee / Staff"
-};
+    const form = document.getElementById("profile-form");
+    const message = document.getElementById("profile-message");
+    const editButton = document.getElementById("edit-profile-button");
+    const cancelButton = document.getElementById("cancel-profile-button");
+    const actions = document.getElementById("profile-edit-actions");
+    const help = document.getElementById("profile-edit-help");
+    if (!form || !editButton || !cancelButton || !actions) return;
 
-const profileForm = document.getElementById("profile-form");
-const profileMessage = document.getElementById("profile-message");
-const editProfileButton = document.getElementById("edit-profile-button");
-const profileEditActions = document.getElementById("profile-edit-actions");
+    const inputs = {
+        first_name: document.getElementById("first-name"),
+        last_name: document.getElementById("last-name"),
+        email: document.getElementById("profile-email"),
+        id_number: document.getElementById("id-number"),
+        passenger_type: document.getElementById("passenger-type"),
+        sex: document.getElementById("sex"),
+        college: document.getElementById("college-department")
+    };
+    const editable = ["first_name", "last_name", "passenger_type", "sex", "college"];
+    const typeLabels = { student: "Student", faculty: "Faculty", "employee-staff": "Employee / Staff" };
+    let current = null;
+    let csrfToken = "";
+    let editing = false;
+    let saving = false;
 
-const profileFields = {
-    firstName: document.getElementById("first-name"),
-    lastName: document.getElementById("last-name"),
-    email: document.getElementById("profile-email"),
-    idNumber: document.getElementById("id-number"),
-    passengerType: document.getElementById("passenger-type"),
-    sex: document.getElementById("sex"),
-    collegeDepartment: document.getElementById("college-department"),
-    contactNumber: document.getElementById("contact-number"),
-    campus: document.getElementById("profile-campus")
-};
-
-const documentInput = document.getElementById("verification-document");
-const passwordInput = document.getElementById("profile-password");
-const confirmPasswordInput = document.getElementById("confirm-password");
-
-const allProfileInputs = [
-    ...Object.values(profileFields),
-    documentInput,
-    passwordInput,
-    confirmPasswordInput
-];
-
-let savedProfile = null;
-let savedDemoPassword = "";
-let isEditingProfile = false;
-
-function showProfileMessage(message, type) {
-    profileMessage.className = "alert alert-" + type;
-    profileMessage.textContent = message;
-}
-
-function clearProfileMessage() {
-    profileMessage.classList.add("d-none");
-    profileMessage.textContent = "";
-}
-
-function clearProfileFieldError(input) {
-    input.classList.remove("is-invalid");
-    input.removeAttribute("aria-invalid");
-    document.getElementById(input.id + "-error").textContent = "";
-}
-
-function setProfileFieldError(input, message) {
-    input.classList.add("is-invalid");
-    input.setAttribute("aria-invalid", "true");
-    document.getElementById(input.id + "-error").textContent = message;
-}
-
-/* Validate profile details without storing passwords or document contents. */
-function getProfileErrors(profile) {
-    const errors = {};
-
-    ["firstName", "lastName"].forEach(function (key) {
-        if (profile[key].trim() === "" || profile[key].length > 50) {
-            errors[key] = "Enter a name with 1 to 50 characters.";
-        }
-    });
-
-    if (
-        profile.email.length > 254 ||
-        !/^[a-z0-9._%+-]+@dlsu\.edu\.ph$/i.test(profile.email)
-    ) {
-        errors.email = "Enter a valid email ending in @dlsu.edu.ph.";
+    function text(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
     }
 
-    if (!/^[a-z0-9-]{3,20}$/i.test(profile.idNumber)) {
-        errors.idNumber = "Enter an ID number with 3 to 20 letters, digits, or hyphens.";
+    function feedback(value, type = "danger") {
+        message.className = "alert alert-" + type;
+        message.textContent = value;
     }
 
-    if (!Object.hasOwn(passengerTypeLabels, profile.passengerType)) {
-        errors.passengerType = "Select a passenger type.";
+    function clearFeedback() {
+        message.className = "alert d-none";
+        message.textContent = "";
     }
 
-    if (!["male", "female", "prefer-not-to-say"].includes(profile.sex)) {
-        errors.sex = "Select a sex option.";
+    function fieldError(input, value) {
+        if (!input) return;
+        input.classList.toggle("is-invalid", Boolean(value));
+        const target = document.getElementById(input.id + "-error");
+        if (target) target.textContent = value || "";
     }
 
-    if (
-        profile.collegeDepartment.trim().length < 2 ||
-        profile.collegeDepartment.length > 100
-    ) {
-        errors.collegeDepartment = "Enter your college or department with 2 to 100 characters.";
+    function clearErrors() {
+        Object.values(inputs).forEach(input => fieldError(input, ""));
     }
 
-    if (!/^\+?\d{10,15}$/.test(profile.contactNumber)) {
-        errors.contactNumber = "Enter 10 to 15 digits, with an optional + prefix.";
-    }
-
-    if (!["Manila", "Laguna"].includes(profile.campus)) {
-        errors.campus = "Select Manila or Laguna.";
-    }
-
-    return errors;
-}
-
-function readProfileFields() {
-    const profile = {};
-
-    Object.keys(profileFields).forEach(function (key) {
-        profile[key] = profileFields[key].value.trim();
-    });
-
-    profile.firstName = profile.firstName.replace(/\s+/g, " ");
-    profile.lastName = profile.lastName.replace(/\s+/g, " ");
-    profile.email = profile.email.toLowerCase();
-    profile.contactNumber = profile.contactNumber.replace(/[\s()-]/g, "");
-    profile.verificationDocument = savedProfile.verificationDocument;
-
-    return profile;
-}
-
-/* Always render user-entered data as text, never as HTML. */
-function renderProfile() {
-    Object.keys(profileFields).forEach(function (key) {
-        profileFields[key].value = savedProfile[key];
-    });
-
-    const fullName = savedProfile.firstName + " " + savedProfile.lastName;
-
-    document.getElementById("profile-header-name").textContent = fullName;
-    document.getElementById("profile-summary-name").textContent = fullName;
-    document.getElementById("profile-summary-email").textContent = savedProfile.email;
-    document.getElementById("profile-summary-campus").textContent = savedProfile.campus;
-    document.getElementById("profile-summary-type").textContent =
-        passengerTypeLabels[savedProfile.passengerType];
-
-    // Display the user's ID number instead of initials.
-    document.getElementById("profile-summary-id").textContent = savedProfile.idNumber;
-
-    document.getElementById("profile-document-name").textContent =
-        savedProfile.verificationDocument;
-
-    documentInput.value = "";
-    passwordInput.value = savedDemoPassword;
-    confirmPasswordInput.value = savedDemoPassword;
-}
-
-/* Switch between viewing and editing profile details. */
-function setProfileEditing(isEditing) {
-    isEditingProfile = isEditing;
-
-    allProfileInputs.forEach(function (input) {
-        if (input.tagName === "SELECT" || input.type === "file") {
-            input.disabled = !isEditing;
-        } else {
-            input.readOnly = !isEditing;
-        }
-
-        clearProfileFieldError(input);
-    });
-
-    editProfileButton.classList.toggle("d-none", isEditing);
-    profileEditActions.classList.toggle("d-none", !isEditing);
-    document.getElementById("profile-document-edit").classList.toggle("d-none", !isEditing);
-
-    document.getElementById("profile-edit-help").textContent = isEditing
-        ? "Update your details, then select Save Changes."
-        : "Select Edit Profile to make changes.";
-}
-
-/* Load shared edits without replacing records belonging to other pages. */
-function readSharedProfileChanges() {
-    if (!profileStorageAvailable) {
-        return profileChanges;
-    }
-
-    try {
-        const saved = JSON.parse(localStorage.getItem(profileStorageKey));
-
-        return saved && saved.schemaVersion === profileData.schemaVersion
-            ? saved
-            : { schemaVersion: profileData.schemaVersion };
-    } catch (error) {
-        profileStorageAvailable = false;
-        console.warn("Saved profile changes could not be loaded:", error);
-        return profileChanges;
-    }
-}
-
-function loadProfile() {
-    profileChanges = readSharedProfileChanges();
-    savedProfile = { ...profileSeed };
-
-    const storedProfile = Array.isArray(profileChanges.users)
-        ? profileChanges.users.find(function (user) {
-            return user.id === profileSeed.id;
-        })
-        : null;
-
-    if (!storedProfile) {
-        return;
-    }
-
-    const candidate = { ...profileSeed };
-
-    [...Object.keys(profileFields), "verificationDocument"].forEach(function (key) {
-        if (typeof storedProfile[key] === "string") {
-            candidate[key] = storedProfile[key];
-        }
-    });
-
-    if (Object.keys(getProfileErrors(candidate)).length > 0 ||
-        candidate.verificationDocument.trim() === "" ||
-        candidate.verificationDocument.length > 255) {
-        showProfileMessage(
-            "Saved profile details are invalid. The original demo details are shown.",
-            "warning"
-        );
-        return;
-    }
-
-    savedProfile = candidate;
-}
-
-/* Keep an unfinished edit intact when another page updates shared data. */
-function refreshSharedProfile() {
-    if (!profileSeed || isEditingProfile) {
-        return;
-    }
-
-    loadProfile();
-    renderProfile();
-}
-
-editProfileButton.addEventListener("click", function () {
-    clearProfileMessage();
-    setProfileEditing(true);
-    profileFields.firstName.focus();
-});
-
-document.getElementById("cancel-profile-button").addEventListener("click", function () {
-    loadProfile();
-    renderProfile();
-    setProfileEditing(false);
-    clearProfileMessage();
-    editProfileButton.focus();
-});
-
-profileForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    if (!isEditingProfile) {
-        return;
-    }
-
-    const profile = readProfileFields();
-    const errors = getProfileErrors(profile);
-
-    allProfileInputs.forEach(clearProfileFieldError);
-
-    Object.keys(errors).forEach(function (key) {
-        setProfileFieldError(profileFields[key], errors[key]);
-    });
-
-    if (
-        passwordInput.value.length < 8 ||
-        passwordInput.value.length > 128 ||
-        passwordInput.value.trim() === ""
-    ) {
-        setProfileFieldError(
-            passwordInput,
-            "Use a demo password with 8 to 128 characters."
-        );
-    }
-
-    if (confirmPasswordInput.value !== passwordInput.value) {
-        setProfileFieldError(confirmPasswordInput, "The passwords must match.");
-    }
-
-    const file = documentInput.files[0];
-
-    if (file) {
-        if (!/\.(pdf|jpe?g|png)$/i.test(file.name) || file.name.length > 255) {
-            setProfileFieldError(
-                documentInput,
-                "Choose a PDF, JPG, or PNG."
-            );
-        } else if (file.size > 5 * 1024 * 1024) {
-            setProfileFieldError(
-                documentInput,
-                "Choose a document no larger than 5 MB."
-            );
-        } else {
-            profile.verificationDocument = file.name;
-        }
-    }
-
-    const firstInvalidInput = profileForm.querySelector(".is-invalid");
-
-    if (firstInvalidInput) {
-        showProfileMessage("Please correct the highlighted fields.", "danger");
-        firstInvalidInput.focus();
-        return;
-    }
-
-    const passwordChanged = passwordInput.value !== savedDemoPassword;
-
-    savedDemoPassword = passwordInput.value;
-    savedProfile = profile;
-
-    profileChanges = readSharedProfileChanges();
-    profileChanges.schemaVersion = profileData.schemaVersion;
-    profileChanges.users = profileChanges.users || [];
-
-    const storedUser = profileChanges.users.find(function (user) {
-        return user.id === profileSeed.id;
-    });
-
-    if (storedUser) {
-        Object.assign(storedUser, profile);
-    } else {
-        profileChanges.users.push({ id: profileSeed.id, ...profile });
-    }
-
-    try {
-        localStorage.setItem(profileStorageKey, JSON.stringify(profileChanges));
-        profileStorageAvailable = true;
-
-        showProfileMessage(
-            "Profile updated successfully. Demo details are saved in this browser." +
-            (
-                passwordChanged
-                    ? " The password change applies only to this visit; demo login credentials remain the same."
-                    : ""
-            ),
-            "success"
-        );
-    } catch (error) {
-        profileStorageAvailable = false;
-
-        showProfileMessage(
-            "Profile updated for this visit, but browser storage is unavailable. Changes will reset on reload.",
-            "warning"
-        );
-    }
-
-    renderProfile();
-    setProfileEditing(false);
-    editProfileButton.focus();
-    window.dispatchEvent(new Event("arrows-express-data-updated"));
-});
-
-allProfileInputs.forEach(function (input) {
-    input.addEventListener("input", function () {
-        clearProfileFieldError(input);
-        clearProfileMessage();
-    });
-});
-
-documentInput.addEventListener("change", function () {
-    const file = documentInput.files[0];
-
-    document.getElementById("profile-document-name").textContent = file
-        ? file.name + " (selected; save to apply)"
-        : savedProfile.verificationDocument;
-});
-
-setProfileEditing(false);
-editProfileButton.disabled = true;
-
-window.addEventListener("arrows-express-data-updated", refreshSharedProfile);
-
-window.addEventListener("storage", function (event) {
-    if (event.key === profileStorageKey || event.key === null) {
-        refreshSharedProfile();
-    }
-});
-
-window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-        refreshSharedProfile();
-    }
-});
-
-/* Initial values and the public demo password come from the shared JSON. */
-fetch("assets/data/mock-data.json")
-    .then(function (response) {
-        if (!response.ok) {
-            throw new Error("Could not load mock-data.json.");
-        }
-
-        return response.json();
-    })
-    .then(function (data) {
-        profileData = data;
-        profileSeed = data.users.find(function (user) {
-            return user.id === data.settings.defaultPassengerId;
+    function display(profile) {
+        current = profile;
+        Object.entries(inputs).forEach(([key, input]) => {
+            if (!input) return;
+            let value = String(profile[key] ?? "");
+            if (key === "sex") value = value.toLowerCase();
+            if (input.tagName === "SELECT" && value && !Array.from(input.options).some(option => option.value === value)) {
+                // The database may contain a legacy value not offered by the select.
+                const option = new Option(value, value);
+                input.add(option);
+            }
+            input.value = value;
         });
+        const name = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
+        text("profile-header-name", name);
+        text("profile-summary-name", name);
+        text("profile-summary-email", profile.email || "");
+        text("profile-summary-id", profile.id_number || "");
+        text("profile-summary-type", typeLabels[profile.passenger_type] || profile.passenger_type || "Passenger");
+        const filename = profile.document_path ? String(profile.document_path).split(/[\\/]/).pop() : "No document recorded";
+        text("profile-document-name", filename);
+        document.querySelectorAll("[data-passenger-name]").forEach(element => { element.textContent = name; });
+    }
 
-        const credentials = data.demoCredentials.find(function (account) {
-            return account.userId === data.settings.defaultPassengerId;
+    function setEditing(enabled) {
+        editing = enabled;
+        editable.forEach(key => {
+            const input = inputs[key];
+            if (!input) return;
+            if (input.tagName === "SELECT") input.disabled = !enabled;
+            else input.readOnly = !enabled;
         });
+        // The passenger cannot change account identifiers in this form.
+        for (const key of ["email", "id_number"]) {
+            if (inputs[key]) inputs[key].readOnly = true;
+        }
+        editButton.classList.toggle("d-none", enabled);
+        actions.classList.toggle("d-none", !enabled);
+        if (help) help.textContent = enabled
+            ? "Edit your details, then select Save Changes."
+            : "Select Edit Profile to make changes.";
+        clearErrors();
+    }
 
-        if (!profileSeed || !credentials) {
-            throw new Error("The demo passenger or credentials could not be found.");
+    async function loadProfile() {
+        editButton.disabled = true;
+        try {
+            const response = await fetch("api/profile.php", { credentials: "same-origin", cache: "no-store" });
+            const data = await response.json();
+            if (!response.ok || !data.profile) throw new Error(data.error || "Unable to load profile.");
+            csrfToken = data.csrf_token;
+            display(data.profile);
+            clearFeedback();
+            editButton.disabled = false;
+        } catch (error) {
+            feedback(error.message || "Unable to load your profile. Please refresh.");
+        }
+    }
+
+    editButton.addEventListener("click", () => {
+        if (!current || saving) return;
+        clearFeedback();
+        setEditing(true);
+        inputs.first_name.focus();
+    });
+
+    cancelButton.addEventListener("click", () => {
+        if (saving) return;
+        display(current);
+        setEditing(false);
+        clearFeedback();
+        editButton.focus();
+    });
+
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+        if (!editing || saving) return;
+        clearErrors();
+        clearFeedback();
+        const payload = {};
+        editable.forEach(key => { payload[key] = (inputs[key]?.value ?? "").trim(); });
+
+        let invalid = null;
+        const mark = (key, error) => {
+            fieldError(inputs[key], error);
+            invalid = invalid || inputs[key];
+        };
+        for (const key of ["first_name", "last_name"]) {
+            if (!payload[key] || payload[key].length > 45) mark(key, "Use 1 to 45 characters.");
+        }
+        if (payload.college.length > 45) mark("college", "Maximum 45 characters.");
+        if (!Object.hasOwn(typeLabels, payload.passenger_type)) mark("passenger_type", "Select a passenger type.");
+        if (!["male", "female", "prefer-not-to-say"].includes(payload.sex)) mark("sex", "Select a valid option.");
+        if (invalid) {
+            feedback("Please correct the highlighted fields.");
+            invalid.focus();
+            return;
         }
 
-        savedDemoPassword = credentials.password;
-        loadProfile();
-        renderProfile();
-        editProfileButton.disabled = false;
-    })
-    .catch(function (error) {
-        console.error("Could not load profile details:", error);
-        profileSeed = null;
-        editProfileButton.disabled = true;
-
-        showProfileMessage(
-            "Unable to load your profile. Please reload the page.",
-            "danger"
-        );
+        saving = true;
+        const submit = form.querySelector('[type="submit"]');
+        if (submit) submit.disabled = true;
+        try {
+            const response = await fetch("api/profile.php", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.error || "Unable to save your profile.");
+            display(data.profile);
+            setEditing(false);
+            feedback("Profile changes saved to MySQL.", "success");
+            document.dispatchEvent(new Event("arrows-express-profile-updated"));
+        } catch (error) {
+            feedback(error.message || "Unable to save profile.");
+        } finally {
+            saving = false;
+            if (submit) submit.disabled = false;
+        }
     });
+
+    setEditing(false);
+    loadProfile();
+})();

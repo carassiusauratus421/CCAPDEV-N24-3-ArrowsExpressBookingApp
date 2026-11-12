@@ -33,6 +33,17 @@
                 >
 
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
+
+                    <button
+                        type="button"
+                        id="themeToggle"
+                        class="btn btn-sm btn-light border"
+                        aria-label="Toggle theme"
+                        aria-pressed="false"
+                    >
+                        <i class="bi bi-moon" aria-hidden="true"></i>
+                    </button>
+
                     <!-- Mobile Notifications -->
                     <a
                         href="notifications.php"
@@ -48,10 +59,6 @@
                             hidden
                         >0</span>
                     </a>
-                    
-                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border d-lg-none" aria-label="Toggle theme" aria-pressed="false">
-                        <i class="bi bi-moon" aria-hidden="true"></i>
-                    </button>
 
                     <!-- Profile Link -->
                     <a
@@ -321,6 +328,57 @@
                     Loading booking data...
                 </p>
 
+                <!-- Booking history filters (independent of trip search above) -->
+                <form id="booking-history-filters" class="border rounded-4 p-3 mb-3" autocomplete="off" role="search" aria-label="Filter your bookings">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <label for="booking-search" class="form-label fw-semibold">Search bookings</label>
+                            <input type="search" id="booking-search" class="form-control" placeholder="Reference, route, plate number">
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-2">
+                            <label for="booking-status-filter" class="form-label fw-semibold">Status</label>
+                            <select id="booking-status-filter" class="form-select">
+                                <option value="all">All statuses</option>
+                                <option value="pending">Pending Approval</option>
+                                <option value="confirmed">Confirmed / Accepted</option>
+                                <option value="on_hold">On Hold</option>
+                                <option value="waitlisted">Waitlisted</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="forfeited">Forfeited</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <label for="booking-route-filter" class="form-label fw-semibold">Route</label>
+                            <select id="booking-route-filter" class="form-select">
+                                <option value="all">All routes</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <label for="booking-sort" class="form-label fw-semibold">Sort by departure</label>
+                            <select id="booking-sort" class="form-select">
+                                <option value="newest">Latest first</option>
+                                <option value="oldest">Earliest first</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <label for="booking-date-from" class="form-label fw-semibold">Departure from</label>
+                            <input type="date" id="booking-date-from" class="form-control">
+                        </div>
+                        <div class="col-12 col-md-5 col-xl-3">
+                            <label for="booking-date-to" class="form-label fw-semibold">Departure to</label>
+                            <input type="date" id="booking-date-to" class="form-control">
+                        </div>
+                        <div class="col-12 col-md-2 col-xl-2">
+                            <button id="booking-clear-filters" type="button" class="btn btn-outline-secondary w-100">Clear filters</button>
+                        </div>
+                        <div class="col-12 col-xl-4">
+                            <p id="booking-filter-count" class="small text-secondary mb-2" role="status" aria-live="polite"></p>
+                        </div>
+                    </div>
+                </form>
+
                 <!-- Booking Tabs -->
                 <div
                     class="nav nav-pills bookings-tabs mb-4"
@@ -584,8 +642,8 @@
 
                 </dl>
 
-                <p class="small text-secondary mb-0">
-                    Reservation creation is not available yet.
+                <p class="text-muted">
+                    Select Book Trip to confirm your reservation.
                 </p>
 
                 <div
@@ -610,7 +668,6 @@
                     type="button"
                     class="btn btn-dlsu-green"
                     id="book-trip-button"
-                    disabled
                 >
                     Book Trip
                 </button>
@@ -712,7 +769,6 @@
                         id="booking-action-note"
                         class="small text-secondary"
                     >
-                        Booking actions are not available yet.
                     </p>
 
                     <div class="d-flex flex-wrap gap-2">

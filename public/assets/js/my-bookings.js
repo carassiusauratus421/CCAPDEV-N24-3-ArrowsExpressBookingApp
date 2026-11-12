@@ -15,6 +15,15 @@ const upcomingList = document.getElementById("upcoming-list");
 const completedList = document.getElementById("completed-list");
 const cancelledList = document.getElementById("cancelled-list");
 const bookingLoading = document.getElementById("booking-loading");
+const bookingHistoryFilters = document.getElementById("booking-history-filters");
+const bookingSearch = document.getElementById("booking-search");
+const bookingStatusFilter = document.getElementById("booking-status-filter");
+const bookingRouteFilter = document.getElementById("booking-route-filter");
+const bookingSort = document.getElementById("booking-sort");
+const bookingDateFrom = document.getElementById("booking-date-from");
+const bookingDateTo = document.getElementById("booking-date-to");
+const bookingClearFilters = document.getElementById("booking-clear-filters");
+const bookingFilterCount = document.getElementById("booking-filter-count");
 
 let availableTrips = [];
 let passengerBookings = [];
@@ -469,24 +478,96 @@ function createBookingCard(booking) {
     return card;
 }
 
+// Booking history filters work on the records already loaded from MySQL.
+// They never alter a reservation or the Available Trips search.
+function normalizedBookingStatus(booking) {
+    const status = String(booking.booking_status || "")
+        .toLowerCase().trim().replace(/[\s-]+/g, "_");
+
+    if (status === "accepted") return "confirmed";
+    if (status === "canceled") return "cancelled";
+    return status;
+}
+
+function bookingRouteKey(booking) {
+    return String(booking.pickup_point || "") + " → " +
+        String(booking.dropoff_point || "");
+}
+
+function populateBookingRoutes() {
+    if (!bookingRouteFilter) return;
+
+    const previousValue = bookingRouteFilter.value;
+    const routes = [...new Set(passengerBookings.map(bookingRouteKey))]
+        .filter(route => route !== " → ")
+        .sort((a, b) => a.localeCompare(b));
+
+    bookingRouteFilter.replaceChildren();
+    const allOption = new Option("All routes", "all");
+    bookingRouteFilter.add(allOption);
+
+    routes.forEach(function (route) {
+        bookingRouteFilter.add(new Option(route, route));
+    });
+
+    bookingRouteFilter.value = routes.includes(previousValue)
+        ? previousValue : "all";
+}
+
+function filteredPassengerBookings() {
+    const search = (bookingSearch?.value || "").trim().toLowerCase();
+    const status = bookingStatusFilter?.value || "all";
+    const route = bookingRouteFilter?.value || "all";
+    const from = bookingDateFrom?.value || "";
+    const to = bookingDateTo?.value || "";
+    const sort = bookingSort?.value || "newest";
+
+    return passengerBookings.filter(function (booking) {
+        const normalizedStatus = normalizedBookingStatus(booking);
+        const category = getBookingCategory(booking);
+        const bookingRoute = bookingRouteKey(booking);
+        const departureDate = String(booking.departure_datetime || "").slice(0, 10);
+        const searchable = [
+            booking.booking_id,
+            "AE-" + booking.booking_id,
+            bookingRoute,
+            booking.vehicle_model,
+            booking.plate_number,
+            getBookingStatusLabel(booking)
+        ].join(" ").toLowerCase();
+
+        if (search && !searchable.includes(search)) return false;
+        if (status !== "all" &&
+            status !== normalizedStatus &&
+            !(status === "completed" && category === "completed")) {
+            return false;
+        }
+        if (route !== "all" && bookingRoute !== route) return false;
+        if (from && departureDate < from) return false;
+        if (to && departureDate > to) return false;
+        return true;
+    }).sort(function (a, b) {
+        const aDate = String(a.departure_datetime || "");
+        const bDate = String(b.departure_datetime || "");
+        const order = aDate.localeCompare(bDate) ||
+            (Number(a.booking_id) - Number(b.booking_id));
+        return sort === "oldest" ? order : -order;
+    });
+}
+
 function generateBookingLists() {
-    if (!upcomingList || !completedList || !cancelledList) {
-        return;
-    }
+    if (!upcomingList || !completedList || !cancelledList) return;
 
     upcomingList.replaceChildren();
     completedList.replaceChildren();
     cancelledList.replaceChildren();
 
-    const groups = {
-        upcoming: [],
-        completed: [],
-        cancelled: []
-    };
+    const groups = { upcoming: [], completed: [], cancelled: [] };
+    const matches = filteredPassengerBookings();
 
-    passengerBookings.forEach(function (booking) {
+    matches.forEach(function (booking) {
         const category = getBookingCategory(booking);
-        groups[category].push(booking);
+        if (groups[category]) groups[category].push(booking);
     });
 
     const containers = {
@@ -497,19 +578,19 @@ function generateBookingLists() {
 
     Object.keys(containers).forEach(function (category) {
         const container = containers[category];
-
         if (!groups[category].length) {
-            showEmptyBookings(
-                container,
-                "No " + category + " bookings found."
-            );
+            showEmptyBookings(container, "No matching " + category + " bookings.");
             return;
         }
-
         groups[category].forEach(function (booking) {
             container.appendChild(createBookingCard(booking));
         });
     });
+
+    if (bookingFilterCount) {
+        bookingFilterCount.textContent = matches.length + " of " +
+            passengerBookings.length + " booking(s) match your filters.";
+    }
 }
 
 
@@ -575,6 +656,7 @@ async function loadPassengerBookings() {
         }
 
         passengerBookings = data.bookings;
+        populateBookingRoutes();
 
         if (data.passenger) {
             const name = [
@@ -934,6 +1016,22 @@ if (confirmBookingButton) {
     confirmBookingButton.hidden = true;
 }
 
+
+// Apply booking history filters immediately without another API request.
+if (bookingHistoryFilters) {
+    bookingHistoryFilters.addEventListener("submit", function (event) {
+        event.preventDefault();
+    });
+    bookingHistoryFilters.addEventListener("input", generateBookingLists);
+    bookingHistoryFilters.addEventListener("change", generateBookingLists);
+}
+
+if (bookingClearFilters) {
+    bookingClearFilters.addEventListener("click", function () {
+        if (bookingHistoryFilters) bookingHistoryFilters.reset();
+        generateBookingLists();
+    });
+}
 
 // Initialize page
 

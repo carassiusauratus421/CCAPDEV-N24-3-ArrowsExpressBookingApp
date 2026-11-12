@@ -1,582 +1,337 @@
 /* ========================================================
-   PASSENGER NOTIFICATIONS
+   PHASE 2 PASSENGER NOTIFICATIONS
+   Reads real booking records from the authenticated MySQL API.
+   Read/unread flags are browser-local until a notification table/API exists.
+   This file does NOT confirm attendance or change booking status.
    ======================================================== */
-const notificationStorageKey = "arrowsExpressDemoChanges:v1";
-let notificationSeed = null;
-let notificationData = null;
-let notificationChanges = {};
-let passengerNotifications = [];
-let notificationStorageAvailable = true;
+(function () {
+    "use strict";
 
-/* Read the same browser changes used by the dashboard. */
-function readNotificationChanges() {
-    if (!notificationStorageAvailable) {
-        return notificationChanges;
-    }
-
-    try {
-        const saved = JSON.parse(localStorage.getItem(notificationStorageKey));
-
-        return saved && saved.schemaVersion === notificationSeed.schemaVersion
-            ? saved
-            : { schemaVersion: notificationSeed.schemaVersion };
-    } catch (error) {
-        notificationStorageAvailable = false;
-        console.warn("Saved demo changes could not be loaded:", error);
-        return notificationChanges;
-    }
-}
-
-/* Rebuild from JSON so resetting browser changes restores the defaults. */
-function buildNotificationData() {
-    notificationChanges = readNotificationChanges();
-    notificationData = JSON.parse(JSON.stringify(notificationSeed));
-
-    ["users", "trips", "bookings", "drivers", "vehicles", "notices"].forEach(function (section) {
-        if (!Array.isArray(notificationChanges[section])) {
-            return;
-        }
-
-        notificationChanges[section].forEach(function (change) {
-            const index = notificationData[section].findIndex(function (record) {
-                return record.id === change.id;
-            });
-
-            if (index === -1) {
-                notificationData[section].push(change);
-            } else {
-                Object.assign(notificationData[section][index], change);
-            }
-        });
-    });
-
-    notificationData.readNotificationIds =
-        Array.isArray(notificationChanges.readNotificationIds)
-            ? notificationChanges.readNotificationIds.slice()
-            : notificationData.readNotificationIds.slice();
-}
-
-/* Find the passenger's booking and its related trip and route. */
-function getNotificationBooking(bookingId) {
-    const booking = notificationData.bookings.find(function (item) {
-        return item.id === bookingId &&
-            item.userId === notificationData.settings.defaultPassengerId;
-    });
-
-    if (!booking) {
-        return null;
-    }
-
-    const trip = notificationData.trips.find(function (item) {
-        return item.id === booking.tripId;
-    });
-
-    if (!trip) {
-        return null;
-    }
-
-    const route = notificationData.routes.find(function (item) {
-        return item.id === trip.routeId;
-    });
-
-    const departure = new Date(
-        new Date(trip.date + "T00:00:00+08:00").getTime() +
-        trip.departureMinutes * 60000
-    );
-
-    return {
-        booking: booking,
-        departure: departure,
-        route: route ? route.name : "Route unavailable",
-        pickup: route
-            ? route.pickupCampus + ", " + route.pickup
-            : "To be announced"
-    };
-}
-
-function formatNotificationDate(date) {
-    return date.toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        timeZone: notificationData.settings.timeZone
-    });
-}
-
-/* Create reminders only inside the configured confirmation window. */
-function buildPassengerNotifications() {
-    const settings = notificationData.settings;
-    const demoNow = new Date(settings.demoNow);
-    const notifications = [];
-
-    notificationData.bookings.forEach(function (booking) {
-        const details = getNotificationBooking(booking.id);
-
-        if (!details || booking.status !== "Confirmed") {
-            return;
-        }
-
-        const minutes = (details.departure - demoNow) / 60000;
-
-        if (minutes <= 0 || minutes > settings.confirmationMinutes) {
-            return;
-        }
-
-        notifications.push({
-            id: "booking-reminder-" + booking.id,
-            details: details,
-            requiresConfirmation: true,
-            createdAt: new Date(
-                details.departure.getTime() -
-                settings.confirmationMinutes * 60000
-            ),
-            title: booking.attendanceConfirmed
-                ? "Booking confirmed"
-                : "Confirm your upcoming trip",
-            message: booking.attendanceConfirmed
-                ? "You confirmed your " + details.route + " trip. Pick-up: " +
-                    details.pickup + "."
-                : "Your " + details.route + " trip departs in " +
-                    Math.ceil(minutes) + " minutes. Please confirm your booking."
-        });
-    });
-
-    notificationData.notices.forEach(function (notice) {
-        if (notice.userId !== settings.defaultPassengerId ||
-            !["booking-created", "booking-decision"].includes(notice.type)) {
-            return;
-        }
-
-        const details = getNotificationBooking(notice.bookingId);
-
-        if (!details) {
-            return;
-        }
-
-        let title = notice.requiresAdminReview ? "Booking submitted" : "Booking received";
-        let message = "Booking " + details.booking.id + ": " + details.route +
-            " on " + formatNotificationDate(details.departure) + ".";
-        if (notice.type === "booking-decision") {
-            const titles = { "Accepted": "Booking accepted", "On Hold": "Booking on hold", "Rejected": "Booking rejected" };
-            const explanations = {
-                "Accepted": "The admin accepted your request. Confirm attendance when the departure reminder appears.",
-                "On Hold": "The admin put your request on hold. Please wait for another update.",
-                "Rejected": "The admin rejected your request. You can request another available trip."
-            };
-            title = titles[notice.decision] || "Booking updated";
-            message += " " + (explanations[notice.decision] || "View your booking for details.");
-        } else if (notice.requiresAdminReview) {
-            message += " Your request was submitted for admin review.";
-        } else {
-            message += " Current status: " +
-                (details.booking.status === "Confirmed" ? "Accepted" : details.booking.status) + ".";
-        }
-        notifications.push({
-            id: notice.id, details: details, requiresConfirmation: false,
-            createdAt: new Date(notice.createdAt), title: title, message: message
-        });
-    });
-
-    return notifications.reverse().sort(function (first, second) {
-        return second.createdAt - first.createdAt;
-    });
-}
-
-function showNotificationFeedback(message, type = "success") {
-    const feedback = document.getElementById("notification-feedback");
-
-    if (feedback) {
-        feedback.className = "alert alert-" + type;
-        feedback.textContent = message + (notificationStorageAvailable
-            ? ""
-            : " Changes will not be saved after this page is closed.");
-        feedback.focus({ preventScroll: true });
-    }
-}
-
-/* Update counts and the mobile bell's green/white background. */
-function updateNotificationBadges() {
-    const count = passengerNotifications.filter(function (notification) {
-        return !notificationData.readNotificationIds.includes(notification.id);
-    }).length;
-
-    document.querySelectorAll("[data-notification-count]").forEach(function (badge) {
-        badge.textContent = count;
-        badge.hidden = count === 0;
-    });
-
-    document.querySelectorAll("[data-notification-link]").forEach(function (link) {
-        link.setAttribute("aria-label", "Notifications, " + count + " unread");
-
-        if (link.classList.contains("notification-bell")) {
-            link.classList.toggle("bg-success", count > 0);
-            link.classList.toggle("text-white", count > 0);
-            link.classList.toggle("bg-white", count === 0);
-        }
-    });
-
-    const summary = document.getElementById("notification-summary");
-    const markAllButton = document.getElementById("mark-notifications-read");
-
-    if (summary) {
-        summary.textContent = count === 0
-            ? "You have no unread notifications."
-            : "You have " + count + " unread notification" +
-                (count === 1 ? "." : "s.");
-    }
-
-    if (markAllButton) {
-        markAllButton.disabled = count === 0;
-    }
-}
-
-/* Fill the dashboard reminder without changing its layout. */
-function updateDashboardReminder() {
-    const section = document.getElementById("booking-confirmation-reminder");
-
-    if (!section) {
-        return;
-    }
-
-    const reminder = passengerNotifications
-        .filter(function (notification) {
-            return notification.requiresConfirmation;
-        })
-        .sort(function (first, second) {
-            return first.details.departure - second.details.departure;
-        })[0];
-
-    section.hidden = !reminder;
-
-    if (!reminder) {
-        return;
-    }
-
-    document.getElementById("booking-reminder-title").textContent = reminder.title;
-    document.getElementById("booking-reminder-text").textContent = reminder.message;
-    document.getElementById("booking-reminder-time").textContent =
-        "Demo time: " +
-        formatNotificationDate(new Date(notificationData.settings.demoNow)) +
-        ". Departure: " + formatNotificationDate(reminder.details.departure) + ".";
-
-    const button = section.querySelector("[data-confirm-booking]");
-    button.dataset.confirmBooking = reminder.details.booking.id;
-    button.hidden = reminder.details.booking.attendanceConfirmed;
-
-    document.getElementById("booking-reminder-details").href =
-        "my-bookings.php?booking=" +
-        encodeURIComponent(reminder.details.booking.id);
-}
-
-/* Populate the existing notification card template. */
-function renderNotificationList() {
     const list = document.getElementById("notification-list");
+    const summary = document.getElementById("notification-summary");
+    const feedback = document.getElementById("notification-feedback");
+    const markAll = document.getElementById("mark-notifications-read");
+    const clearAll = document.getElementById("clear-notifications");
     const template = document.getElementById("notification-template");
+    const TIMEZONE = "Asia/Manila";
+    const REMINDER_MINUTES = 60;
+    const REFRESH_MS = 60000;
+    let notifications = [];
+    let storageKey = "";
+    let readIds = new Set();
+    let dismissedIds = new Set();
+    let loading = false;
+    let firstSeenTimes = {};
+    let observedBefore = false;
 
-    if (!list || !template) {
-        return;
+    if (!list || !template) return;
+
+    function parseManilaDate(value) {
+        if (!value) return null;
+        const normalized = String(value).trim().replace(" ", "T");
+        const date = new Date(/[zZ]$|[+-]\d\d:\d\d$/.test(normalized)
+            ? normalized : normalized + "+08:00");
+        return Number.isNaN(date.getTime()) ? null : date;
     }
 
-    list.replaceChildren();
-
-    if (passengerNotifications.length === 0) {
-        const paragraph = document.createElement("p");
-        paragraph.className = "text-secondary small mb-0";
-        paragraph.textContent = "You have no notifications.";
-        list.appendChild(paragraph);
-        return;
+    function formatDate(date) {
+        return date ? new Intl.DateTimeFormat("en-PH", {
+            timeZone: TIMEZONE, year: "numeric", month: "short", day: "numeric",
+            hour: "numeric", minute: "2-digit", hour12: true
+        }).format(date) : "Not available";
     }
 
-    passengerNotifications.forEach(function (notification) {
-        const card = template.content.firstElementChild.cloneNode(true);
-        const details = notification.details;
-        const isRead = notificationData.readNotificationIds.includes(notification.id);
-        const isConfirmed =
-            notification.requiresConfirmation && details.booking.attendanceConfirmed;
-
-        const heading = card.querySelector(".notification-title");
-        heading.id = "title-" + notification.id;
-        heading.textContent = notification.title;
-
-        card.setAttribute("aria-labelledby", heading.id);
-        card.classList.toggle("is-unread", !isRead);
-        card.querySelector(".notification-text").textContent = notification.message;
-        card.querySelector(".notification-time").textContent =
-            formatNotificationDate(notification.createdAt);
-
-        const readBadge = card.querySelector(".notification-read-status");
-        readBadge.textContent = isRead ? "Read" : "Unread";
-        readBadge.className = "notification-read-status badge rounded-pill " +
-            (isRead
-                ? "bg-secondary-subtle text-secondary-emphasis"
-                : "bg-success-subtle text-success");
-
-        /* The four existing detail fields are reference, date, route and pickup. */
-        const fields = card.querySelectorAll(".notification-trip-details dd");
-        const values = [
-            details.booking.id,
-            formatNotificationDate(details.departure),
-            details.route,
-            details.pickup
-        ];
-
-        fields.forEach(function (field, index) {
-            field.textContent = values[index];
-        });
-
-        card.querySelector(".notification-trip-details").hidden =
-            !notification.requiresConfirmation;
-
-        const confirmButton = card.querySelector("[data-confirm-booking]");
-        confirmButton.dataset.confirmBooking = details.booking.id;
-        confirmButton.hidden = !notification.requiresConfirmation || isConfirmed;
-
-        card.querySelector(".notification-confirmed").hidden = !isConfirmed;
-        card.querySelector(".notification-actions a").href =
-            "my-bookings.php?booking=" + encodeURIComponent(details.booking.id);
-
-        const readButton = card.querySelector("[data-read-notification]");
-        readButton.dataset.readNotification = notification.id;
-        readButton.hidden = isRead;
-
-        list.appendChild(card);
-    });
-}
-
-/* Refresh the demo clock on the Notifications page. */
-function renderNotificationPageDetails() {
-    const passenger = notificationData.users.find(function (user) {
-        return user.id === notificationData.settings.defaultPassengerId;
-    });
-
-    if (!passenger) {
-        throw new Error("The demo passenger could not be found.");
+    function cleanStatus(value) {
+        return String(value || "").trim().toLowerCase().replace(/[\s-]+/g, "_");
     }
 
-if (document.getElementById("notification-list")) {
-        const clock = document.getElementById("notification-demo-clock") ||
-            document.querySelector(".main-content > .bg-dlsu-light");
-
-        if (clock) {
-            const badge = document.createElement("span");
-            badge.className = "badge bg-success-subtle text-success me-2";
-            badge.textContent = "Phase 1 demo";
-
-            clock.replaceChildren(
-                badge,
-                document.createTextNode(
-                    "Demo time: " +
-                    formatNotificationDate(new Date(notificationData.settings.demoNow)) +
-                    ". Confirmation reminders appear " +
-                    notificationData.settings.confirmationMinutes +
-                    " minutes before departure."
-                )
-            );
-        }
-    }
-}
-
-/* Reload saved changes and refresh notification displays. */
-function refreshNotifications() {
-    if (!notificationSeed) {
-        return;
-    }
-
-    buildNotificationData();
-    passengerNotifications = buildPassengerNotifications();
-    renderNotificationPageDetails();
-    updateNotificationBadges();
-    updateDashboardReminder();
-    renderNotificationList();
-}
-
-/* Save only changed fields, preserving profile and booking edits from other pages. */
-function setNotificationBookingChange(bookingId, attendanceConfirmed) {
-    notificationChanges.bookings = notificationChanges.bookings || [];
-
-    let change = notificationChanges.bookings.find(function (item) {
-        return item.id === bookingId;
-    });
-
-    if (!change) {
-        change = { id: bookingId };
-        notificationChanges.bookings.push(change);
-    }
-
-    change.attendanceConfirmed = attendanceConfirmed;
-}
-
-/* Save notification changes while preserving other demo edits. */
-function saveNotificationChanges() {
-    notificationChanges.schemaVersion = notificationSeed.schemaVersion;
-
-    try {
-        localStorage.setItem(
-            notificationStorageKey,
-            JSON.stringify(notificationChanges)
-        );
-        notificationStorageAvailable = true;
-    } catch (error) {
-        notificationStorageAvailable = false;
-        console.warn("Demo changes could not be saved:", error);
-    }
-
-    /* Refresh this page and tell the dashboard that shared data changed. */
-    window.dispatchEvent(new Event("arrows-express-data-updated"));
-}
-
-/* Event delegation supports both dashboard and notification card buttons. */
-document.addEventListener("click", function (event) {
-    const confirmButton = event.target.closest("[data-confirm-booking]");
-    const readButton = event.target.closest("[data-read-notification]");
-
-    if (!notificationSeed || (!confirmButton && !readButton)) {
-        return;
-    }
-
-    const bookingId = confirmButton ? confirmButton.dataset.confirmBooking : null;
-    const notificationId = readButton ? readButton.dataset.readNotification : null;
-
-    /* Read recent browser edits before changing any records. */
-    refreshNotifications();
-
-    if (confirmButton) {
-        const reminder = passengerNotifications.find(function (notification) {
-            return notification.requiresConfirmation &&
-                notification.details.booking.id === bookingId;
-        });
-
-        if (!reminder || reminder.details.booking.attendanceConfirmed) {
-            showNotificationFeedback(
-                "This booking does not currently need attendance confirmation.",
-                "info"
-            );
-            return;
-        }
-
-        setNotificationBookingChange(bookingId, true);
-        notificationChanges.readNotificationIds = Array.from(new Set(
-            notificationData.readNotificationIds.concat(reminder.id)
-        ));
-
-        saveNotificationChanges();
-        showNotificationFeedback(
-            "Booking " + bookingId + " confirmed. Pick-up: " +
-            reminder.details.pickup + "."
-        );
-    } else if (passengerNotifications.some(function (notification) {
-        return notification.id === notificationId;
-    })) {
-        notificationChanges.readNotificationIds = Array.from(new Set(
-            notificationData.readNotificationIds.concat(notificationId)
-        ));
-
-        saveNotificationChanges();
-        showNotificationFeedback(
-            "Notification marked as read. Reading a reminder does not confirm attendance."
-        );
-    }
-});
-
-const markAllNotificationsButton = document.getElementById("mark-notifications-read");
-
-if (markAllNotificationsButton) {
-    markAllNotificationsButton.addEventListener("click", function () {
-        if (!notificationSeed) {
-            return;
-        }
-
-        refreshNotifications();
-        notificationChanges.readNotificationIds = Array.from(new Set(
-            notificationData.readNotificationIds.concat(
-                passengerNotifications.map(function (notification) {
-                    return notification.id;
-                })
-            )
-        ));
-
-        saveNotificationChanges();
-        showNotificationFeedback(
-            "All notifications marked as read. Attendance confirmations are unchanged."
-        );
-    });
-}
-
-const resetNotificationsButton = document.getElementById("reset-notifications-demo");
-
-if (resetNotificationsButton) {
-    resetNotificationsButton.addEventListener("click", function () {
-        if (!notificationSeed) {
-            return;
-        }
-
-        refreshNotifications();
-
-        notificationData.bookings.forEach(function (booking) {
-            if (booking.userId !== notificationData.settings.defaultPassengerId) {
-                return;
+    function makeNotifications(bookings) {
+        const now = Date.now();
+        const result = [];
+        bookings.forEach(function (booking) {
+            const id = Number(booking.booking_id);
+            if (!Number.isSafeInteger(id) || id < 1) return;
+            const status = cleanStatus(booking.booking_status);
+            const departure = parseManilaDate(booking.departure_datetime);
+            const created = parseManilaDate(booking.timestamp_created);
+            const route = [booking.pickup_point, booking.dropoff_point].filter(Boolean).join(" → ") || "Your trip";
+            const base = {
+                bookingId: id,
+                route: route,
+                pickup: String(booking.pickup_point || "Not available"),
+                departure: departure,
+                created: created,
+                status: status
+            };
+            const content = {
+                pending: ["Booking request submitted", "Your reservation request is awaiting admin approval."],
+                confirmed: ["Booking accepted", "Your reservation is confirmed. Check My Bookings for trip information."],
+                accepted: ["Booking accepted", "Your reservation is confirmed. Check My Bookings for trip information."],
+                on_hold: ["Booking on hold", "An administrator has placed your request on hold."],
+                rejected: ["Booking rejected", "An administrator declined this reservation request."],
+                cancelled: ["Booking cancelled", "This reservation is cancelled."],
+                canceled: ["Booking cancelled", "This reservation is cancelled."],
+                waitlisted: ["Booking waitlisted", "Your reservation is waiting for an available seat."],
+                forfeited: ["Booking forfeited", "This reservation has been forfeited."],
+                completed: ["Trip completed", "This trip is recorded as completed."]
+            }[status];
+            if (content) {
+                result.push({
+                    ...base, id: "booking-" + id + "-" + status,
+                    title: content[0], message: content[1],
+                    // Booking creation time is known; admin decision time is NOT.
+                    // Do not present creation as the approval/rejection timestamp.
+                    time: created,
+                    sortTime: (created || departure)?.getTime() || 0
+                });
             }
-
-            const original = notificationSeed.bookings.find(function (item) {
-                return item.id === booking.id;
-            });
-
-            setNotificationBookingChange(
-                booking.id,
-                original ? original.attendanceConfirmed : false
-            );
+            const minutesUntil = departure ? (departure.getTime() - now) / 60000 : -1;
+            if (["confirmed", "accepted"].includes(status) &&
+                !booking.passenger_confirmed && minutesUntil > 0 &&
+                minutesUntil <= REMINDER_MINUTES) {
+                result.push({
+                    ...base, id: "reminder-" + id + "-" + departure.getTime(),
+                    title: "Upcoming departure reminder",
+                    message: "Your confirmed trip departs in approximately " +
+                        Math.ceil(minutesUntil) + " minute(s). Attendance confirmation is not yet supported on this page.",
+                    time: new Date(departure.getTime() - REMINDER_MINUTES * 60000),
+                    sortTime: departure.getTime() - REMINDER_MINUTES * 60000
+                });
+            }
         });
-
-        notificationChanges.readNotificationIds =
-            notificationSeed.readNotificationIds.slice();
-
-        saveNotificationChanges();
-        showNotificationFeedback(
-            "Notification demo reset. Your bookings and profile edits are kept.",
-            "info"
-        );
-    });
-}
-
-window.addEventListener("arrows-express-data-updated", refreshNotifications);
-
-window.addEventListener("storage", function (event) {
-    if (event.key === notificationStorageKey || event.key === null) {
-        refreshNotifications();
+        // Latest activity first. New status updates receive a first-observed
+        // timestamp, not the older booking creation timestamp.
+        return result.sort(function (a, b) {
+            return b.sortTime - a.sortTime || b.bookingId - a.bookingId;
+        });
     }
-});
 
-window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-        refreshNotifications();
+    function readSeenTimes(key) {
+        try {
+            const data = JSON.parse(localStorage.getItem(key) || "{}");
+            if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+            const valid = {};
+            Object.entries(data).forEach(function ([id, value]) {
+                if (typeof id === "string" && Number.isFinite(value) && value > 0) {
+                    valid[id] = value;
+                }
+            });
+            return valid;
+        } catch (_) { return {}; }
     }
-});
 
-/* Load the initial records once; later refreshes reapply browser changes. */
-fetch("assets/data/mock-data.json")
-    .then(function (response) {
-        if (!response.ok) {
-            throw new Error("Could not load mock-data.json.");
+    function orderByRecentActivity(items) {
+        const now = Date.now();
+        let changed = false;
+        items.forEach(function (item) {
+            if (!Object.prototype.hasOwnProperty.call(firstSeenTimes, item.id)) {
+                // On the first visit, do not pretend historic statuses happened now.
+                // On later visits, newly observed statuses rise to the top.
+                firstSeenTimes[item.id] = observedBefore ? now : (item.sortTime || now);
+                changed = true;
+            }
+            item.sortTime = firstSeenTimes[item.id];
+            item.firstObservedUpdate = observedBefore && changed && firstSeenTimes[item.id] === now;
+        });
+        if (changed) {
+            try {
+                localStorage.setItem(storageKey + ":first-seen", JSON.stringify(firstSeenTimes));
+            } catch (_) {
+                // Sorting works for this page even if the browser blocks storage.
+            }
         }
-
-        return response.json();
-    })
-    .then(function (data) {
-        notificationSeed = data;
-        refreshNotifications();
-    })
-    .catch(function (error) {
-        console.error("Could not load notifications:", error);
-        const summary = document.getElementById("notification-summary");
-
-        if (summary) {
-            summary.textContent = "Notifications could not be loaded.";
+        if (!observedBefore) {
+            observedBefore = true;
+            try { localStorage.setItem(storageKey + ":initialized", "1"); } catch (_) {}
         }
+        items.sort(function (a, b) {
+            return b.sortTime - a.sortTime || b.bookingId - a.bookingId;
+        });
+        return items;
+    }
 
-        showNotificationFeedback(
-            "Unable to load notifications. Please reload the page.",
-            "danger"
-        );
+    function readIdSet(key) {
+        try {
+            const value = JSON.parse(localStorage.getItem(key) || "[]");
+            return new Set(Array.isArray(value)
+                ? value.filter(function (x) { return typeof x === "string"; })
+                : []);
+        } catch (_) { return new Set(); }
+    }
+
+    function saveIdSet(key, values) {
+        try {
+            localStorage.setItem(key, JSON.stringify(Array.from(values)));
+            return true;
+        } catch (_) {
+            showFeedback("Your browser could not save notification preferences.", "warning");
+            return false;
+        }
+    }
+
+    function saveReadIds() {
+        return saveIdSet(storageKey, readIds);
+    }
+
+    function saveDismissedIds() {
+        return saveIdSet(storageKey + ":dismissed", dismissedIds);
+    }
+
+    function visibleNotifications() {
+        return notifications.filter(function (item) {
+            return !dismissedIds.has(item.id);
+        });
+    }
+
+    function showFeedback(message, kind) {
+        if (!feedback) return;
+        feedback.className = "alert alert-" + (kind || "success");
+        feedback.textContent = message;
+    }
+
+    function updateCounters() {
+        const visible = visibleNotifications();
+        const unread = visible.filter(function (item) { return !readIds.has(item.id); }).length;
+        if (summary) summary.textContent = unread === 0 ? "You have no unread notifications." :
+            "You have " + unread + " unread notification" + (unread === 1 ? "." : "s.");
+        document.querySelectorAll("[data-notification-count]").forEach(function (badge) {
+            badge.textContent = String(unread);
+            badge.hidden = unread === 0;
+        });
+        if (markAll) markAll.disabled = unread === 0;
+        if (clearAll) clearAll.disabled = visible.length === 0;
+    }
+
+    function render() {
+        list.replaceChildren();
+        const visible = visibleNotifications();
+        if (!visible.length) {
+            const empty = document.createElement("div");
+            empty.className = "alert alert-light border rounded-4";
+            empty.textContent = "No notifications to display. New booking-status updates will appear here.";
+            list.appendChild(empty);
+            updateCounters();
+            return;
+        }
+        visible.forEach(function (item) {
+            const node = template.content.firstElementChild.cloneNode(true);
+            const read = readIds.has(item.id);
+            const title = node.querySelector(".notification-title");
+            const message = node.querySelector(".notification-text");
+            const time = node.querySelector(".notification-time");
+            const badge = node.querySelector(".notification-read-status");
+            const dd = node.querySelectorAll(".notification-trip-details dd");
+            const confirmButton = node.querySelector("[data-confirm-booking]");
+            const confirmedText = node.querySelector(".notification-confirmed");
+            const readButton = node.querySelector("[data-read-notification]");
+            node.classList.toggle("is-unread", !read);
+            node.classList.toggle("is-read", read);
+            if (title) title.textContent = item.title;
+            if (message) message.textContent = item.message;
+            if (time) {
+                const isReminder = item.id.startsWith("reminder-");
+                // First observed is honest about the absence of server-side decision timestamps.
+                const isNewerStatus = !isReminder && item.sortTime !== ((item.created || item.departure)?.getTime() || 0);
+                time.textContent = isReminder
+                    ? "Reminder window: " + formatDate(item.time) + " (PHT)"
+                    : isNewerStatus
+                        ? "Update first noticed: " + formatDate(new Date(item.sortTime)) + " (PHT)"
+                        : "Booking created: " + formatDate(item.time) + " (PHT)";
+            }
+            if (badge) {
+                badge.textContent = read ? "Read" : "Unread";
+                badge.className = "notification-read-status badge rounded-pill " +
+                    (read ? "bg-secondary-subtle text-secondary" : "bg-success text-white");
+            }
+            if (dd.length >= 4) {
+                dd[0].textContent = "AE-" + item.bookingId;
+                dd[1].textContent = formatDate(item.departure) + " (PHT)";
+                dd[2].textContent = item.route;
+                dd[3].textContent = item.pickup;
+            }
+            if (confirmButton) confirmButton.hidden = true;
+            if (confirmedText) confirmedText.hidden = true;
+            if (readButton) {
+                readButton.dataset.notificationId = item.id;
+                readButton.disabled = read;
+                readButton.textContent = read ? "Read" : "Mark as read";
+            }
+            list.appendChild(node);
+        });
+        updateCounters();
+    }
+
+    async function refresh() {
+        if (loading) return;
+        loading = true;
+        if (summary) summary.textContent = "Loading notifications...";
+        try {
+            const response = await fetch("api/bookings.php", {
+                credentials: "same-origin", cache: "no-store", headers: { "Accept": "application/json" }
+            });
+            if (!response.ok) throw new Error(response.status === 401 ?
+                "Your session has expired. Please sign in again." :
+                "Unable to load bookings (HTTP " + response.status + ").");
+            const data = await response.json();
+            if (!Array.isArray(data.bookings) || !data.passenger) {
+                throw new Error("Unexpected bookings response from server.");
+            }
+            const passengerId = Number(data.passenger.passenger_id);
+            if (!Number.isSafeInteger(passengerId) || passengerId < 1) {
+                throw new Error("Passenger identity was not provided.");
+            }
+            const key = "arrowsExpressReadNotifications:phase2:passenger:" + passengerId;
+            if (storageKey !== key) {
+                storageKey = key;
+                readIds = readIdSet(storageKey);
+                dismissedIds = readIdSet(storageKey + ":dismissed");
+                firstSeenTimes = readSeenTimes(storageKey + ":first-seen");
+                observedBefore = localStorage.getItem(storageKey + ":initialized") === "1";
+            }
+            notifications = orderByRecentActivity(makeNotifications(data.bookings));
+            if (feedback) {
+                feedback.className = "alert d-none";
+                feedback.textContent = "";
+            }
+            render();
+        } catch (error) {
+            if (summary) summary.textContent = "Notifications could not be refreshed.";
+            showFeedback(error.message || "Unable to load notifications.", "danger");
+        } finally { loading = false; }
+    }
+
+    list.addEventListener("click", function (event) {
+        const button = event.target.closest("[data-read-notification]");
+        if (!button || !storageKey) return;
+        const id = button.dataset.notificationId;
+        if (!notifications.some(function (item) { return item.id === id; })) return;
+        readIds.add(id);
+        saveReadIds();
+        render();
     });
+    if (markAll) markAll.addEventListener("click", function () {
+        if (!storageKey) return;
+        visibleNotifications().forEach(function (item) { readIds.add(item.id); });
+        saveReadIds();
+        render();
+        showFeedback("Notifications marked as read on this browser. Booking status is unchanged.");
+    });
+    if (clearAll) clearAll.addEventListener("click", function () {
+        if (!storageKey) return;
+        const visible = visibleNotifications();
+        if (!visible.length) return;
+        if (!window.confirm("Clear all displayed notifications? This will not change your bookings.")) return;
+        const next = new Set(dismissedIds);
+        visible.forEach(function (item) { next.add(item.id); });
+        if (!saveIdSet(storageKey + ":dismissed", next)) return;
+        dismissedIds = next;
+        render();
+        showFeedback("Notifications cleared on this browser. New booking-status changes will still appear.", "success");
+    });
+    window.addEventListener("pageshow", refresh);
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) refresh();
+    });
+    window.setInterval(function () { if (!document.hidden) refresh(); }, REFRESH_MS);
+    refresh();
+})();

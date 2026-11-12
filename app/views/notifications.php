@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 
     <title>Notifications - Arrows Express Booking App</title>
+    <style>
+        /* Unread notifications are visually prominent; read cards are quieter. */
+        #notification-list .notification-record.is-unread {
+            border-left: 5px solid #087649 !important;
+            background-color: #f0faf4;
+        }
+        #notification-list .notification-record.is-read {
+            background-color: #ffffff;
+            border-left: 5px solid #e3e8e7 !important;
+        }
+        #notification-list .notification-record.is-unread .notification-title {
+            font-weight: 800 !important;
+        }
+    </style>
 </head>
 <body class="dashboard-body bg-white">
 
@@ -39,6 +53,9 @@
                               data-notification-count hidden>0</span>
                     </a>
 
+                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+                        <i class="bi bi-moon" aria-hidden="true"></i>
+                    </button>
                     <!-- PROFILE LINK -->
                     <a href="profile.php"
                        class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
@@ -72,20 +89,18 @@
                     </p>
                 </div>
 
-                <button type="button"
-                        id="mark-notifications-read"
-                        class="btn btn-outline-success btn-sm">
-                    Mark all as read
-                </button>
-            </div>
-
-            <!-- DEMO CLOCK FROM THE SHARED JSON SETTINGS -->
-            <div id="notification-demo-clock"
-                 class="bg-dlsu-light border rounded-4 p-3 mb-4 small">
-                <span class="badge bg-success-subtle text-success me-2">
-                    Phase 1 demo
-                </span>
-                Loading demo time...
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button"
+                            id="mark-notifications-read"
+                            class="btn btn-outline-success btn-sm">
+                        Mark all as read
+                    </button>
+                    <button type="button"
+                            id="clear-notifications"
+                            class="btn btn-outline-danger btn-sm">
+                        Clear all
+                    </button>
+                </div>
             </div>
 
             <div id="notification-feedback"
@@ -97,26 +112,15 @@
 
             <noscript>
                 <p class="alert alert-warning">
-                    Enable JavaScript to view and confirm your demo notifications.
+                    Enable JavaScript to view booking notifications.
                 </p>
             </noscript>
 
             <!-- POPULATED BY notifications.js -->
             <div id="notification-list"
                  class="d-flex flex-column gap-3"
-                 aria-label="Passenger notifications"></div>
+                 aria-label="Passenger notifications" aria-live="polite"></div>
 
-            <!-- <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4">
-                <p class="small text-secondary mb-0">
-                    Confirmation is simulated and saved in this browser.
-                </p>
-
-                <button type="button"
-                        id="reset-notifications-demo"
-                        class="btn btn-outline-secondary btn-sm">
-                    Reset notification demo
-                </button>
-            </div> -->
         </main>
     </div>
 </div>
@@ -141,7 +145,7 @@
                 <p class="notification-text small text-secondary mb-2"></p>
                 <p class="notification-time small text-secondary mb-3"></p>
 
-                <!-- Keep these fields in this order for notifications.js. -->
+                <!-- Booking details loaded from the authenticated API. -->
                 <dl class="notification-trip-details row g-2 small mb-3">
                     <div class="col-12 col-sm-6">
                         <dt class="text-secondary fw-normal">Booking reference</dt>
@@ -164,19 +168,7 @@
                     </div>
                 </dl>
 
-                <p class="notification-confirmed small fw-semibold text-success mb-3"
-                   hidden>
-                    <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
-                    Attendance confirmed
-                </p>
-
                 <div class="notification-actions d-flex flex-wrap gap-2">
-                    <button type="button"
-                            class="btn btn-dlsu-green btn-sm"
-                            data-confirm-booking>
-                        Confirm Booking
-                    </button>
-
                     <a href="my-bookings.php"
                        class="btn btn-outline-success btn-sm">
                         Booking Details
@@ -194,7 +186,6 @@
 </template>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/booking-lifecycle.js"></script>
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/theme-toggle.js"></script>
 <script src="assets/js/passenger-identity.js"></script>
