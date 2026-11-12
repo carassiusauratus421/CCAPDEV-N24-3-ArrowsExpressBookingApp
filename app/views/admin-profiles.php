@@ -27,7 +27,7 @@
                                 <span class="dashboard-user-avatar me-2">
                                     <i class="bi bi-person-fill" aria-hidden="true"></i>
                                 </span>
-                                <span class="fw-semibold me-2" id="admin-user-name">Admin</span>
+                                <span class="fw-semibold me-2" id="admin-user-name-static">Admin</span>
                             </a>
                             <a href="api/logout.php" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
                                 <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
@@ -69,6 +69,7 @@
                                 </table>
                             </div>
                         </section>
+
                         <!-- DETAILS MODAL -->
                         <div class="modal fade" id="admin-user-modal" tabindex="-1" aria-labelledby="admin-user-modal-heading" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -172,9 +173,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
+                                                <!-- <div class="col-12">
                                                     <p class="small text-secondary mb-0">This stores demo profile details only. Document names are placeholders; no document is uploaded.</p>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                         <div class="modal-footer">

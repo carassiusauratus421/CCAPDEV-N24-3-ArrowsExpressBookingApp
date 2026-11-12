@@ -177,7 +177,7 @@
                                             <td><?= htmlspecialchars($vehicle['plate_number']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['vehicle_model']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['capacity']); ?></td>
-                                            <td><a href="admin-vehicles.php">Manage</a></td>
+                                            <td><a href="admin-vehicles.php" class="btn btn-dlsu-green">Manage</a></td>
                                             
                                         </tr>
                                         <?php endforeach; ?>
