@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
         <link rel="stylesheet" href="assets/css/styles.css">
-
+    
         <title>Bookings & Slots - Arrows Express Admin</title>
     </head>
     <body class="dashboard-body bookings-body admin-body bg-white" data-admin-page="bookings">
@@ -24,19 +24,20 @@
                             <button type="button" id="themeToggle" class="btn btn-sm btn-light border d-lg-none" aria-label="Toggle theme" aria-pressed="false">
                                 <i class="bi bi-moon" aria-hidden="true"></i>
                             </button>
+                            
                             <a href="admin-accounts.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                                 <span class="dashboard-user-avatar me-2">
                                     <i class="bi bi-person-fill" aria-hidden="true"></i>
                                 </span>
                                 <span class="fw-semibold me-2" id="admin-user-name">Admin</span>
                             </a>
-                            <a href="api/logout.php" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                            <a href="index.php" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
                                 <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                             </a>
                         </div>
                     </header>
                     <h1 class="fs-3 fw-bold text-dlsu-green mb-1">Bookings & Slots</h1>
-                    <p class="text-secondary mb-4">Review passenger reservation requests and their approval status.</p>
+                    <p class="text-secondary mb-4">Manage reservations and seat limits for a date range.</p>
                     <div id="admin-message" class="alert d-none" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">
                     </div>
                     <div id="admin-content" aria-busy="true">
@@ -44,9 +45,7 @@
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                                 <h2 class="fs-5 fw-bold text-dlsu-green mb-0">Manage Slot Availability</h2>
                             </div>
-                            <p class="small text-secondary">Slot-limit changes are temporarily unavailable until the MySQL capacity workflow is integrated.</p>
                             <form id="admin-slots-form" novalidate>
-                                <fieldset disabled>
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
                                         <label for="admin-start-date" class="form-label">From date</label>
@@ -71,7 +70,6 @@
                                         <button class="btn btn-dlsu-green" type="submit">Update Slot Limits</button>
                                     </div>
                                 </div>
-                                </fieldset>
                             </form>
                         </section>
                         <section class="border rounded-4 p-3 p-md-4 bg-white mb-4">
@@ -87,12 +85,12 @@
                                     <label for="admin-booking-status" class="form-label">Status</label>
                                     <select id="admin-booking-status" class="form-select">
                                         <option value="all">All statuses</option>
-                                        <option value="pending">Pending review</option>
-                                        <option value="confirmed">Accepted</option>
-                                        <option value="on_hold">On Hold</option>
-                                        <option value="rejected">Rejected</option>
-                                        <option value="completed">Completed</option>
-                                        <option value="cancelled">Cancelled</option>
+                                        <option value="Pending">Pending review</option>
+                                        <option value="Confirmed">Accepted</option>
+                                        <option value="On Hold">On Hold</option>
+                                        <option value="Rejected">Rejected</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Cancelled">Cancelled</option>
                                     </select>
                                 </div>
                             </form>
@@ -124,10 +122,10 @@
 
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-        <script src="assets/js/admin-bookings.js"></script>
+        <script src="assets/js/booking-lifecycle.js"></script>
+        <script src="assets/js/admin.js">
+        </script>
         <script src="assets/js/theme-toggle.js">
         </script>
     </body>
 </html>
-

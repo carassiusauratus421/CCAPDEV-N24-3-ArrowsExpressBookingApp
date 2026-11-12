@@ -62,13 +62,13 @@
 
                 <!-- RIGHT SIDE: LOGIN FORM -->
                 <section class="col-12 col-lg-6 d-flex flex-column divider" aria-labelledby="login-heading">
-                    <div class="d-flex justify-content-between align-items-center gap-3 pt-3 px-3 px-lg-4">
+                    <!-- <div class="d-flex justify-content-between align-items-center gap-3 pt-3 px-3 px-lg-4">
                         <img src="assets/images/logo.png" alt="De La Salle University" class="logo-slot d-lg-none">
                         <small class="ms-auto text-end">
                             Don't have an account?
                             <a href="signup.php" class="fw-semibold login-text-button">Sign up</a>
                         </small>
-                    </div>
+                    </div> -->
 
                     <div class="my-auto px-3 px-sm-4 px-lg-5 py-4">
                         <div class="mx-auto login-form-container">
@@ -113,19 +113,20 @@
                                     <div id="password-error" class="invalid-feedback"></div>
                                 </div>
 
-                                <div class="text-end mb-3">
+                                <!-- <div class="text-end mb-3">
                                     <a href="forgot-password.php" class="small login-text-button">Forgot password?</a>
-                                </div>
+                                </div> -->
 
+                                </br>
                                 <button type="submit" id="login-button" class="btn btn-success w-100">Log In</button>
-
+                                
                                 <div class="d-flex align-items-center my-3">
                                     <hr class="flex-grow-1">
                                     <span class="mx-2 small text-secondary">or</span>
                                     <hr class="flex-grow-1">
                                 </div>
-
-                                <button type="button" id="google-login-button" class="btn btn-outline-success w-100">Continue with Google (Demo)</button>
+                                
+                                <a href="signup.php" class="btn btn-success w-100">Sign up</a>
                             </form>
 
                         </div>
