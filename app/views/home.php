@@ -28,19 +28,15 @@
                      class="dashboard-logo d-lg-none">
 
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
-
-            <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
-                <i class="bi bi-moon" aria-hidden="true"></i>
-            </button>
-            <!-- MOBILE NOTIFICATIONS -->
-            <a href="notifications.php"
-            class="notification-bell btn btn-white border rounded-circle d-lg-none"
-            aria-label="Notifications"
-            data-notification-link>
-                <i class="bi bi-bell fs-5" aria-hidden="true"></i>
-                <span class="notification-count badge bg-success rounded-pill"
-                    data-notification-count hidden>0</span>
-            </a>
+                    <!-- MOBILE NOTIFICATIONS -->
+                    <a href="notifications.php"
+                    class="notification-bell btn btn-white border rounded-circle d-lg-none"
+                    aria-label="Notifications"
+                    data-notification-link>
+                        <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                        <span class="notification-count badge bg-success rounded-pill"
+                            data-notification-count hidden>0</span>
+                    </a>
 
                     <!-- PROFILE LINK -->
                     <a href="profile.php"
@@ -108,7 +104,7 @@
 
                         <!-- ROUTES & MAPS -->
                         <div class="col-12 col-md-4">
-                            <a href="routes-and-maps.php" class="text-decoration-none">
+                            <a href="passenger-guide.php" class="text-decoration-none">
                                 <div class="quick-action-card rounded-4 p-3 d-flex flex-column h-100">
                                     <i class="bi bi-map text-dlsu-green fs-4 mb-3"></i>
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
@@ -127,8 +123,8 @@
 
             <div class="row g-4 position-relative z-2">
 
-                <!-- IMPORTANT REMINDERS & NEXT TRIP -->
-                <div class="col-12 col-xl-7 d-flex flex-column">
+            <!-- IMPORTANT REMINDERS & NEXT TRIP -->
+            <div class="col-12 col-xl-7 d-flex flex-column">
 
             <!-- BOOKING CONFIRMATION REMINDER -->
             <section id="booking-confirmation-reminder"

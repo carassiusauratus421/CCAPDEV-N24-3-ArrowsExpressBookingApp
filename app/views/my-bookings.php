@@ -33,17 +33,6 @@
                 >
 
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
-
-                    <button
-                        type="button"
-                        id="themeToggle"
-                        class="btn btn-sm btn-light border"
-                        aria-label="Toggle theme"
-                        aria-pressed="false"
-                    >
-                        <i class="bi bi-moon" aria-hidden="true"></i>
-                    </button>
-
                     <!-- Mobile Notifications -->
                     <a
                         href="notifications.php"

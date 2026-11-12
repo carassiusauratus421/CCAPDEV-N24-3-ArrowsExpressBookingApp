@@ -23,13 +23,13 @@
                             <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
                                 <i class="bi bi-moon" aria-hidden="true"></i>
                             </button>
-                            <a href="admin-accounts.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                            <a href="admin-accounts.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                                 <span class="dashboard-user-avatar me-2">
                                     <i class="bi bi-person-fill" aria-hidden="true"></i>
                                 </span>
                                 <span class="fw-semibold me-2" id="admin-user-name">Admin</span>
                             </a>
-                            <a href="index.html" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                            <a href="index.php" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
                                 <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                             </a>
                         </div>
@@ -41,19 +41,19 @@
                     <div id="admin-content" aria-busy="true">
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
-                                <a href="admin-vehicles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
+                                <a href="admin-vehicles.php" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Shuttles</span>
                                     <strong class="fs-2" id="admin-vehicle-count">—</strong>
                                 </a>
                             </div>
                             <div class="col-12 col-md-4">
-                                <a href="admin-profiles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
+                                <a href="admin-profiles.php" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Drivers</span>
                                     <strong class="fs-2" id="admin-driver-count">—</strong>
                                 </a>
                             </div>
                             <div class="col-12 col-md-4">
-                                <a href="admin-profiles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
+                                <a href="admin-profiles.php" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Passengers</span>
                                     <strong class="fs-2" id="admin-passenger-count">—</strong>
                                 </a>

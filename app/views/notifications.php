@@ -29,7 +29,7 @@
 
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
                     <!-- MOBILE NOTIFICATIONS -->
-                    <a href="notifications.html"
+                    <a href="notifications.php"
                        class="notification-bell btn btn-white border rounded-circle d-lg-none"
                        aria-label="Notifications"
                        aria-current="page"
@@ -39,9 +39,6 @@
                               data-notification-count hidden>0</span>
                     </a>
 
-                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
-                        <i class="bi bi-moon" aria-hidden="true"></i>
-                    </button>
                     <!-- PROFILE LINK -->
                     <a href="profile.php"
                        class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
@@ -109,7 +106,7 @@
                  class="d-flex flex-column gap-3"
                  aria-label="Passenger notifications"></div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4">
+            <!-- <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4">
                 <p class="small text-secondary mb-0">
                     Confirmation is simulated and saved in this browser.
                 </p>
@@ -119,7 +116,7 @@
                         class="btn btn-outline-secondary btn-sm">
                     Reset notification demo
                 </button>
-            </div>
+            </div> -->
         </main>
     </div>
 </div>

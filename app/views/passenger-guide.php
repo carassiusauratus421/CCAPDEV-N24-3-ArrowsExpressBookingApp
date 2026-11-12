@@ -21,7 +21,7 @@
                 <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                     <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
                     <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
-                        <a href="notifications.html"
+                        <a href="notifications.php"
                            class="notification-bell btn btn-white border rounded-circle d-lg-none"
                            aria-label="Notifications"
                            data-notification-link>
@@ -29,10 +29,6 @@
                             <span class="notification-count badge bg-success rounded-pill"
                                   data-notification-count hidden>0</span>
                         </a>
-
-                        <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
-                            <i class="bi bi-moon" aria-hidden="true"></i>
-                        </button>
 
                         <a href="profile.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                             <span class="dashboard-user-avatar me-2">

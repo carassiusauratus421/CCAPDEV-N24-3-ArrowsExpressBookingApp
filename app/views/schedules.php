@@ -47,16 +47,6 @@
                             >0</span>
                         </a>
 
-                        <button
-                            type="button"
-                            id="themeToggle"
-                            class="btn btn-sm btn-light border"
-                            aria-label="Toggle theme"
-                            aria-pressed="false"
-                        >
-                            <i class="bi bi-moon" aria-hidden="true"></i>
-                        </button>
-
                         <a
                             href="profile.php"
                             class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none"

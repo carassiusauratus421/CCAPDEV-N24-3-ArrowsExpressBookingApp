@@ -38,6 +38,11 @@
            <?= $pagename === 'admin-accounts.php' ? 'aria-current="page"' : '' ?>>
             <i class="bi bi-person-gear me-3 fs-5" aria-hidden="true"></i> Admin Accounts
         </a>
+
+        <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+            <i class="bi bi-moon" aria-hidden="true"></i>
+        </button>
+        
     </nav>
 
     <div class="px-2">
