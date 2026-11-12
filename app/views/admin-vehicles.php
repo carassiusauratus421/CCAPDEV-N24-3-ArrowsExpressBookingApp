@@ -42,7 +42,7 @@
                         <section class="border rounded-4 p-3 p-md-4 bg-white mb-4">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                                 <h2 class="fs-5 fw-bold text-dlsu-green mb-0">Shuttle Vehicles</h2>
-                                <button type="button" class="btn btn-dlsu-green" data-admin-action="add-vehicle">Add Vehicle</button>
+                                <button type="button" class="btn btn-dlsu-green" data-admin-action="add-vehicle" data-bs-toggle="modal" data-bs-target="#admin-vehicle-modal">Add Vehicle</button>
                             </div>
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-lg-6">
@@ -62,18 +62,28 @@
                                         </tr>
                                     </thead>
                                     <tbody id="admin-vehicle-list">
+                                        <?php foreach ($vehicles as $vehicle): ?>
                                         <tr>
-                                            <td colspan="5">Loading data...</td>
+                                            <td><?= htmlspecialchars($vehicle['shuttle']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['plate_number']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['vehicle_model']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['capacity']); ?></td>
+                                            <td><a href="admin-vehicles.php">Manage</a></td>
+                                            <!-- <td colspan="5">Loading data...</td> -->
                                         </tr>
+                                        <?php endforeach; ?>
+                                        <?php if (empty($vehicles)): ?>
+                                        <tr><td colspan="5" class="text-secondary">No vehicles found.</td></tr>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
                         </section>
                         <!-- DETAILS MODAL -->
-                        <div class="modal fade" id="admin-vehicle-modal" tabindex="-1" aria-labelledby="admin-vehicle-modal-heading" aria-hidden="true">
+                        <div class="modal fade" id="admin-vehicle-modal" tabindex="-1" role="dialog" aria-labelledby="admin-vehicle-modal-heading" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                                 <div class="modal-content rounded-4">
-                                    <form id="admin-vehicle-form" novalidate>
+                                    <form id="admin-vehicle-form" novalidate action="admin-vehicles.php" method="POST">
                                         <div class="modal-header">
                                             <h2 class="modal-title fs-5" id="admin-vehicle-modal-heading">Vehicle Information</h2>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -83,21 +93,21 @@
                                             <div class="alert alert-danger d-none" id="admin-vehicle-form-error" role="alert" tabindex="-1">
                                             </div>
                                             <div class="row g-3">
-                                                <div class="col-12 col-md-6">
+                                                <!-- <div class="col-12 col-md-6">
                                                     <label for="vehicle-name" class="form-label">Shuttle name</label>
-                                                    <input type="text" id="vehicle-name" class="form-control" required maxlength="80">
-                                                </div>
+                                                    <input type="text" id="vehicle-name" name="name" class="form-control" required maxlength="80">
+                                                </div> -->
                                                 <div class="col-12 col-md-6">
                                                     <label for="vehicle-plate" class="form-label">Plate number</label>
-                                                    <input type="text" id="vehicle-plate" class="form-control" required maxlength="20">
+                                                    <input type="text" id="vehicle-plate" name="plate" class="form-control" required maxlength="20">
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="vehicle-model" class="form-label">Vehicle model</label>
-                                                    <input type="text" id="vehicle-model" class="form-control" required maxlength="80">
+                                                    <input type="text" id="vehicle-model" name="model" class="form-control" required maxlength="80">
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="vehicle-capacity" class="form-label">Seat capacity</label>
-                                                    <input type="number" id="vehicle-capacity" class="form-control" required min="1" max="100" step="1">
+                                                    <input type="number" id="vehicle-capacity" name="capacity" class="form-control" required min="1" max="100" step="1">
                                                 </div>
                                             </div>
                                         </div>
@@ -115,12 +125,12 @@
         </div>
         <!-- ADMIN MOBILE NAVIGATION -->
         <?php include __DIR__ . '/admin-nav-mobile.php';?>
-        
+
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/booking-lifecycle.js"></script>
-        <script src="assets/js/admin.js">
-        </script>
+        <!-- <script src="assets/js/admin.js">
+        </script> -->
         <script src="assets/js/theme-toggle.js">
         </script>
     </body>
