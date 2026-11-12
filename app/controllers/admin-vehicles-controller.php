@@ -37,10 +37,6 @@ function show_admin_vehicles(): void
 
             if (in_array('', $data, true)) {
                 $error = 'Please fill in all fields.';
-            // } elseif ($data['password'] !== ($_POST['confirmPassword'] ?? '')) {
-            //     $error = 'Passwords do not match.';
-            // } elseif (email_exists($pdo, $data['email'])) {
-            //     $error = 'Email already registered.';
             } else {
                 try {
                     $stmt = $pdo->prepare(
