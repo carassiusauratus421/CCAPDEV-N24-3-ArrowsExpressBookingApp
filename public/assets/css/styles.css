@@ -919,3 +919,62 @@ html, body {
     border-color: #86b7fe;
     box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
 }
+
+
+
+/* ========================================================
+   BOOKING STATUS COLORS
+   ======================================================== */
+
+.booking-status {
+    display: inline-block;
+    min-width: 125px;
+    text-align: center;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.booking-status--pending {
+    background-color: #FFF0C2;
+    color: #895900;
+}
+
+.booking-status--confirmed {
+    background-color: #CDEDDC;
+    color: #176443;
+}
+
+.booking-status--on-hold {
+    background-color: #D7EEFF;
+    color: #215C98;
+}
+
+.booking-status--waitlisted {
+    background-color: #E9DEFA;
+    color: #7044A0;
+}
+
+.booking-status--rejected {
+    background-color: #F9D9DD;
+    color: #A12638;
+}
+
+.booking-status--cancelled {
+    background-color: #E8EAED;
+    color: #5A626C;
+}
+
+.booking-status--forfeited {
+    background-color: #FFE3D0;
+    color: #A74B1D;
+}
+
+.booking-status--completed {
+    background-color: #D7E4E6;
+    color: #365F66;
+}
+
+.booking-status--default {
+    background-color: #E8EAED;
+    color: #495057;
+}
