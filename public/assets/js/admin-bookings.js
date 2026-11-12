@@ -118,7 +118,7 @@ async function loadAdminBookings() {
     adminBookings = data.bookings;
     adminBookingToken = data.csrf_token;
     const name = document.getElementById("admin-user-name");
-    if (name) name.textContent = data.admin_email || "Admin";
+    if (name) name.textContent = "Admin";
     showAdminBookingRows();
     adminBookingContent.setAttribute("aria-busy", "false");
 }
