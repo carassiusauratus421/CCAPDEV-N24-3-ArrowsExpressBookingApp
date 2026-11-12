@@ -20,6 +20,10 @@
                     <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                         <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
                         <div class="ms-auto d-flex align-items-center gap-2">
+                            <button type="button" id="themeToggle" class="btn btn-sm btn-light border d-lg-none" aria-label="Toggle theme" aria-pressed="false">
+                                <i class="bi bi-moon" aria-hidden="true"></i>
+                            </button>
+
                             <a href="admin-accounts.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                                 <span class="dashboard-user-avatar me-2">
                                     <i class="bi bi-person-fill" aria-hidden="true"></i>
