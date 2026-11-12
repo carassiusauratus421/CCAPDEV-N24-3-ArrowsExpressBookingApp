@@ -6,6 +6,7 @@
 
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/styles.css">
+        <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
         <title>Log In - Arrows Express Booking App</title>
     </head>
@@ -58,7 +59,7 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- RIGHT SIDE: LOGIN FORM -->
                 <section class="col-12 col-lg-6 d-flex flex-column divider" aria-labelledby="login-heading">
                     <div class="d-flex justify-content-between align-items-center gap-3 pt-3 px-3 px-lg-4">

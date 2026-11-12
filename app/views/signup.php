@@ -6,6 +6,7 @@
 
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/styles.css">
+        <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
         <title>Sign Up - Arrows Express Booking App</title>
     </head>
