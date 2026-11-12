@@ -101,8 +101,7 @@ try {
     }
 
     if (
-        strtolower((string) $user['account_status']) !== 'active' ||
-        strtolower((string) $user['role']) !== 'passenger'
+        strtolower((string) $user['account_status']) !== 'active'
     ) {
         http_response_code(401);
 
