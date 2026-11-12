@@ -78,11 +78,32 @@ try {
         && password_verify(
             $password,
             $user['password_hash']
-        )
-        && strtolower((string) $user['account_status']) === 'active'
-        && strtolower((string) $user['role']) === 'passenger';
+        );
 
     if (!$validLogin) {
+        http_response_code(401);
+
+        echo json_encode([
+            'error' => 'Invalid email or password.'
+        ]);
+
+        exit;
+    }
+
+    if (strtolower((string) $user['account_status']) === 'pending') {
+        http_response_code(403);
+
+        echo json_encode([
+            'error' => 'Your account is awaiting approval.'
+        ]);
+
+        exit;
+    }
+
+    if (
+        strtolower((string) $user['account_status']) !== 'active' ||
+        strtolower((string) $user['role']) !== 'passenger'
+    ) {
         http_response_code(401);
 
         echo json_encode([
