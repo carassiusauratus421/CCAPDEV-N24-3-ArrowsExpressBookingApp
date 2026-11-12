@@ -2,18 +2,18 @@
     require_once __DIR__ . '/../models/user-model.php';
 
     function show_admin_accounts($pdo) {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) session_start();
         if (($_SESSION['role'] ?? '') !== 'admin') {
             header("Location: index.php");
             exit;
         }
-        
+
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                'email'             => trim($_POST['email'] ?? ''),
-                'password'          => $_POST['password'] ?? '',
+                'email'    => trim($_POST['email'] ?? ''),
+                'password' => $_POST['password'] ?? '',
             ];
 
             if (in_array('', $data, true)) {
@@ -25,15 +25,16 @@
             } else {
                 try {
                     create_admin($pdo, $data['email'], password_hash($data['password'], PASSWORD_DEFAULT));
-                    header("Location: index.php");
+                    header("Location: admin-accounts.php");
                     exit;
                 } catch (PDOException $e) {
                     error_log($e->getMessage());
-                    $error = 'Signup failed. Please try again.';
+                    $error = 'Could not create admin. Please try again.';
                 }
             }
         }
 
+        $admins = get_admins($pdo);
         require __DIR__ . '/../views/admin-accounts.php';
     }
 ?>
