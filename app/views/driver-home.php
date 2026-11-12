@@ -23,18 +23,27 @@
 
             <nav class="nav flex-column gap-1 mb-auto px-2"
                  aria-label="Driver navigation">
-                <a href="driver-home.html"
+                <a href="driver-home.php"
                    class="nav-link nav-item-active rounded px-3 py-2 d-flex align-items-center fw-semibold mb-1"
                    aria-current="page">
                     <i class="bi bi-house-door-fill me-3 fs-5" aria-hidden="true"></i>
                     Home
                 </a>
-
+                
+                <button
+                    type="button"
+                    id="themeToggle"
+                    class="btn btn-sm btn-light border"
+                    aria-label="Toggle theme"
+                    aria-pressed="false"
+                >
+                    <i class="bi bi-moon" aria-hidden="true"></i>
+                </button>
             </nav>
 
             <div class="px-2">
                 <hr class="my-3 opacity-25">
-                <a href="index.html"
+                <a href="index.php"
                    class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
                     <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i>
                     Log Out
@@ -60,7 +69,7 @@
                         <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
                     </a>
 
-                    <a href="index.html"
+                    <a href="index.php"
                        class="btn btn-sm btn-light border d-lg-none"
                        aria-label="Log out">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
@@ -254,7 +263,7 @@
 <nav class="d-lg-none fixed-bottom bg-white border-top shadow-lg pb-safe z-3"
      aria-label="Mobile driver navigation">
     <div class="d-flex justify-content-around align-items-center py-2">
-        <a href="driver-home.html"
+        <a href="driver-home.php"
            class="dashboard-mobile-item text-decoration-none text-dlsu-green fw-bold"
            aria-current="page">
             <i class="bi bi-house-door-fill fs-5" aria-hidden="true"></i>

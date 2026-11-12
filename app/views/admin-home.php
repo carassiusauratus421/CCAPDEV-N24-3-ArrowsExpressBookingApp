@@ -20,16 +20,16 @@
                     <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                         <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
                         <div class="ms-auto d-flex align-items-center gap-2">
-                            <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+                            <button type="button" id="themeToggle" class="btn btn-sm btn-light border d-lg-none" aria-label="Toggle theme" aria-pressed="false">
                                 <i class="bi bi-moon" aria-hidden="true"></i>
                             </button>
-                            <a href="admin-accounts.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                            <a href="admin-accounts.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                                 <span class="dashboard-user-avatar me-2">
                                     <i class="bi bi-person-fill" aria-hidden="true"></i>
                                 </span>
                                 <span class="fw-semibold me-2" id="admin-user-name">Admin</span>
                             </a>
-                            <a href="index.html" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                            <a href="index.php" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
                                 <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                             </a>
                         </div>
@@ -41,19 +41,19 @@
                     <div id="admin-content" aria-busy="true">
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
-                                <a href="admin-vehicles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
+                                <a href="admin-vehicles.php" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Shuttles</span>
                                     <strong class="fs-2" id="admin-vehicle-count"><?php echo($vehicle_count) ?></strong>
                                 </a>
                             </div>
                             <div class="col-12 col-md-4">
-                                <a href="admin-profiles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
+                                <a href="admin-profiles.php" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Drivers</span>
                                     <strong class="fs-2" id="admin-driver-count"><?php echo($driver_count) ?></strong>
                                 </a>
                             </div>
                             <div class="col-12 col-md-4">
-                                <a href="admin-profiles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
+                                <a href="admin-profiles.php" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Passengers</span>
                                     <strong class="fs-2" id="admin-passenger-count"><?php echo($passenger_count) ?></strong>
                                 </a>
@@ -64,9 +64,10 @@
                                 <h2 class="fs-5 fw-bold text-dlsu-green mb-0">Reservation Summary</h2>
                             </div>
                             <p id="admin-reservation-summary" class="small text-secondary">
+                                <?php echo($reserved_seat_count) ?> of <?php echo($total_seat_capacity) ?> seats reserved across <?php echo($upcoming_trip_count) ?> upcoming trips.
                             </p>
                             <div class="progress" style="height: 12px;">
-                                <div id="admin-reservation-progress" class="progress-bar bg-dlsu-green" role="progressbar" aria-label="Reserved seats" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div id="admin-reservation-progress" class="progress-bar bg-dlsu-green" role="progressbar" aria-label="Reserved seats" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="width: <?php echo($reserved_percent); ?> %">
                                 </div>
                             </div>
                         </section>
@@ -86,9 +87,16 @@
                                         </tr>
                                     </thead>
                                     <tbody id="admin-shuttle-list">
+                                        <?php foreach ($vehicles as $vehicle): ?>
                                         <tr>
-                                            <td colspan="5">Loading data...</td>
+                                            <td><?= htmlspecialchars($vehicle['shuttle']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['plate_number']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['vehicle_model']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['capacity']); ?></td>
+                                            <td><a href="admin-vehicles.php">Manage</a></td>
+                                            <!-- <td colspan="5">Loading data...</td> -->
                                         </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -109,9 +117,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-driver-list">
+                                                <?php foreach ($drivers as $driver): ?>
                                                 <tr>
-                                                    <td colspan="3">Loading data...</td>
+                                                    <td><?= htmlspecialchars($driver['name']); ?></td>
+                                                    <td><?= htmlspecialchars($driver['assigned_shuttle']); ?></td>
+                                                    <td><?= htmlspecialchars($driver['status']); ?></td>
+                                                    <!-- <td colspan="3">Loading data...</td> -->
                                                 </tr>
+                                                <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -133,9 +146,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-recent-list">
+                                                <?php foreach ($bookings as $booking): ?>
                                                 <tr>
-                                                    <td colspan="4">Loading data...</td>
+                                                    <td><?= htmlspecialchars($booking['reference']); ?></td>
+                                                    <td><?= htmlspecialchars($booking['passenger_name']); ?></td>
+                                                    <td><?= htmlspecialchars($booking['route']); ?></td>
+                                                    <td><?= htmlspecialchars($booking['status']); ?></td>
+                                                    <!-- <td colspan="4">Loading data...</td> -->
                                                 </tr>
+                                                <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div>

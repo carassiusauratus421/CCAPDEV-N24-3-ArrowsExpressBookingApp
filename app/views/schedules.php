@@ -46,14 +46,8 @@
                                 hidden
                             >0</span>
                         </a>
-
-                        <button
-                            type="button"
-                            id="themeToggle"
-                            class="btn btn-sm btn-light border"
-                            aria-label="Toggle theme"
-                            aria-pressed="false"
-                        >
+                    
+                        <button type="button" id="themeToggle" class="btn btn-sm btn-light border d-lg-none" aria-label="Toggle theme" aria-pressed="false">
                             <i class="bi bi-moon" aria-hidden="true"></i>
                         </button>
 
