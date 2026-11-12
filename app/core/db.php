@@ -1,8 +1,8 @@
 <?php
     $host = "localhost";
-    $dbname = "db";
+    $dbname = "arrows_express";
     $username = "root";
-    $password = "";
+    $password = "root";
 
     try {
         $pdo = new PDO(

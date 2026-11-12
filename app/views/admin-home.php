@@ -43,19 +43,19 @@
                             <div class="col-12 col-md-4">
                                 <a href="admin-vehicles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Shuttles</span>
-                                    <strong class="fs-2" id="admin-vehicle-count">—</strong>
+                                    <strong class="fs-2" id="admin-vehicle-count"><?php echo($vehicle_count) ?></strong>
                                 </a>
                             </div>
                             <div class="col-12 col-md-4">
                                 <a href="admin-profiles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Drivers</span>
-                                    <strong class="fs-2" id="admin-driver-count">—</strong>
+                                    <strong class="fs-2" id="admin-driver-count"><?php echo($driver_count) ?></strong>
                                 </a>
                             </div>
                             <div class="col-12 col-md-4">
                                 <a href="admin-profiles.html" class="quick-action-card d-block rounded-4 p-4 text-decoration-none text-dlsu-green">
                                     <span class="d-block text-secondary">Passengers</span>
-                                    <strong class="fs-2" id="admin-passenger-count">—</strong>
+                                    <strong class="fs-2" id="admin-passenger-count"><?php echo($passenger_count) ?></strong>
                                 </a>
                             </div>
                         </div>
@@ -152,8 +152,8 @@
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/booking-lifecycle.js"></script>
-        <script src="assets/js/admin.js">
-        </script>
+        <!-- <script src="assets/js/admin.js">
+        </script> -->
         <script src="assets/js/theme-toggle.js">
         </script>
     </body>
