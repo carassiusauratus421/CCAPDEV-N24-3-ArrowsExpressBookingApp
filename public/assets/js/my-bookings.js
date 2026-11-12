@@ -350,7 +350,7 @@ function getBookingCategory(booking) {
         booking.booking_status || ""
     ).toLowerCase();
 
-    if (status === "cancelled" || status === "canceled") {
+    if (["cancelled", "canceled", "forfeited", "rejected"].includes(status)) {
         return "cancelled";
     }
 
@@ -362,7 +362,11 @@ function getBookingCategory(booking) {
         booking.departure_datetime.replace(" ", "T") + "+08:00"
     );
 
-    if (departure.getTime() < Date.now()) {
+    // Only a passenger-confirmed, departed ride counts as completed in the UI.
+    // The database status remains 'confirmed' until a separate trip-completion
+    // policy is implemented. Never label unapproved bookings 'Completed'.
+    if (departure.getTime() <= Date.now() &&
+        ["confirmed", "accepted"].includes(status) && booking.passenger_confirmed) {
         return "completed";
     }
 
@@ -390,12 +394,11 @@ function getBookingStatusLabel(booking) {
         completed: "Completed"
     };
 
-    // Show past confirmed bookings under Completed.
-    if (
-        category === "completed" &&
-        (status === "confirmed" || status === "accepted")
-    ) {
-        return "Completed";
+    // A past departure is not proof the passenger boarded the vehicle.
+    // Preserve the actual admin-approval / passenger-confirmation state.
+    if (category === "completed" &&
+        (status === "confirmed" || status === "accepted")) {
+        return booking.passenger_confirmed ? "Ride Confirmed" : "Confirmed";
     }
 
     return statusLabels[status] || "Unknown";
@@ -408,17 +411,19 @@ function getBookingStatusClass(booking) {
         booking.booking_status || ""
     ).toLowerCase().replace(/[\s-]+/g, "_");
 
+    // Bootstrap utility classes are available in the current project CSS.
+    // Do not depend on booking-status--* classes that may not be defined.
     const statusClasses = {
-        pending: "booking-status--pending",
-        confirmed: "booking-status--confirmed",
-        accepted: "booking-status--confirmed",
-        on_hold: "booking-status--on-hold",
-        waitlisted: "booking-status--waitlisted",
-        rejected: "booking-status--rejected",
-        cancelled: "booking-status--cancelled",
-        canceled: "booking-status--cancelled",
-        forfeited: "booking-status--forfeited",
-        completed: "booking-status--completed"
+        pending: "bg-warning-subtle text-dark",
+        confirmed: "bg-success-subtle text-success",
+        accepted: "bg-success-subtle text-success",
+        on_hold: "bg-info-subtle text-dark",
+        waitlisted: "bg-info-subtle text-dark",
+        rejected: "bg-danger-subtle text-danger",
+        cancelled: "bg-secondary-subtle text-secondary",
+        canceled: "bg-secondary-subtle text-secondary",
+        forfeited: "bg-danger text-white",
+        completed: "bg-success-subtle text-success"
     };
 
     if (statusClasses[status]) {
@@ -614,11 +619,16 @@ function fillBookingDetails(booking) {
     setText("detail-time", formatTime(booking.departure_datetime));
     setText("detail-status", getBookingStatusLabel(booking));
 
+    const normalizedStatus = normalizedBookingStatus(booking);
     setText(
         "detail-attendance",
-        booking.passenger_confirmed
-            ? "Confirmed"
-            : "Not confirmed"
+        normalizedStatus === "forfeited"
+            ? "No ride confirmation received, booking forfeited"
+            : normalizedStatus === "cancelled" && booking.passenger_confirmed
+                ? "Previously confirmed, booking cancelled"
+                : booking.passenger_confirmed
+                    ? "Ride confirmed at " + booking.passenger_confirmed + " (PHT)"
+                    : "Ride not confirmed"
     );
 
     setText("detail-trip-status", booking.trip_status);

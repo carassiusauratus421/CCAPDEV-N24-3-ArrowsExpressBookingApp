@@ -55,7 +55,7 @@ class AdminBooking
                 return ['success' => false, 'message' => 'Trip not found.'];
             }
             $booking = $this->pdo->prepare("
-                SELECT booking_status, trip_id FROM booking_reservation
+                SELECT booking_status, trip_id, passenger_confirmed FROM booking_reservation
                 WHERE booking_id = :id FOR UPDATE
             ");
             $booking->execute(['id' => $bookingId]);
@@ -73,6 +73,11 @@ class AdminBooking
             if ($action === 'accept' && strtolower((string) $tripRow['trip_status']) !== 'scheduled') {
                 $this->pdo->rollBack();
                 return ['success' => false, 'message' => 'The trip is not scheduled.'];
+            }
+            if ($record['passenger_confirmed'] !== null && $action !== 'accept') {
+                $this->pdo->rollBack();
+                return ['success' => false,
+                    'message' => 'Passenger already confirmed this ride. Contact the passenger before changing it.'];
             }
             $next = $destinations[$action];
             if ($current === $next) {

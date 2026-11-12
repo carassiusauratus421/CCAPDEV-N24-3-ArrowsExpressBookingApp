@@ -1,4 +1,3 @@
-
 <?php
 
 // Booking model for passenger reservation operations.
@@ -449,6 +448,204 @@ class Booking
                 $this->pdo->rollBack();
             }
 
+            throw $error;
+        }
+    }
+
+    // Database time is the source of truth for deadlines. Database connection
+    // should set session time_zone to +08:00 (Asia/Manila).
+    public function getDatabaseNow(): string
+    {
+        return (string) $this->pdo->query(
+            "SELECT DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')"
+        )->fetchColumn();
+    }
+
+    /**
+     * Settle eligible approved bookings that missed their departure deadline.
+     * A per-passenger GET can settle that passenger's bookings; the CLI worker
+     * passes null to settle everybody's. A transaction and trip-then-booking
+     * locks prevent double seat release or races with confirmation/cancellation.
+     *
+     * Returns the number actually forfeited. Repeating it is harmless.
+     */
+    public function processDueForfeitures(?int $passengerId = null, int $limit = 200): int
+    {
+        $limit = max(1, min(500, $limit));
+        $passengerWhere = $passengerId === null ? '' : ' AND br.passenger_id = :passenger_id';
+        $statement = $this->pdo->prepare("
+            SELECT br.booking_id, br.trip_id
+            FROM booking_reservation br
+            INNER JOIN trip_schedule ts ON ts.trip_id = br.trip_id
+            WHERE br.booking_status = 'confirmed'
+              AND br.passenger_confirmed IS NULL
+              AND ts.trip_status = 'scheduled'
+              AND ts.departure_datetime <= NOW()
+              {$passengerWhere}
+            ORDER BY ts.departure_datetime, br.booking_id
+            LIMIT {$limit}
+        ");
+        $statement->execute($passengerId === null ? [] : ['passenger_id' => $passengerId]);
+        $due = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+
+        $count = 0;
+        foreach ($due as $booking) {
+            if ($this->forfeitDueBooking((int) $booking['booking_id'], (int) $booking['trip_id'])) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    /** Forfeit one eligible approved booking and release its seat exactly once. */
+    private function forfeitDueBooking(int $bookingId, int $expectedTripId): bool
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            // Match lock ordering in create/cancel/confirm/admin actions.
+            $tripStmt = $this->pdo->prepare("
+                SELECT ts.trip_id, ts.trip_status, ts.available_slots,
+                       ts.departure_datetime <= NOW() AS has_departed,
+                       v.capacity
+                FROM trip_schedule ts
+                INNER JOIN vehicle v ON v.vehicle_id = ts.vehicle_id
+                WHERE ts.trip_id = :trip_id
+                FOR UPDATE
+            ");
+            $tripStmt->execute(['trip_id' => $expectedTripId]);
+            $trip = $tripStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$trip || $trip['trip_status'] !== 'scheduled' ||
+                (int) $trip['has_departed'] !== 1) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $bookingStmt = $this->pdo->prepare("
+                SELECT trip_id, booking_status, passenger_confirmed
+                FROM booking_reservation
+                WHERE booking_id = :booking_id FOR UPDATE
+            ");
+            $bookingStmt->execute(['booking_id' => $bookingId]);
+            $booking = $bookingStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$booking || (int) $booking['trip_id'] !== $expectedTripId ||
+                $booking['booking_status'] !== 'confirmed' ||
+                $booking['passenger_confirmed'] !== null) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            if ((int) $trip['available_slots'] >= (int) $trip['capacity']) {
+                throw new RuntimeException('Inconsistent available seat total for trip ' . $expectedTripId);
+            }
+
+            $update = $this->pdo->prepare("
+                UPDATE booking_reservation
+                SET booking_status = 'forfeited'
+                WHERE booking_id = :booking_id
+                  AND booking_status = 'confirmed'
+                  AND passenger_confirmed IS NULL
+            ");
+            $update->execute(['booking_id' => $bookingId]);
+            if ($update->rowCount() !== 1) {
+                throw new RuntimeException('Booking forfeiture update failed for ' . $bookingId);
+            }
+
+            $seat = $this->pdo->prepare("
+                UPDATE trip_schedule
+                SET available_slots = available_slots + 1
+                WHERE trip_id = :trip_id AND available_slots < :capacity
+            ");
+            $seat->execute(['trip_id' => $expectedTripId, 'capacity' => (int) $trip['capacity']]);
+            if ($seat->rowCount() !== 1) {
+                throw new RuntimeException('Seat release failed for trip ' . $expectedTripId);
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $error) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $error;
+        }
+    }
+
+    // Confirm an admin-approved ride within the 60-minute departure window.
+    // The booking stays "confirmed"; passenger_confirmed records the separate response.
+    public function confirmRide(int $passengerId, int $bookingId): array
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            // Lock in the same trip-then-booking order used by cancellations/admin actions.
+            $lookup = $this->pdo->prepare("SELECT trip_id FROM booking_reservation
+                WHERE booking_id = :booking_id AND passenger_id = :passenger_id LIMIT 1");
+            $lookup->execute(['booking_id' => $bookingId, 'passenger_id' => $passengerId]);
+            $tripId = $lookup->fetchColumn();
+            if ($tripId === false) {
+                $this->pdo->rollBack();
+                return ['success' => false, 'message' => 'Booking not found.'];
+            }
+
+            $trip = $this->pdo->prepare("SELECT trip_id, trip_status,
+                    departure_datetime,
+                    NOW() AS server_now
+                FROM trip_schedule WHERE trip_id = :trip_id FOR UPDATE");
+            $trip->execute(['trip_id' => (int) $tripId]);
+            $tripRow = $trip->fetch(PDO::FETCH_ASSOC);
+            if (!$tripRow) {
+                $this->pdo->rollBack();
+                return ['success' => false, 'message' => 'Trip not found.'];
+            }
+
+            $booking = $this->pdo->prepare("SELECT booking_status, passenger_confirmed
+                FROM booking_reservation
+                WHERE booking_id = :booking_id AND passenger_id = :passenger_id
+                    AND trip_id = :trip_id FOR UPDATE");
+            $booking->execute([
+                'booking_id' => $bookingId,
+                'passenger_id' => $passengerId,
+                'trip_id' => (int) $tripId
+            ]);
+            $record = $booking->fetch(PDO::FETCH_ASSOC);
+            if (!$record || $record['booking_status'] !== 'confirmed' ||
+                $tripRow['trip_status'] !== 'scheduled') {
+                $this->pdo->rollBack();
+                return ['success' => false, 'message' => 'Only admin-approved, scheduled rides can be confirmed.'];
+            }
+            if ($record['passenger_confirmed'] !== null) {
+                $this->pdo->commit();
+                return ['success' => true, 'message' => 'Your ride is already confirmed.',
+                    'passenger_confirmed' => $record['passenger_confirmed']];
+            }
+
+            // Use MySQL NOW(), not device time. The deadline is strictly before departure.
+            $save = $this->pdo->prepare("UPDATE booking_reservation AS b
+                INNER JOIN trip_schedule AS t ON t.trip_id = b.trip_id
+                SET b.passenger_confirmed = NOW()
+                WHERE b.booking_id = :booking_id
+                  AND b.passenger_id = :passenger_id
+                  AND b.booking_status = 'confirmed'
+                  AND b.passenger_confirmed IS NULL
+                  AND t.trip_status = 'scheduled'
+                  AND NOW() >= DATE_SUB(t.departure_datetime, INTERVAL 60 MINUTE)
+                  AND NOW() < t.departure_datetime");
+            $save->execute(['booking_id' => $bookingId, 'passenger_id' => $passengerId]);
+            if ($save->rowCount() !== 1) {
+                $this->pdo->rollBack();
+                return ['success' => false,
+                    'message' => 'Ride confirmation is only available from 60 minutes before departure until departure.'];
+            }
+            $timestamp = $this->pdo->query("SELECT DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')")->fetchColumn();
+            $this->pdo->commit();
+            return ['success' => true, 'message' => 'Ride confirmed. Your reservation is retained.',
+                'passenger_confirmed' => $timestamp];
+        } catch (Throwable $error) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
             throw $error;
         }
     }

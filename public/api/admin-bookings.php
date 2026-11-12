@@ -21,6 +21,7 @@ if (empty($_SESSION['user_id'])) {
 try {
     require_once __DIR__ . '/../../app/core/db.php';
     require_once __DIR__ . '/../../app/models/AdminBooking.php';
+    require_once __DIR__ . '/../../app/models/Booking.php';
     $check = $pdo->prepare('SELECT role, account_status, email FROM `user` WHERE user_id = :id LIMIT 1');
     $check->execute(['id' => (int) $_SESSION['user_id']]);
     $admin = $check->fetch(PDO::FETCH_ASSOC);
@@ -34,6 +35,8 @@ try {
     }
     $model = new AdminBooking($pdo);
     if ($method === 'GET') {
+        // Reconcile due approved reservations before admins see booking states.
+        (new Booking($pdo))->processDueForfeitures(null, 200);
         adminBookingReply(200, [
             'admin_email' => $admin['email'],
             'bookings' => $model->listBookings(),

@@ -2,7 +2,7 @@
    PHASE 2 PASSENGER NOTIFICATIONS
    Reads real booking records from the authenticated MySQL API.
    Read/unread flags are browser-local until a notification table/API exists.
-   This file does NOT confirm attendance or change booking status.
+   Ride confirmation is saved to MySQL with the bookings API.
    ======================================================== */
 (function () {
     "use strict";
@@ -23,6 +23,9 @@
     let loading = false;
     let firstSeenTimes = {};
     let observedBefore = false;
+    let csrfToken = "";
+    let confirmingBooking = false;
+    let serverClockOffsetMs = 0;
 
     if (!list || !template) return;
 
@@ -46,7 +49,7 @@
     }
 
     function makeNotifications(bookings) {
-        const now = Date.now();
+        const now = Date.now() + serverClockOffsetMs;
         const result = [];
         bookings.forEach(function (booking) {
             const id = Number(booking.booking_id);
@@ -85,15 +88,26 @@
                     sortTime: (created || departure)?.getTime() || 0
                 });
             }
+            if (status === "confirmed" && booking.passenger_confirmed) {
+                result.push({
+                    ...base, id: "ride-confirmed-" + id,
+                    title: "Ride confirmation received",
+                    message: "You confirmed your ride. Your approved reservation is retained.",
+                    time: parseManilaDate(booking.passenger_confirmed),
+                    sortTime: parseManilaDate(booking.passenger_confirmed)?.getTime() || 0,
+                    rideConfirmed: true
+                });
+            }
             const minutesUntil = departure ? (departure.getTime() - now) / 60000 : -1;
             if (["confirmed", "accepted"].includes(status) &&
                 !booking.passenger_confirmed && minutesUntil > 0 &&
                 minutesUntil <= REMINDER_MINUTES) {
                 result.push({
                     ...base, id: "reminder-" + id + "-" + departure.getTime(),
-                    title: "Upcoming departure reminder",
-                    message: "Your confirmed trip departs in approximately " +
-                        Math.ceil(minutesUntil) + " minute(s). Attendance confirmation is not yet supported on this page.",
+                    title: "Ride confirmation required",
+                    canConfirm: true,
+                    message: "Your trip departs in approximately " +
+                        Math.ceil(minutesUntil) + " minute(s). Confirm your ride before departure to keep your reservation.",
                     time: new Date(departure.getTime() - REMINDER_MINUTES * 60000),
                     sortTime: departure.getTime() - REMINDER_MINUTES * 60000
                 });
@@ -179,7 +193,9 @@
 
     function visibleNotifications() {
         return notifications.filter(function (item) {
-            return !dismissedIds.has(item.id);
+            // An active 60-minute confirmation request must stay actionable,
+            // even if the passenger previously cleared notifications.
+            return item.canConfirm || !dismissedIds.has(item.id);
         });
     }
 
@@ -230,11 +246,14 @@
             if (message) message.textContent = item.message;
             if (time) {
                 const isReminder = item.id.startsWith("reminder-");
+                const isReceipt = item.id.startsWith("ride-confirmed-");
                 // First observed is honest about the absence of server-side decision timestamps.
                 const isNewerStatus = !isReminder && item.sortTime !== ((item.created || item.departure)?.getTime() || 0);
-                time.textContent = isReminder
-                    ? "Reminder window: " + formatDate(item.time) + " (PHT)"
-                    : isNewerStatus
+                time.textContent = isReceipt
+                    ? "Ride confirmed: " + formatDate(item.time) + " (PHT)"
+                    : isReminder
+                        ? "Confirmation opens: " + formatDate(item.time) + " (PHT)"
+                        : isNewerStatus
                         ? "Update first noticed: " + formatDate(new Date(item.sortTime)) + " (PHT)"
                         : "Booking created: " + formatDate(item.time) + " (PHT)";
             }
@@ -249,8 +268,11 @@
                 dd[2].textContent = item.route;
                 dd[3].textContent = item.pickup;
             }
-            if (confirmButton) confirmButton.hidden = true;
-            if (confirmedText) confirmedText.hidden = true;
+            if (confirmButton) {
+                confirmButton.hidden = !item.canConfirm;
+                if (item.canConfirm) confirmButton.dataset.bookingId = String(item.bookingId);
+            }
+            if (confirmedText) confirmedText.hidden = !item.rideConfirmed;
             if (readButton) {
                 readButton.dataset.notificationId = item.id;
                 readButton.disabled = read;
@@ -288,6 +310,10 @@
                 firstSeenTimes = readSeenTimes(storageKey + ":first-seen");
                 observedBefore = localStorage.getItem(storageKey + ":initialized") === "1";
             }
+            csrfToken = String(data.csrf_token || "");
+            const serverNow = parseManilaDate(data.server_now);
+            if (!serverNow) throw new Error("Missing database server time.");
+            serverClockOffsetMs = serverNow.getTime() - Date.now();
             notifications = orderByRecentActivity(makeNotifications(data.bookings));
             if (feedback) {
                 feedback.className = "alert d-none";
@@ -299,6 +325,39 @@
             showFeedback(error.message || "Unable to load notifications.", "danger");
         } finally { loading = false; }
     }
+
+    list.addEventListener("click", async function (event) {
+        const button = event.target.closest("[data-confirm-booking]");
+        if (!button || confirmingBooking) return;
+        const bookingId = Number(button.dataset.bookingId);
+        if (!Number.isSafeInteger(bookingId) || bookingId < 1 || !csrfToken) {
+            showFeedback("Unable to confirm this ride. Refresh and try again.", "danger");
+            return;
+        }
+        confirmingBooking = true;
+        button.disabled = true;
+        button.textContent = "Confirming...";
+        try {
+            const response = await fetch("api/bookings.php", {
+                method: "POST", credentials: "same-origin", cache: "no-store",
+                headers: { "Content-Type": "application/json", "Accept": "application/json",
+                    "X-CSRF-Token": csrfToken },
+                body: JSON.stringify({ action: "confirm_ride", booking_id: bookingId })
+            });
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || "Ride confirmation failed.");
+            }
+            await refresh();
+            showFeedback(data.message || "Ride confirmed.", "success");
+        } catch (error) {
+            showFeedback(error.message || "Unable to confirm ride.", "danger");
+        } finally {
+            confirmingBooking = false;
+            button.disabled = false;
+            button.textContent = "Confirm Ride";
+        }
+    });
 
     list.addEventListener("click", function (event) {
         const button = event.target.closest("[data-read-notification]");

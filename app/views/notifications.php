@@ -87,6 +87,10 @@
                     aria-live="polite">
                         Loading notifications...
                     </p>
+                    <p class="text-secondary small mb-0 mt-1">
+                        Approved rides require confirmation starting 60 minutes before departure.
+                        The confirmation cutoff is the scheduled departure time.
+                    </p>
                 </div>
 
                 <div class="d-flex flex-wrap gap-2">
@@ -174,6 +178,14 @@
                         Booking Details
                     </a>
 
+                    <button type="button"
+                            class="btn btn-success btn-sm"
+                            data-confirm-booking hidden>
+                        Confirm Ride
+                    </button>
+                    <span class="notification-confirmed small text-success fw-semibold" hidden>
+                        Ride confirmed
+                    </span>
                     <button type="button"
                             class="btn btn-outline-secondary btn-sm"
                             data-read-notification>

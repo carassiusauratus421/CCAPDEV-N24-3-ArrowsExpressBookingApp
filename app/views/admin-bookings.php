@@ -91,6 +91,7 @@
                                         <option value="Rejected">Rejected</option>
                                         <option value="Completed">Completed</option>
                                         <option value="Cancelled">Cancelled</option>
+                                        <option value="Forfeited">Forfeited</option>
                                     </select>
                                 </div>
                             </form>

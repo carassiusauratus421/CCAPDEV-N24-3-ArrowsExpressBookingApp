@@ -81,6 +81,9 @@ try {
     // GET: Retrieve all bookings for the logged-in passenger.
 
     if ($method === 'GET') {
+        // Idempotent fallback if the scheduled worker has not run yet.
+        // Only this passenger's overdue, admin-approved bookings are settled.
+        $bookingModel->processDueForfeitures($passengerId);
         $bookings = $bookingModel->getBookingsByPassengerId(
             $passengerId
         );
@@ -88,6 +91,7 @@ try {
         echo json_encode([
             'passenger' => $passenger,
             'bookings' => $bookings,
+            'server_now' => $bookingModel->getDatabaseNow(),
             'csrf_token' => $_SESSION['booking_csrf_token']
         ], JSON_THROW_ON_ERROR);
 
@@ -187,6 +191,28 @@ try {
     }
 
 
+    // POST: Passenger ride confirmation; admin approval is a separate step.
+    if ($action === 'confirm_ride') {
+        $bookingId = filter_var(
+            $input['booking_id'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+        if ($bookingId === false) {
+            http_response_code(400);
+            echo json_encode(['error' => 'A valid booking ID is required.']);
+            exit;
+        }
+        $result = $bookingModel->confirmRide($passengerId, (int) $bookingId);
+        if (!$result['success']) {
+            http_response_code($result['message'] === 'Booking not found.' ? 404 : 409);
+            echo json_encode(['error' => $result['message']]);
+            exit;
+        }
+        echo json_encode($result, JSON_THROW_ON_ERROR);
+        exit;
+    }
+
     // POST: Cancel an existing reservation.
 
     if ($action === 'cancel') {
@@ -236,7 +262,7 @@ try {
     }
 
 
-    // Only creation and cancellation are supported for now.
+    // Only creation, cancellation, and ride confirmation are supported.
 
     if ($action !== 'create') {
         http_response_code(400);
