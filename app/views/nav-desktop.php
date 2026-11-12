@@ -57,7 +57,7 @@
     <div class="px-2">
         <hr class="my-3 opacity-25">
 
-        <a href="index.php"
+        <a href="api/logout.php"
             class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold"
             style="font-size: 0.9rem;">
             <i class="bi bi-box-arrow-right me-3 fs-5"></i>

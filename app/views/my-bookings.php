@@ -1,340 +1,810 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/styles.css">
 
     <title>Book a Shuttle - Arrows Express Booking App</title>
 </head>
+
 <body class="dashboard-body bookings-body bg-white">
 
 <div class="container-fluid p-0">
     <div class="d-flex bookings-layout">
-        <!-- DESKTOP SIDEBAR -->
-        <?php include 'nav-desktop.php';?>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- Desktop Sidebar -->
+        <?php include 'nav-desktop.php'; ?>
+
+        <!-- Main Content -->
         <main class="bookings-main flex-grow-1 p-3 p-md-4 px-xl-5">
-            <!-- PAGE HEADER -->
+
+            <!-- Page Header -->
             <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
-                <img src="assets/images/logo.png"
-                     alt="DLSU Logo"
-                     class="dashboard-logo d-lg-none">
+
+                <img
+                    src="assets/images/logo.png"
+                    alt="DLSU Logo"
+                    class="dashboard-logo d-lg-none"
+                >
 
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
-                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+
+                    <button
+                        type="button"
+                        id="themeToggle"
+                        class="btn btn-sm btn-light border"
+                        aria-label="Toggle theme"
+                        aria-pressed="false"
+                    >
                         <i class="bi bi-moon" aria-hidden="true"></i>
                     </button>
-                    
-                    <!-- MOBILE NOTIFICATIONS -->
-                    <a href="notifications.html"
-                       class="notification-bell btn btn-white border rounded-circle d-lg-none"
-                       aria-label="Notifications"
-                       data-notification-link>
+
+                    <!-- Mobile Notifications -->
+                    <a
+                        href="notifications.php"
+                        class="notification-bell btn btn-white border rounded-circle d-lg-none"
+                        aria-label="Notifications"
+                        data-notification-link
+                    >
                         <i class="bi bi-bell fs-5" aria-hidden="true"></i>
-                        <span class="notification-count badge bg-success rounded-pill"
-                              data-notification-count hidden>0</span>
+
+                        <span
+                            class="notification-count badge bg-success rounded-pill"
+                            data-notification-count
+                            hidden
+                        >0</span>
                     </a>
 
-                    <!-- PROFILE LINK -->
-                    <a href="profile.html"
-                       class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                    <!-- Profile Link -->
+                    <a
+                        href="profile.php"
+                        class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none"
+                    >
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
                         </span>
+
                         <span class="fw-semibold me-2" data-passenger-name>
                             Loading...
                         </span>
-                        <i class="bi bi-chevron-right text-muted small me-1"
-                           aria-hidden="true"></i>
+
+                        <i
+                            class="bi bi-chevron-right text-muted small me-1"
+                            aria-hidden="true"
+                        ></i>
                     </a>
 
-                    <!-- MOBILE LOG OUT -->
-                    <a href="index.html"
-                       class="btn btn-sm btn-light border d-lg-none"
-                       aria-label="Log out">
+                    <!-- Mobile Log Out -->
+                    <a
+                        href="api/logout.php"
+                        class="btn btn-sm btn-light border d-lg-none"
+                        aria-label="Log out"
+                    >
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                     </a>
+
                 </div>
             </header>
 
-            <h1 class="fs-3 fw-bold text-dlsu-green mb-1">Book a Shuttle</h1>
-            <p class="text-secondary mb-4">Select a trip, check availability, and manage your bookings.</p>
-            <div id="booking-message" class="alert d-none" role="status" aria-live="polite" aria-atomic="true"></div>
+            <!-- Page Title -->
+            <h1 class="fs-3 fw-bold text-dlsu-green mb-1">
+                Book a Shuttle
+            </h1>
 
-            <!-- TRIP SEARCH AND INFORMATION -->
+            <p class="text-secondary mb-4">
+                Select a trip, check availability, and manage your bookings.
+            </p>
+
+            <div
+                id="booking-message"
+                class="alert d-none"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+            ></div>
+
+            <!-- Trip Search and Information -->
             <div class="row g-4 mb-4" id="book-a-trip">
-                <section class="col-12 col-xl-8" aria-labelledby="available-trips-heading">
-                    <div class="row g-3 align-items-end mb-4">
-                        <div class="col-12 col-md-7">
-                            <span class="form-label fw-semibold d-block" id="direction-label">Direction</span>
-                            <div class="d-flex gap-2" role="group" aria-labelledby="direction-label">
-                                <button type="button"
-                                        class="direction-button active"
-                                        data-direction="manila-laguna"
-                                        aria-pressed="true">
-                                    <i class="bi bi-bus-front me-2" aria-hidden="true"></i>
-                                    <span data-route-name="manila-laguna">Loading...</span>
-                                </button>
 
-                                <button type="button"
-                                        class="direction-button"
-                                        data-direction="laguna-manila"
-                                        aria-pressed="false">
-                                    <i class="bi bi-bus-front me-2" aria-hidden="true"></i>
-                                    <span data-route-name="laguna-manila">Loading...</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-5">
-                            <label for="trip-date" class="form-label fw-semibold">Select Date</label>
-                            <input type="date" class="form-control" id="trip-date" aria-describedby="trip-date-error">
-                            <div class="invalid-feedback" id="trip-date-error">Choose today or a future date.</div>
-                        </div>
-                    </div>
+                <section
+                    class="col-12 col-xl-8"
+                    aria-labelledby="available-trips-heading"
+                >
 
-                    <h2 class="fs-5 fw-bold text-dlsu-green mb-3" id="available-trips-heading">Available Trips</h2>
-                    <div class="available-trips-panel">
-                        <table class="table align-middle mb-0 available-trips-table">
-                            <caption class="visually-hidden">Available shuttle trips for the selected direction and date</caption>
-                            <thead>
-                                <tr><th scope="col">Departure Time</th><th scope="col">Shuttle</th><th scope="col">Available Seats</th><th scope="col"><span class="visually-hidden">Action</span></th></tr>
-                            </thead>
-                            <tbody id="available-trip-list">
-                                <tr><td colspan="4">Loading available trips...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+            <!-- Route and Date Filters -->
+            <div class="row g-3 mb-4 booking-filters">
 
-                <aside class="col-12 col-xl-4" aria-labelledby="trip-information-heading">
-                    <div class="trip-information-panel h-100">
-                        <h2 class="fs-5 fw-bold mb-4" id="trip-information-heading"><i class="bi bi-info-circle me-2" aria-hidden="true"></i> Trip Information</h2>
-                        <div class="d-flex gap-3 mb-3">
-                            <i class="bi bi-geo-alt fs-4" aria-hidden="true"></i>
-                            <div>
-                                <h3 class="fs-6 fw-semibold mb-1">Pick-up Point</h3>
-                                <p class="small mb-0" id="trip-pickup">Loading...</p>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 mb-3">
-                            <i class="bi bi-geo-alt fs-4" aria-hidden="true"></i>
-                            <div>
-                                <h3 class="fs-6 fw-semibold mb-1">Drop-off Point</h3>
-                                <p class="small mb-0" id="trip-dropoff">Loading...</p>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 mb-3">
-                            <i class="bi bi-clock fs-4" aria-hidden="true"></i>
-                            <div>
-                                <h3 class="fs-6 fw-semibold mb-1">Estimated Travel Time</h3>
-                                <p class="small mb-0" id="trip-duration">Loading...</p>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3">
-                            <i class="bi bi-calendar-event fs-4" aria-hidden="true"></i>
-                            <div>
-                                <h3 class="fs-6 fw-semibold mb-1">Reminders</h3>
-                                <ul class="small ps-3 mb-0">
-                                    <li>Please arrive at least 10 minutes before departure.</li>
-                                    <li>
-                                        Confirm your attendance when a reminder appears
-                                        <span id="trip-confirmation-minutes">...</span>
-                                        minutes before departure.
-                                    </li>
-                                    <li>Schedules may vary depending on traffic conditions.</li>
-                                </ul>
-                            </div>
-                        </div>
+                <!-- Route -->
+                <div class="col-12 col-md-8">
+                    <label for="route-filter" class="form-label fw-semibold">
+                        Route
+                    </label>
+
+                    <select
+                        id="route-filter"
+                        class="form-select booking-filter-input"
+                        aria-label="Select shuttle route"
+                    >
+                        <option value="">Loading available routes...</option>
+                    </select>
+                </div>
+
+                <!-- Select Date -->
+                <div class="col-12 col-md-4">
+                    <label for="trip-date" class="form-label fw-semibold">
+                        Select Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="trip-date"
+                        class="form-control booking-filter-input"
+                        aria-describedby="trip-date-error"
+                    >
+
+                    <div class="invalid-feedback" id="trip-date-error">
+                        Choose a valid departure date.
                     </div>
-                </aside>
+                </div>
+
             </div>
 
-            <!-- BOOKING HISTORY -->
-            <section id="my-bookings" aria-labelledby="my-bookings-heading">
-                <h2 class="fs-5 fw-bold text-dlsu-green mb-1" id="my-bookings-heading">My Bookings</h2>
-                <p class="small text-secondary mb-3">View and manage all your shuttle bookings.</p>
-                <p id="booking-loading" class="small text-secondary" role="status">Loading booking data...</p>
+                    <!-- Available Trips -->
+                    <h2
+                        class="fs-5 fw-bold text-dlsu-green mb-3"
+                        id="available-trips-heading"
+                    >
+                        Available Trips
+                    </h2>
 
-                <!-- BOOKING TABS -->
-                <div class="nav nav-pills bookings-tabs mb-4" role="tablist" aria-label="Booking categories">
-                    <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming-panel" type="button" role="tab" aria-controls="upcoming-panel" aria-selected="true">Upcoming</button>
-                    <button class="nav-link" id="completed-tab" data-bs-toggle="pill" data-bs-target="#completed-panel" type="button" role="tab" aria-controls="completed-panel" aria-selected="false">Completed</button>
-                    <button class="nav-link" id="cancelled-tab" data-bs-toggle="pill" data-bs-target="#cancelled-panel" type="button" role="tab" aria-controls="cancelled-panel" aria-selected="false">Cancelled</button>
+                    <div class="available-trips-panel">
+
+                        <table class="table align-middle mb-0 available-trips-table">
+
+                            <caption class="visually-hidden">
+                                Available shuttle trips for the selected route and date
+                            </caption>
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">Departure Time</th>
+                                    <th scope="col">Shuttle</th>
+                                    <th scope="col">Available Seats</th>
+                                    <th scope="col">
+                                        <span class="visually-hidden">
+                                            Action
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="available-trip-list">
+                                <tr>
+                                    <td colspan="4">
+                                        Loading available trips...
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </section>
+
+                <!-- Trip Information -->
+                <aside
+                    class="col-12 col-xl-4"
+                    aria-labelledby="trip-information-heading"
+                >
+                    <div class="trip-information-panel h-100">
+
+                        <h2
+                            class="fs-5 fw-bold mb-4"
+                            id="trip-information-heading"
+                        >
+                            <i
+                                class="bi bi-info-circle me-2"
+                                aria-hidden="true"
+                            ></i>
+                            Trip Information
+                        </h2>
+
+                        <!-- Pickup Point -->
+                        <div class="d-flex gap-3 mb-3">
+
+                            <i
+                                class="bi bi-geo-alt fs-4"
+                                aria-hidden="true"
+                            ></i>
+
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">
+                                    Pick-up Point
+                                </h3>
+
+                                <p class="small mb-0" id="trip-pickup">
+                                    Loading...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Drop-off Point -->
+                        <div class="d-flex gap-3 mb-3">
+
+                            <i
+                                class="bi bi-geo-alt fs-4"
+                                aria-hidden="true"
+                            ></i>
+
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">
+                                    Drop-off Point
+                                </h3>
+
+                                <p class="small mb-0" id="trip-dropoff">
+                                    Loading...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Estimated Travel Time -->
+                        <div class="d-flex gap-3 mb-3">
+
+                            <i
+                                class="bi bi-clock fs-4"
+                                aria-hidden="true"
+                            ></i>
+
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">
+                                    Estimated Travel Time
+                                </h3>
+
+                                <p class="small mb-0" id="trip-duration">
+                                    Loading...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Reminders -->
+                        <div class="d-flex gap-3">
+
+                            <i
+                                class="bi bi-calendar-event fs-4"
+                                aria-hidden="true"
+                            ></i>
+
+                            <div>
+                                <h3 class="fs-6 fw-semibold mb-1">
+                                    Reminders
+                                </h3>
+
+                                <ul class="small ps-3 mb-0">
+                                    <li>
+                                        Please arrive at least 10 minutes before departure.
+                                    </li>
+
+                                    <li>
+                                        Confirm your attendance when an official reminder appears.
+                                    </li>
+
+                                    <li>
+                                        Schedules may vary depending on traffic conditions.
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </aside>
+
+            </div>
+
+            <!-- Booking History -->
+            <section id="my-bookings" aria-labelledby="my-bookings-heading">
+
+                <h2
+                    class="fs-5 fw-bold text-dlsu-green mb-1"
+                    id="my-bookings-heading"
+                >
+                    My Bookings
+                </h2>
+
+                <p class="small text-secondary mb-3">
+                    View and manage all your shuttle bookings.
+                </p>
+
+                <p
+                    id="booking-loading"
+                    class="small text-secondary"
+                    role="status"
+                >
+                    Loading booking data...
+                </p>
+
+                <!-- Booking Tabs -->
+                <div
+                    class="nav nav-pills bookings-tabs mb-4"
+                    role="tablist"
+                    aria-label="Booking categories"
+                >
+
+                    <button
+                        class="nav-link active"
+                        id="upcoming-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#upcoming-panel"
+                        type="button"
+                        role="tab"
+                        aria-controls="upcoming-panel"
+                        aria-selected="true"
+                    >
+                        Upcoming
+                    </button>
+
+                    <button
+                        class="nav-link"
+                        id="completed-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#completed-panel"
+                        type="button"
+                        role="tab"
+                        aria-controls="completed-panel"
+                        aria-selected="false"
+                    >
+                        Completed
+                    </button>
+
+                    <button
+                        class="nav-link"
+                        id="cancelled-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#cancelled-panel"
+                        type="button"
+                        role="tab"
+                        aria-controls="cancelled-panel"
+                        aria-selected="false"
+                    >
+                        Cancelled
+                    </button>
+
                 </div>
 
-                <noscript><p class="alert alert-warning">Enable JavaScript to view the sample bookings.</p></noscript>
+                <noscript>
+                    <p class="alert alert-warning">
+                        Enable JavaScript to view your bookings.
+                    </p>
+                </noscript>
+
                 <div class="tab-content">
-                    <section class="tab-pane fade show active" id="upcoming-panel" role="tabpanel" aria-labelledby="upcoming-tab" tabindex="0">
+
+                    <!-- Upcoming Bookings -->
+                    <section
+                        class="tab-pane fade show active"
+                        id="upcoming-panel"
+                        role="tabpanel"
+                        aria-labelledby="upcoming-tab"
+                        tabindex="0"
+                    >
                         <div id="upcoming-list"></div>
                     </section>
-                    <section class="tab-pane fade" id="completed-panel" role="tabpanel" aria-labelledby="completed-tab" tabindex="0">
+
+                    <!-- Completed Bookings -->
+                    <section
+                        class="tab-pane fade"
+                        id="completed-panel"
+                        role="tabpanel"
+                        aria-labelledby="completed-tab"
+                        tabindex="0"
+                    >
                         <div id="completed-list"></div>
                     </section>
-                    <section class="tab-pane fade" id="cancelled-panel" role="tabpanel" aria-labelledby="cancelled-tab" tabindex="0">
+
+                    <!-- Cancelled Bookings -->
+                    <section
+                        class="tab-pane fade"
+                        id="cancelled-panel"
+                        role="tabpanel"
+                        aria-labelledby="cancelled-tab"
+                        tabindex="0"
+                    >
                         <div id="cancelled-list"></div>
                     </section>
+
                 </div>
+
             </section>
+
         </main>
     </div>
 </div>
 
-<!-- MOBILE NAVIGATION -->
-<?php require 'nav-mobile.php';?>
+<!-- Mobile Navigation -->
+<?php require 'nav-mobile.php'; ?>
 
-<!-- REUSABLE BOOKING CARD -->
+<!-- Reusable Booking Card -->
 <template id="booking-card-template">
+
     <article class="booking-record p-3">
+
         <div class="row g-3 align-items-center">
+
             <div class="col-auto">
+
                 <div class="booking-date-block text-center px-1">
+
                     <span class="booking-month small fw-bold text-dlsu-green d-block"></span>
+
                     <span class="booking-day fs-4 fw-bold d-block"></span>
+
                     <span class="booking-year small text-secondary d-block"></span>
+
                 </div>
             </div>
+
             <div class="col booking-card-info">
+
                 <h3 class="booking-route fs-6 fw-bold mb-2"></h3>
-                <p class="mb-1 small"><i class="bi bi-bus-front text-dlsu-green me-1" aria-hidden="true"></i><span class="booking-shuttle"></span></p>
-                <p class="mb-1 small text-secondary"><i class="bi bi-clock me-1" aria-hidden="true"></i><span class="booking-time"></span></p>
-                <p class="mb-0 small text-secondary"><i class="bi bi-geo-alt me-1" aria-hidden="true"></i><span class="booking-pickup"></span></p>
+
+                <p class="mb-1 small">
+                    <i class="bi bi-bus-front text-dlsu-green me-1" aria-hidden="true"></i>
+                    <span class="booking-shuttle"></span>
+                </p>
+
+                <p class="mb-1 small text-secondary">
+                    <i class="bi bi-clock me-1" aria-hidden="true"></i>
+                    <span class="booking-time"></span>
+                </p>
+
+                <p class="mb-0 small text-secondary">
+                    <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>
+                    <span class="booking-pickup"></span>
+                </p>
+
             </div>
+
             <div class="col-12 col-md-auto d-flex flex-wrap align-items-center gap-3">
+
                 <span class="booking-status badge rounded-pill px-3 py-2"></span>
-                <button type="button" class="booking-details-button btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#booking-details-modal">View Details</button>
+
+                <button
+                    type="button"
+                    class="booking-details-button btn btn-outline-success btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#booking-details-modal"
+                >
+                    View Details
+                </button>
+
             </div>
+
         </div>
+
     </article>
+
 </template>
 
-<!-- AVAILABLE TRIP ROW -->
+<!-- Available Trip Row -->
 <template id="trip-row-template">
+
     <tr>
         <td class="trip-time fw-bold" data-label="Departure"></td>
-        <td data-label="Shuttle"><span class="trip-shuttle fw-semibold d-block"></span><span class="trip-plate small text-secondary"></span></td>
+
+        <td data-label="Shuttle">
+            <span class="trip-shuttle fw-semibold d-block"></span>
+            <span class="trip-plate small text-secondary"></span>
+        </td>
+
         <td data-label="Available Seats">
+
             <span class="trip-seats small d-block mb-2"></span>
-                <div class="progress trip-seat-progress"
-                 role="progressbar"
-                 aria-label="Available seats"
-                 aria-valuemin="0">
+
+            <div
+                class="progress trip-seat-progress"
+                role="progressbar"
+                aria-label="Available seats"
+                aria-valuemin="0"
+            >
                 <div class="progress-bar bg-dlsu-green"></div>
             </div>
+
         </td>
-        <td class="trip-action"><button type="button" class="trip-select-button btn btn-dlsu-green btn-sm" data-bs-toggle="modal" data-bs-target="#trip-details-modal">Select</button></td>
+
+        <td class="trip-action">
+
+            <button
+                type="button"
+                class="trip-select-button btn btn-dlsu-green btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#trip-details-modal"
+            >
+                Select
+            </button>
+
+        </td>
     </tr>
+
 </template>
 
-<!-- TRIP BOOKING MODAL -->
-<div class="modal fade" id="trip-details-modal" tabindex="-1" aria-labelledby="trip-details-title" aria-hidden="true">
+<!-- Trip Details Modal -->
+<div
+    class="modal fade"
+    id="trip-details-modal"
+    tabindex="-1"
+    aria-labelledby="trip-details-title"
+    aria-hidden="true"
+>
     <div class="modal-dialog modal-dialog-centered">
+
         <div class="modal-content rounded-4">
+
             <div class="modal-header">
-                <h2 class="modal-title fs-5 fw-bold" id="trip-details-title">Trip Details</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h2
+                    class="modal-title fs-5 fw-bold"
+                    id="trip-details-title"
+                >
+                    Trip Details
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
             </div>
+
             <div class="modal-body">
-                <h3 class="fs-5 fw-bold text-dlsu-green" id="selected-route"></h3>
+
+                <h3
+                    class="fs-5 fw-bold text-dlsu-green"
+                    id="selected-route"
+                ></h3>
+
                 <dl class="row small booking-detail-list mb-0">
-                    <dt class="col-5">Date</dt><dd class="col-7" id="selected-date"></dd>
-                    <dt class="col-5">Departure Time</dt><dd class="col-7" id="selected-time"></dd>
-                    <dt class="col-5">Shuttle</dt><dd class="col-7" id="selected-shuttle"></dd>
-                    <dt class="col-5">Pick-up Point</dt><dd class="col-7" id="selected-pickup"></dd>
-                    <dt class="col-5">Drop-off Point</dt><dd class="col-7" id="selected-dropoff"></dd>
-                    <dt class="col-5">Available Seats</dt><dd class="col-7" id="selected-seats"></dd>
+
+                    <dt class="col-5">Date</dt>
+                    <dd class="col-7" id="selected-date"></dd>
+
+                    <dt class="col-5">Departure Time</dt>
+                    <dd class="col-7" id="selected-time"></dd>
+
+                    <dt class="col-5">Shuttle</dt>
+                    <dd class="col-7" id="selected-shuttle"></dd>
+
+                    <dt class="col-5">Pick-up Point</dt>
+                    <dd class="col-7" id="selected-pickup"></dd>
+
+                    <dt class="col-5">Drop-off Point</dt>
+                    <dd class="col-7" id="selected-dropoff"></dd>
+
+                    <dt class="col-5">Available Seats</dt>
+                    <dd class="col-7" id="selected-seats"></dd>
+
                 </dl>
-                <p class="small text-secondary mb-0">This books a sample trip for this demo.</p>
-                <div id="trip-booking-error" class="alert alert-danger mt-3 mb-0 d-none" role="alert"></div>
+
+                <p class="small text-secondary mb-0">
+                    Reservation creation is not available yet.
+                </p>
+
+                <div
+                    id="trip-booking-error"
+                    class="alert alert-danger mt-3 mb-0 d-none"
+                    role="alert"
+                ></div>
+
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-dlsu-green" id="book-trip-button">Book Trip</button>
+
+                <button
+                    type="button"
+                    class="btn btn-light border"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-dlsu-green"
+                    id="book-trip-button"
+                    disabled
+                >
+                    Book Trip
+                </button>
+
             </div>
+
         </div>
+
     </div>
 </div>
 
-<!-- BOOKING DETAILS MODAL -->
-<div class="modal fade" id="booking-details-modal" tabindex="-1" aria-labelledby="booking-details-title" aria-hidden="true">
+<!-- Booking Details Modal -->
+<div
+    class="modal fade"
+    id="booking-details-modal"
+    tabindex="-1"
+    aria-labelledby="booking-details-title"
+    aria-hidden="true"
+>
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
         <div class="modal-content rounded-4">
+
             <div class="modal-header">
-                <h2 class="modal-title fs-5 fw-bold" id="booking-details-title">Booking Details</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h2
+                    class="modal-title fs-5 fw-bold"
+                    id="booking-details-title"
+                >
+                    Booking Details
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
             </div>
+
             <div class="modal-body">
-                <h3 id="detail-route" class="fs-5 fw-bold text-dlsu-green"></h3>
+
+                <h3
+                    id="detail-route"
+                    class="fs-5 fw-bold text-dlsu-green"
+                ></h3>
+
                 <dl class="row small mb-0 booking-detail-list">
-                    <dt class="col-5">Booking Reference</dt><dd class="col-7" id="detail-id"></dd>
-                    <dt class="col-5">Date</dt><dd class="col-7" id="detail-date"></dd>
-                    <dt class="col-5">Time</dt><dd class="col-7" id="detail-time"></dd>
-                    <dt class="col-5">Booking Status</dt><dd class="col-7" id="detail-status"></dd>
+
+                    <dt class="col-5">Booking Reference</dt>
+                    <dd class="col-7" id="detail-id"></dd>
+
+                    <dt class="col-5">Date</dt>
+                    <dd class="col-7" id="detail-date"></dd>
+
+                    <dt class="col-5">Time</dt>
+                    <dd class="col-7" id="detail-time"></dd>
+
+                    <dt class="col-5">Booking Status</dt>
+                    <dd class="col-7" id="detail-status"></dd>
+
                     <dt class="col-5">Attendance</dt>
                     <dd class="col-7" id="detail-attendance"></dd>
-                    <dt class="col-5">Trip Status</dt><dd class="col-7" id="detail-trip-status"></dd>
-                    <dt class="col-5">Shuttle</dt><dd class="col-7" id="detail-shuttle"></dd>
-                    <dt class="col-5">Vehicle</dt><dd class="col-7" id="detail-vehicle"></dd>
-                    <dt class="col-5">Driver</dt><dd class="col-7" id="detail-driver"></dd>
-                    <dt class="col-5">Pick-up Point</dt><dd class="col-7" id="detail-pickup"></dd>
-                    <dt class="col-5">Drop-off Point</dt><dd class="col-7" id="detail-dropoff"></dd>
-                </dl>
-                <div id="notification-feedback"
-                     class="alert d-none mt-3"
-                     role="status"
-                     aria-live="polite"
-                     aria-atomic="true"
-                     tabindex="-1"></div>
 
+                    <dt class="col-5">Trip Status</dt>
+                    <dd class="col-7" id="detail-trip-status"></dd>
+
+                    <dt class="col-5">Shuttle</dt>
+                    <dd class="col-7" id="detail-shuttle"></dd>
+
+                    <dt class="col-5">Vehicle</dt>
+                    <dd class="col-7" id="detail-vehicle"></dd>
+
+                    <dt class="col-5">Driver</dt>
+                    <dd class="col-7" id="detail-driver"></dd>
+
+                    <dt class="col-5">Pick-up Point</dt>
+                    <dd class="col-7" id="detail-pickup"></dd>
+
+                    <dt class="col-5">Drop-off Point</dt>
+                    <dd class="col-7" id="detail-dropoff"></dd>
+
+                </dl>
+
+                <div
+                    id="notification-feedback"
+                    class="alert d-none mt-3"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    tabindex="-1"
+                ></div>
+
+                <!-- Booking Actions -->
                 <div id="booking-actions" class="mt-3">
-                    <p id="booking-action-note" class="small text-secondary">
-                        Loading booking actions...
+
+                    <p
+                        id="booking-action-note"
+                        class="small text-secondary"
+                    >
+                        Booking actions are not available yet.
                     </p>
 
                     <div class="d-flex flex-wrap gap-2">
-                        <button type="button"
-                                id="confirm-booking-button"
-                                class="btn btn-success"
-                                aria-describedby="booking-action-note"
-                                data-confirm-booking
-                                hidden>
+
+                        <button
+                            type="button"
+                            id="confirm-booking-button"
+                            class="btn btn-success"
+                            aria-describedby="booking-action-note"
+                            data-confirm-booking
+                            hidden
+                        >
                             Confirm Booking
                         </button>
 
-                        <button type="button"
-                                id="cancel-booking-button"
-                                class="btn btn-outline-danger"
-                                aria-describedby="booking-action-note"
-                                hidden>
+                        <button
+                            type="button"
+                            id="cancel-booking-button"
+                            class="btn btn-outline-danger"
+                            aria-describedby="booking-action-note"
+                            hidden
+                        >
                             Cancel Booking
                         </button>
+
                     </div>
+
                 </div>
+
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Close</button>
+
+                <button
+                    type="button"
+                    class="btn btn-light border"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+
             </div>
+
         </div>
+
     </div>
 </div>
 
-<!-- BOOKING SUCCESS NOTIFICATION -->
+<!-- Booking Success Notification -->
 <div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="booking-toast" class="toast text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+
+    <div
+        id="booking-toast"
+        class="toast text-bg-success border-0"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+    >
+
         <div class="d-flex">
-            <div class="toast-body" id="booking-toast-message"></div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close notification"></button>
+
+            <div
+                class="toast-body"
+                id="booking-toast-message"
+            ></div>
+
+            <button
+                type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"
+                aria-label="Close notification"
+            ></button>
+
         </div>
+
     </div>
 </div>
 
+<!-- JavaScript -->
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/booking-lifecycle.js"></script>
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/my-bookings.js"></script>
 <script src="assets/js/theme-toggle.js"></script>
+
+<script src="assets/js/passenger-identity.js"></script>
 </body>
 </html>

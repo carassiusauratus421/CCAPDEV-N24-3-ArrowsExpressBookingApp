@@ -53,7 +53,7 @@
                     </a>
 
                     <!-- MOBILE LOG OUT -->
-                    <a href="index.php"
+                    <a href="api/logout.php"
                        class="btn btn-sm btn-light border d-lg-none"
                        aria-label="Log out">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>

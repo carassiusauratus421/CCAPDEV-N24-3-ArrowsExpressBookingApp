@@ -1,66 +1,22 @@
-/* ========================================================
-   AVAILABLE TRIP SCHEDULES (LINE 1 ONLY)
-   ======================================================== */
-const scheduleStorageKey = "arrowsExpressDemoChanges:v1";
+
+/*
+ * Passenger Trip Schedules
+ * Displays shuttle schedules using data from MySQL.
+ */
+
 const tripDateInput = document.getElementById("trip-date");
 const tripTimeslotSelect = document.getElementById("timeslot-filter");
+const routeFilter = document.getElementById("route-filter");
 const tripList = document.getElementById("available-trip-list");
 const tripRowTemplate = document.getElementById("trip-row-template");
 const tripDetailsModal = document.getElementById("trip-details-modal");
 
-let scheduleSeed = null;
-let scheduleData = null;
-let currentDirection = document.querySelector(".direction-button.active").dataset.direction;
-let currentTimeslot = tripTimeslotSelect.value;
+let scheduleTrips = [];
 let selectedScheduleTripId = null;
+let scheduleRequestNumber = 0;
 
-/* Reapply shared browser edits to a fresh copy of the JSON records. */
-function rebuildScheduleData() {
-    scheduleData = JSON.parse(JSON.stringify(scheduleSeed));
 
-    try {
-        const changes = JSON.parse(localStorage.getItem(scheduleStorageKey));
-
-        if (!changes || changes.schemaVersion !== scheduleSeed.schemaVersion) {
-            return;
-        }
-
-        ["users", "trips", "bookings", "drivers", "vehicles"].forEach(function (section) {
-            if (!Array.isArray(changes[section])) {
-                return;
-            }
-
-            changes[section].forEach(function (change) {
-                const index = scheduleData[section].findIndex(function (record) {
-                    return record.id === change.id;
-                });
-
-                if (index === -1) {
-                    scheduleData[section].push(change);
-                } else {
-                    Object.assign(scheduleData[section][index], change);
-                }
-            });
-        });
-    } catch (error) {
-        console.warn("Saved schedule changes could not be loaded:", error);
-    }
-}
-
-function getLocalDateValue(date) {
-    const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: scheduleData.settings.timeZone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    }).formatToParts(date);
-
-    return ["year", "month", "day"].map(function (type) {
-        return parts.find(function (part) {
-            return part.type === type;
-        }).value;
-    }).join("-");
-}
+// Date and time formatting
 
 function getTripDate(value) {
     return new Date(value + "T12:00:00+08:00");
@@ -71,132 +27,66 @@ function formatScheduleDate(value, month = "short") {
         month: month,
         day: "numeric",
         year: "numeric",
-        timeZone: scheduleData.settings.timeZone
+        timeZone: "Asia/Manila"
     });
 }
 
-function formatScheduleTime(trip) {
-    const departure = new Date(
-        new Date(trip.date + "T00:00:00+08:00").getTime() +
-        trip.departureMinutes * 60000
-    );
+function formatScheduleTime(datetime) {
+    const time = datetime.split(" ")[1].slice(0, 5);
+    const parts = time.split(":");
+    const hours = Number(parts[0]);
 
-    return departure.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        timeZone: scheduleData.settings.timeZone
-    });
+    return (hours % 12 || 12) + ":" + parts[1] +
+        (hours < 12 ? " AM" : " PM");
 }
 
-function isTripDateValid() {
-    const today = getLocalDateValue(new Date(scheduleData.settings.demoNow));
+function getTimeslot(datetime) {
+    const parts = datetime.split(" ")[1].split(":");
 
-    const valid = tripDateInput.value !== "" &&
-        tripDateInput.validity.valid && tripDateInput.value >= today;
+    const minutes =
+        Number(parts[0]) * 60 + Number(parts[1]);
 
-    tripDateInput.classList.toggle("is-invalid", !valid);
-    tripDateInput.setAttribute("aria-invalid", String(!valid));
-    return valid;
+    if (minutes < 720) {
+        return "morning";
+    }
+
+    if (minutes < 1080) {
+        return "afternoon";
+    }
+
+    return "evening";
 }
 
-function getDirectionDetails(direction) {
-    const route = scheduleData.routes.find(function (item) {
-        return item.id === direction;
-    });
 
-    return {
-        route: route ? route.name : "Route unavailable",
-        pickup: route
-            ? route.pickupCampus + ", " + route.pickup
-            : "To be announced",
-        dropoff: route ? route.dropoff : "To be announced"
-    };
-}
-
-function getScheduleType(dateValue) {
-    const day = new Date(dateValue + "T00:00:00Z").getUTCDay();
-    return day === 0 ? null : day === 6 ? "saturday" : "weekday";
-}
-
-function getTimeslot(minutes) {
-    return minutes < 720
-        ? "morning"
-        : minutes < 1080
-            ? "afternoon"
-            : "evening";
-}
-
-/* Dated trips override weekly slots at the same departure time.
-   Generated IDs match those used by my-bookings.js. */
-function getAvailableTrips() {
-    const date = tripDateInput.value;
-
-    const datedTrips = scheduleData.trips.filter(function (trip) {
-        return trip.date === date && trip.routeId === currentDirection;
-    });
-
-    const type = getScheduleType(date);
-    const timetable = type ? scheduleData.weeklySchedules[type] : null;
-    const slots = timetable ? timetable[currentDirection] || [] : [];
-    const trips = datedTrips.slice();
-    const direction = getDirectionDetails(currentDirection);
-
-    slots.forEach(function (slot) {
-        if (!datedTrips.some(function (trip) {
-            return trip.departureMinutes === slot.departureMinutes;
-        })) {
-            trips.push({
-                ...slot,
-                id: "scheduled-" + date + "-" + slot.id,
-                date: date,
-                routeId: currentDirection,
-                tripStatus: "Scheduled"
-            });
-        }
-    });
-
-    return trips.map(function (trip) {
-        const vehicle = scheduleData.vehicles.find(function (item) {
-            return item.id === trip.vehicleId;
-        });
-
-        const reservations = scheduleData.bookings.filter(function (booking) {
-            return booking.tripId === trip.id &&
-                ["Pending", "Confirmed", "On Hold"].includes(booking.status);
-        }).length;
-
-        return {
-            ...trip,
-            ...direction,
-            departure: formatScheduleTime(trip),
-            shuttle: vehicle
-                ? vehicle.name
-                : scheduleData.settings.serviceName,
-            available: Math.max(
-                0,
-                trip.capacity - (trip.otherReservations || 0) - reservations
-            )
-        };
-    }).filter(function (trip) {
-        return currentTimeslot === "all" ||
-            getTimeslot(trip.departureMinutes) === currentTimeslot;
-    }).sort(function (first, second) {
-        return first.departureMinutes - second.departureMinutes;
-    });
-}
+// Display messages
 
 function showBookingMessage(message, type = "warning") {
     const feedback = document.getElementById("booking-message");
+
+    if (!feedback) {
+        return;
+    }
+
     feedback.textContent = message;
     feedback.className = "alert alert-" + type;
+}
+
+function hideBookingMessage() {
+    const feedback = document.getElementById("booking-message");
+
+    if (!feedback) {
+        return;
+    }
+
+    feedback.textContent = "";
+    feedback.className = "alert d-none";
 }
 
 function showTripMessage(message) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
 
-    cell.colSpan = 5;
-    cell.style.gridColumn = "1 / -1";
+    cell.colSpan = 6;
     cell.className = "text-center text-secondary py-4";
     cell.textContent = message;
 
@@ -204,197 +94,291 @@ function showTripMessage(message) {
     tripList.appendChild(row);
 }
 
-/* Fill the selected departure details in the modal. */
+
+// Filter available trips
+
+function getAvailableTrips() {
+    return scheduleTrips.filter(function (trip) {
+        const selectedRoute = routeFilter.value;
+
+        const routeMatches = !selectedRoute ||
+            selectedRoute === JSON.stringify([
+                trip.pickup_point,
+                trip.dropoff_point
+            ]);
+
+        const timeMatches =
+            tripTimeslotSelect.value === "all" ||
+            getTimeslot(trip.departure_datetime) ===
+                tripTimeslotSelect.value;
+
+        return routeMatches && timeMatches;
+    });
+}
+
+
+// Display trip details
+
 function fillScheduleDetails(trip) {
+    const date = trip.departure_datetime.split(" ")[0];
+
     const details = {
-        "selected-route": trip.route,
-        "selected-date": formatScheduleDate(trip.date, "long"),
-        "selected-time": trip.departure,
-        "selected-line": trip.shuttle,
-        "selected-pickup": trip.pickup,
-        "selected-dropoff": trip.dropoff,
-        "selected-seats": trip.available + " / " +
+        "selected-route":
+            trip.pickup_point + " → " + trip.dropoff_point,
+
+        "selected-date":
+            formatScheduleDate(date, "long"),
+
+        "selected-time":
+            formatScheduleTime(trip.departure_datetime),
+
+        "selected-line":
+            trip.vehicle_model + " (" + trip.plate_number + ")",
+
+        "selected-pickup":
+            trip.pickup_point,
+
+        "selected-dropoff":
+            trip.dropoff_point,
+
+        "selected-seats":
+            trip.available_slots + " / " +
             trip.capacity + " available seats"
     };
 
     Object.keys(details).forEach(function (id) {
-        document.getElementById(id).textContent = details[id];
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent = details[id];
+        }
     });
 }
 
-/* Render the trips for the selected date and direction. */
+
+// Generate available trip rows
+
 function generateAvailableTrips() {
     tripList.replaceChildren();
 
-    if (!isTripDateValid()) {
-        showTripMessage(
-            "Choose the demo date or a later date to view trips."
-        );
-        return;
-    }
-
     const trips = getAvailableTrips();
 
-    if (trips.length === 0) {
-        showTripMessage(!getScheduleType(tripDateInput.value)
-            ? "Shuttle service is not available on Sundays."
-            : "No trips match your filters.");
+    if (!trips.length) {
+        showTripMessage(
+            "No trips match your selected date and filters."
+        );
+
         return;
     }
 
     trips.forEach(function (trip) {
-        const row = tripRowTemplate.content.firstElementChild.cloneNode(true);
+        const row = tripRowTemplate.content
+            .firstElementChild.cloneNode(true);
 
-        row.querySelector(".trip-time").textContent = trip.departure;
+        const date = trip.departure_datetime.split(" ")[0];
+
+        row.querySelector(".trip-time").textContent =
+            formatScheduleTime(trip.departure_datetime);
+
         row.querySelector(".trip-date").textContent =
-            formatScheduleDate(trip.date);
-        row.querySelector(".trip-pickup").textContent = trip.pickup;
-        row.querySelector(".trip-dropoff").textContent = trip.dropoff;
-        row.querySelector(".trip-slots").textContent = trip.available;
+            formatScheduleDate(date);
+
+        row.querySelector(".trip-pickup").textContent =
+            trip.pickup_point;
+
+        row.querySelector(".trip-dropoff").textContent =
+            trip.dropoff_point;
+
+        row.querySelector(".trip-slots").textContent =
+            trip.available_slots;
 
         const button = row.querySelector(".trip-select-button");
-        button.dataset.tripId = trip.id;
+
+        button.dataset.tripId = String(trip.trip_id);
+
+        button.disabled = Number(trip.available_slots) <= 0;
+
         button.setAttribute(
             "aria-label",
-            "View the " + trip.departure + " trip, " + trip.route
+            "View details for " +
+            formatScheduleTime(trip.departure_datetime) +
+            " from " + trip.pickup_point
         );
 
         tripList.appendChild(row);
     });
 }
 
-/* Refresh the passenger name and schedule using shared data. */
-function refreshSchedulePage() {
-    if (!scheduleSeed) {
-        return;
-    }
 
-    rebuildScheduleData();
+// Populate route options from the database
 
-    const passenger = scheduleData.users.find(function (user) {
-        return user.id === scheduleData.settings.defaultPassengerId;
+function populateRoutes(routes) {
+    const previousRoute = routeFilter.value;
+
+    routeFilter.replaceChildren();
+
+    routeFilter.add(
+        new Option("All available routes", "")
+    );
+
+    routes.forEach(function (route) {
+        const label =
+            route.pickup_point + " → " + route.dropoff_point;
+
+        const value = JSON.stringify([
+            route.pickup_point,
+            route.dropoff_point
+        ]);
+
+        routeFilter.add(new Option(label, value));
     });
 
-    if (!passenger) {
-        throw new Error("The demo passenger could not be found.");
-    }
-
-    document.querySelectorAll("[data-passenger-name]").forEach(function (name) {
-        name.textContent = passenger.firstName + " " + passenger.lastName;
+    const routeStillExists = Array.from(
+        routeFilter.options
+    ).some(function (option) {
+        return option.value === previousRoute;
     });
 
-    document.querySelectorAll("[data-route-name]").forEach(function (label) {
-        label.textContent = getDirectionDetails(label.dataset.routeName).route;
-    });
-
-    document.getElementById("schedule-confirmation-minutes").textContent =
-        scheduleData.settings.confirmationMinutes;
-
-    const today = getLocalDateValue(new Date(scheduleData.settings.demoNow));
-    tripDateInput.min = today;
-
-    document.getElementById("trip-date-error").textContent =
-        "Choose " + today + " or a later date.";
-
-    if (!tripDateInput.value) {
-        tripDateInput.value = today;
-    }
-
-    generateAvailableTrips();
-
-    if (selectedScheduleTripId && isTripDateValid()) {
-        const selected = getAvailableTrips().find(function (trip) {
-            return trip.id === selectedScheduleTripId;
-        });
-
-        if (selected) {
-            fillScheduleDetails(selected);
-        }
+    if (routeStillExists) {
+        routeFilter.value = previousRoute;
     }
 }
 
-tripDetailsModal.addEventListener("show.bs.modal", function (event) {
-    if (!scheduleSeed) {
-        event.preventDefault();
-        return;
-    }
 
-    rebuildScheduleData();
+// Load trip schedules from MySQL through PHP
 
-    const selectedTrip = isTripDateValid()
-        ? getAvailableTrips().find(function (trip) {
-            return trip.id === event.relatedTarget?.dataset.tripId;
-        })
-        : null;
+async function loadScheduleTrips() {
+    const requestNumber = ++scheduleRequestNumber;
 
-    if (!selectedTrip) {
-        event.preventDefault();
-        showBookingMessage(
-            "This trip could not be found. Please select another trip."
-        );
-        return;
-    }
+    tripList.replaceChildren();
+    showTripMessage("Loading trips from the database...");
+    hideBookingMessage();
 
-    selectedScheduleTripId = selectedTrip.id;
-    fillScheduleDetails(selectedTrip);
-});
+    const selectedDate = tripDateInput.value;
 
-tripDetailsModal.addEventListener("hidden.bs.modal", function () {
-    selectedScheduleTripId = null;
-});
+    const url = "api/trips.php" + (
+        selectedDate
+            ? "?date=" + encodeURIComponent(selectedDate)
+            : ""
+    );
 
-document.querySelectorAll(".direction-button").forEach(function (button) {
-    button.addEventListener("click", function () {
-        currentDirection = button.dataset.direction;
-
-        document.querySelectorAll(".direction-button").forEach(function (item) {
-            const active = item === button;
-            item.classList.toggle("active", active);
-            item.setAttribute("aria-pressed", String(active));
+    try {
+        const response = await fetch(url, {
+            cache: "no-store"
         });
 
-        refreshSchedulePage();
-    });
-});
+        const data = await response.json();
 
-tripDateInput.addEventListener("change", refreshSchedulePage);
-
-tripTimeslotSelect.addEventListener("change", function () {
-    currentTimeslot = tripTimeslotSelect.value;
-    refreshSchedulePage();
-});
-
-window.addEventListener("arrows-express-data-updated", refreshSchedulePage);
-
-window.addEventListener("storage", function (event) {
-    if (event.key === scheduleStorageKey || event.key === null) {
-        refreshSchedulePage();
-    }
-});
-
-window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-        refreshSchedulePage();
-    }
-});
-
-fetch("assets/data/mock-data.json")
-    .then(function (response) {
         if (!response.ok) {
-            throw new Error("Could not load mock-data.json.");
+            throw new Error(
+                data.error || "Could not load scheduled trips."
+            );
         }
 
-        return response.json();
-    })
-    .then(function (data) {
-        scheduleSeed = data;
-        refreshSchedulePage();
-    })
-    .catch(function (error) {
-        console.error("Could not load schedules:", error);
-        scheduleSeed = null;
+        // Ignore results from outdated requests.
+        if (requestNumber !== scheduleRequestNumber) {
+            return;
+        }
+
+        if (!Array.isArray(data.trips) ||
+            !Array.isArray(data.routes)) {
+            throw new Error("Invalid schedule response.");
+        }
+
+        scheduleTrips = data.trips;
+
+        populateRoutes(data.routes);
+
+        if (!selectedDate) {
+            tripDateInput.value = data.date || "";
+        }
+
+        generateAvailableTrips();
+
+    } catch (error) {
+        if (requestNumber !== scheduleRequestNumber) {
+            return;
+        }
+
+        console.error(
+            "Trip schedule request failed:",
+            error
+        );
+
+        scheduleTrips = [];
 
         tripList.replaceChildren();
-        showTripMessage("Unable to load schedules. Please reload the page.");
-        showBookingMessage("Unable to load schedule data.", "danger");
-    });
+
+        showTripMessage(
+            "Unable to retrieve trips. Please try again."
+        );
+
+        showBookingMessage(
+            "Unable to load trip schedules from the database.",
+            "danger"
+        );
+    }
+}
+
+
+// Trip details modal
+
+if (tripDetailsModal) {
+    tripDetailsModal.addEventListener(
+        "show.bs.modal",
+        function (event) {
+            const selected = scheduleTrips.find(function (trip) {
+                return String(trip.trip_id) ===
+                    event.relatedTarget?.dataset.tripId;
+            });
+
+            if (!selected) {
+                event.preventDefault();
+                return;
+            }
+
+            selectedScheduleTripId = selected.trip_id;
+
+            fillScheduleDetails(selected);
+        }
+    );
+
+    tripDetailsModal.addEventListener(
+        "hidden.bs.modal",
+        function () {
+            selectedScheduleTripId = null;
+        }
+    );
+}
+
+
+// Filter event listeners
+
+routeFilter.addEventListener(
+    "change",
+    generateAvailableTrips
+);
+
+tripTimeslotSelect.addEventListener(
+    "change",
+    generateAvailableTrips
+);
+
+tripDateInput.addEventListener(
+    "change",
+    loadScheduleTrips
+);
+
+window.addEventListener(
+    "pageshow",
+    function (event) {
+        if (event.persisted) {
+            loadScheduleTrips();
+        }
+    }
+);
+
+
+// Initialize schedules
+
+loadScheduleTrips();

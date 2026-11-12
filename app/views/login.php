@@ -74,22 +74,35 @@
                     <div class="my-auto px-3 px-sm-4 px-lg-5 py-4">
                         <div class="mx-auto login-form-container">
                             <h2 id="login-heading" class="fw-bold">Log in</h2>
-                            <p class="text-secondary fw-medium">Enter your DLSU account to continue to Arrows Express.</p>
-
+                            <p class="text-secondary fw-medium">
+                                Enter your account credentials to continue to Arrows Express.
+                            </p>
                             <!-- Inline feedback for validation and simulated actions. -->
                             <div id="login-message" class="alert d-none" role="status" aria-live="polite" aria-atomic="true"></div>
 
                             <noscript>
-                                <div class="alert alert-warning">Enable JavaScript to use this Phase 1 demo.</div>
+                                <div class="alert alert-warning">
+                                    Enable JavaScript to log in to Arrows Express.
+                                </div>
                             </noscript>
 
                             <form id="login-form" method="post" novalidate>
                                 <div class="mb-3">
-                                    <label for="email" class="form-label fw-bold">DLSU Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                           placeholder="username@dlsu.edu.ph" autocomplete="username"
-                                           autocapitalize="none" spellcheck="false"
-                                           aria-describedby="email-error" required>
+                                    <label for="email" class="form-label fw-bold">Email</label>
+
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                        name="email"
+                                        placeholder="Enter your email address"
+                                        autocomplete="username"
+                                        autocapitalize="none"
+                                        spellcheck="false"
+                                        aria-describedby="email-error"
+                                        required
+                                    >
+
                                     <div id="email-error" class="invalid-feedback"></div>
                                 </div>
 
@@ -116,38 +129,6 @@
                                 <button type="button" id="google-login-button" class="btn btn-outline-success w-100">Continue with Google (Demo)</button>
                             </form>
 
-                            <!-- These public credentials are only for the frontend demonstration. -->
-                            <div class="bg-light border rounded-3 p-3 mt-4 small login-demo">
-                                <p class="fw-semibold mb-2">Phase 1 demo accounts</p>
-
-                                <p class="fw-semibold mb-1">Passenger</p>
-                                <p class="mb-1">
-                                    Email: <span id="demo-passenger-email" class="fw-semibold">juan_delacruz@dlsu.edu.ph</span>
-                                </p>
-                                <p class="mb-2">
-                                    Password: <span id="demo-passenger-password" class="fw-semibold">Arrows123!</span>
-                                </p>
-
-                                <hr class="my-2">
-
-                                <p class="fw-semibold mb-1">Driver</p>
-                                <p class="mb-1">
-                                    Email: <span id="demo-driver-email" class="fw-semibold">roberto_sanjose@dlsu.edu.ph</span>
-                                </p>
-                                <p class="mb-2">
-                                    Password: <span id="demo-driver-password" class="fw-semibold">Arrows123!</span>
-                                </p>
-
-                                <hr class="my-2">
-                                <p class="fw-semibold mb-1">Admin</p>
-                                <p class="mb-1">Email: <span id="demo-admin-email" class="fw-semibold">Loading...</span></p>
-                                <p class="mb-2">Password: <span id="demo-admin-password" class="fw-semibold">Loading...</span></p>
-
-                                <p class="text-secondary mb-0">
-                                    Login details and Google sign-in are for demo. No real account is
-                                    accessed and database (for actual user details) is still to be done.
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </section>

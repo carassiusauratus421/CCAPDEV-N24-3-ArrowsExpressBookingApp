@@ -43,7 +43,7 @@
                         <i class="bi bi-moon" aria-hidden="true"></i>
                     </button>
                     <!-- PROFILE LINK -->
-                    <a href="profile.html"
+                    <a href="profile.php"
                        class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                         <span class="dashboard-user-avatar me-2">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
@@ -56,7 +56,7 @@
                     </a>
 
                     <!-- MOBILE LOG OUT -->
-                    <a href="index.html"
+                    <a href="api/logout.php"
                        class="btn btn-sm btn-light border d-lg-none"
                        aria-label="Log out">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
@@ -200,5 +200,6 @@
 <script src="assets/js/booking-lifecycle.js"></script>
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/theme-toggle.js"></script>
+<script src="assets/js/passenger-identity.js"></script>
 </body>
 </html>

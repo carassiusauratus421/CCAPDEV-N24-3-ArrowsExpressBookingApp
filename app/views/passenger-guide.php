@@ -34,14 +34,14 @@
                             <i class="bi bi-moon" aria-hidden="true"></i>
                         </button>
 
-                        <a href="profile.html" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
+                        <a href="profile.php" class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                             <span class="dashboard-user-avatar me-2">
                                 <i class="bi bi-person-fill" aria-hidden="true"></i>
                             </span>
                             <span class="fw-semibold me-2" data-passenger-name>Loading...</span>
                             <i class="bi bi-chevron-right text-muted small me-1" aria-hidden="true"></i>
                         </a>
-                        <a href="index.html" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                        <a href="api/logout.php" class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
                             <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -108,5 +108,6 @@
     <script src="assets/js/booking-lifecycle.js"></script>
     <script src="assets/js/notifications.js"></script>
     <script src="assets/js/theme-toggle.js"></script>
+<script src="assets/js/passenger-identity.js"></script>
 </body>
 </html>

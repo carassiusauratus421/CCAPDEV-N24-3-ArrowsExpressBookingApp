@@ -345,7 +345,7 @@ function renderNotificationList() {
     });
 }
 
-/* Refresh names and the demo clock on the Notifications page as well. */
+/* Refresh the demo clock on the Notifications page. */
 function renderNotificationPageDetails() {
     const passenger = notificationData.users.find(function (user) {
         return user.id === notificationData.settings.defaultPassengerId;
@@ -355,13 +355,7 @@ function renderNotificationPageDetails() {
         throw new Error("The demo passenger could not be found.");
     }
 
-    document.querySelectorAll(
-        "[data-passenger-name], .dashboard-account .fw-semibold"
-    ).forEach(function (name) {
-        name.textContent = passenger.firstName + " " + passenger.lastName;
-    });
-
-    if (document.getElementById("notification-list")) {
+if (document.getElementById("notification-list")) {
         const clock = document.getElementById("notification-demo-clock") ||
             document.querySelector(".main-content > .bg-dlsu-light");
 
