@@ -20,7 +20,7 @@ $ mysql -u root -p
 
 > CREATE DATABASE IF NOT EXISTS arrows_express;
 > USE arrows_express;
-> SOURCE /var/www/html/CCAPDEV-N24-3-ArrowsExpressBookingApp/public/assets/data/ArrowsExpress_dump.sql;
+> SOURCE /var/www/html/CCAPDEV-N24-3-ArrowsExpressBookingApp/app/db/CCAPDEV-N24-3-ArrowsExpress.sql;
 ```
 
 5. Edit `app/core/db.php` with the appropriate credentials.
