@@ -2,8 +2,7 @@
     require_once __DIR__ . '/../models/user-model.php';
     require_once __DIR__ . '/../models/passenger-model.php';
 
-    function show_signup() {
-        global $pdo;
+    function show_signup($pdo) {
         $error = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -22,13 +21,13 @@
                 $error = 'Please fill in all fields.';
             } elseif ($data['password'] !== ($_POST['confirmPassword'] ?? '')) {
                 $error = 'Passwords do not match.';
-            } elseif (email_exists($data['email'])) {
+            } elseif (email_exists($pdo, $data['email'])) {
                 $error = 'Email already registered.';
             } else {
                 try {
                     $pdo->beginTransaction();
-                    $userId = create_user($data['email'], password_hash($data['password'], PASSWORD_DEFAULT));
-                    create_passenger($userId, $data);
+                    $userId = create_user($pdo, $data['email'], password_hash($data['password'], PASSWORD_DEFAULT));
+                    create_passenger($pdo, $userId, $data);
                     $pdo->commit();
                     header("Location: index.php");
                     exit;

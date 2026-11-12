@@ -101,17 +101,26 @@
                             </div>
                             <div class="admin-table-wrapper">
                                 <table class="table align-middle mb-0 admin-table">
-                                    <thead>
+                                
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-account-list">
+                                    <?php if (empty($admins)): ?>
                                         <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Email</th>
+                                            <td>No admins found.</td>
                                         </tr>
-                                    </thead>
-                                    <tbody id="admin-account-list">
-                                        <tr>
-                                            <td colspan="2">Loading data...</td>
-                                        </tr>
-                                    </tbody>
+                                    <?php else: ?>
+                                        <?php foreach ($admins as $admin): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($admin['email']) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+
                                 </table>
                             </div>
                         </section>
