@@ -64,9 +64,10 @@
                                 <h2 class="fs-5 fw-bold text-dlsu-green mb-0">Reservation Summary</h2>
                             </div>
                             <p id="admin-reservation-summary" class="small text-secondary">
+                                <?php echo($reserved_seat_count) ?> of <?php echo($total_seat_capacity) ?> seats reserved across <?php echo($upcoming_trip_count) ?> upcoming trips.
                             </p>
                             <div class="progress" style="height: 12px;">
-                                <div id="admin-reservation-progress" class="progress-bar bg-dlsu-green" role="progressbar" aria-label="Reserved seats" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div id="admin-reservation-progress" class="progress-bar bg-dlsu-green" role="progressbar" aria-label="Reserved seats" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="width: <?php echo($reserved_percent); ?> %">
                                 </div>
                             </div>
                         </section>
@@ -86,9 +87,16 @@
                                         </tr>
                                     </thead>
                                     <tbody id="admin-shuttle-list">
+                                        <?php foreach ($vehicles as $vehicle): ?>
                                         <tr>
-                                            <td colspan="5">Loading data...</td>
+                                            <td><?= htmlspecialchars($vehicle['shuttle']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['plate_number']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['vehicle_model']); ?></td>
+                                            <td><?= htmlspecialchars($vehicle['capacity']); ?></td>
+                                            <td><a href="admin-vehicles.php">Manage</a></td>
+                                            <!-- <td colspan="5">Loading data...</td> -->
                                         </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -109,9 +117,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-driver-list">
+                                                <?php foreach ($drivers as $driver): ?>
                                                 <tr>
-                                                    <td colspan="3">Loading data...</td>
+                                                    <td><?= htmlspecialchars($driver['name']); ?></td>
+                                                    <td><?= htmlspecialchars($driver['assigned_shuttle']); ?></td>
+                                                    <td><?= htmlspecialchars($driver['status']); ?></td>
+                                                    <!-- <td colspan="3">Loading data...</td> -->
                                                 </tr>
+                                                <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -133,9 +146,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="admin-recent-list">
+                                                <?php foreach ($bookings as $booking): ?>
                                                 <tr>
-                                                    <td colspan="4">Loading data...</td>
+                                                    <td><?= htmlspecialchars($booking['reference']); ?></td>
+                                                    <td><?= htmlspecialchars($booking['passenger_name']); ?></td>
+                                                    <td><?= htmlspecialchars($booking['route']); ?></td>
+                                                    <td><?= htmlspecialchars($booking['status']); ?></td>
+                                                    <!-- <td colspan="4">Loading data...</td> -->
                                                 </tr>
+                                                <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div>
