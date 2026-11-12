@@ -29,7 +29,7 @@
                                 </span>
                                 <span class="fw-semibold me-2" id="admin-user-name">Admin</span>
                             </a>
-                            <a href="index.php" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
+                            <a href="api/logout.php" data-admin-logout class="btn btn-sm btn-light border d-lg-none" aria-label="Log out">
                                 <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                             </a>
                         </div>
@@ -194,10 +194,7 @@
         
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/js/booking-lifecycle.js"></script>
-        <script src="assets/js/admin.js">
-        </script>
-        <script src="assets/js/theme-toggle.js">
-        </script>
+        <script src="assets/js/admin-profiles.js"></script>
+        <script src="assets/js/theme-toggle.js"></script>
     </body>
 </html>

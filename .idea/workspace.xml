@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7e0178a7-ee7e-4fff-8a8e-a8e96e2a676f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/app/controllers/admin-profiles-controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/admin-profiles-controller.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/db.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/admin-profiles.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/admin-profiles.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.3577455576660153" />
+      <entry key="MS500" value="3.1160022412456128" />
+      <entry key="S2" value="10.189870597443969" />
+      <entry key="S5" value="15.888290627608871" />
+      <entry key="S10" value="20.87297376115088" />
+      <entry key="S30" value="38.05624453716498" />
+      <entry key="S60" value="50.13228308133026" />
+      <entry key="M2" value="58.821929309234974" />
+      <entry key="M5" value="65.1866490635574" />
+      <entry key="M10" value="67.53230928043845" />
+      <entry key="M15" value="68.35231284682298" />
+      <entry key="M30" value="71.17492373362873" />
+      <entry key="H1" value="104.740224360345" />
+      <entry key="H2" value="234.71002001240817" />
+      <entry key="H4" value="438.6388259609887" />
+      <entry key="D1" value="802.6803421954122" />
+      <entry key="W1" value="895.4086065655447" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.3182163954211026" />
+      <entry key="MS500" value="3.09718966975153" />
+      <entry key="S2" value="10.17508129356813" />
+      <entry key="S5" value="15.879023025176583" />
+      <entry key="S10" value="20.866638840272692" />
+      <entry key="S30" value="38.051262602494916" />
+      <entry key="S60" value="50.12852462088028" />
+      <entry key="M2" value="58.819546843302504" />
+      <entry key="M5" value="65.18554001946237" />
+      <entry key="M10" value="67.53172515088308" />
+      <entry key="M15" value="68.35191626627375" />
+      <entry key="M30" value="71.17469617104169" />
+      <entry key="H1" value="104.73993782538287" />
+      <entry key="H2" value="234.70960734431728" />
+      <entry key="H4" value="438.63843761809153" />
+      <entry key="D1" value="802.6802288833414" />
+      <entry key="W1" value="895.4085887036962" />
+    </decayedShown>
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "git-widget-placeholder": "phase2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/db" />
+      <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/public/assets/data" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+</project>
