@@ -8,10 +8,10 @@ CCSCloud installation guide. (This assumes that Apache, MySQL, and the SSH servi
 2. Change directory into `/var/www/html`:
 ```cd /var/www/html```
 
-3. Clone this Git repository and switch to the `phase2` branch:
+3. Clone this Git repository and switch to the `phase3` branch:
 ```
 git clone https://github.com/carassiusauratus421/CCAPDEV-N24-3-ArrowsExpressBookingApp
-git switch phase2
+git switch phase3
 ```
 
 4. Import the database dump into MySQL:

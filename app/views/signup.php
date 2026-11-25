@@ -80,28 +80,28 @@
                             <form method="POST" action="signup.php" enctype="multipart/form-data">
                                 <div class="row g-3">
                                     <div class="col-12 col-sm-6">
-                                        <label for="first-name" class="form-label fw-bold">First Name</label>
+                                        <label for="first-name" class="form-label fw-bold">First Name<span class="text-danger">*</span></label>
                                         <input required type="text" class="form-control" id="first-name" name="firstName" placeholder="Juan" autocomplete="given-name">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="last-name" class="form-label fw-bold">Last Name</label>
+                                        <label for="last-name" class="form-label fw-bold">Last Name<span class="text-danger">*</span></label>
                                         <input required type="text" class="form-control" id="last-name" name="lastName" placeholder="Dela Cruz" autocomplete="family-name">
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="signup-email" class="form-label fw-bold">DLSU Email</label>
-                                        <input required type="email" class="form-control" id="signup-email" name="email" placeholder="username@dlsu.edu.ph" autocomplete="email" autocapitalize="none" spellcheck="false" aria-describedby="signup-email-help">
+                                        <label for="signup-email" class="form-label fw-bold">DLSU Email<span class="text-danger">*</span></label>
+                                        <input required type="email" class="form-control" id="signup-email" name="email" placeholder="username@dlsu.edu.ph" autocomplete="email" autocapitalize="none" spellcheck="false">
                                         <div id="signup-email-help" class="form-text">Use your university email address.</div>
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="id-number" class="form-label fw-bold">ID Number</label>
+                                        <label for="id-number" class="form-label fw-bold">ID Number<span class="text-danger">*</span></label>
                                         <input required type="text" class="form-control" id="id-number" name="idNumber" placeholder="Enter your university ID number">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="passenger-type" class="form-label fw-bold">Passenger Type</label>
+                                        <label for="passenger-type" class="form-label fw-bold">Passenger Type<span class="text-danger">*</span></label>
                                         <select required class="form-select" id="passenger-type" name="passengerType">
                                             <option value="" selected>Select passenger type</option>
                                             <option value="student">Student</option>
@@ -111,7 +111,7 @@
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="sex" class="form-label fw-bold">Sex</label>
+                                        <label for="sex" class="form-label fw-bold">Sex<span class="text-danger">*</span></label>
                                         <select required class="form-select" id="sex" name="sex">
                                             <option value="" selected>Select sex</option>
                                             <option value="male">Male</option>
@@ -121,30 +121,30 @@
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="college-department" class="form-label fw-bold">College / Department</label>
+                                        <label for="college-department" class="form-label fw-bold">College / Department<span class="text-danger">*</span></label>
                                         <input required type="text" class="form-control" id="college-department" name="collegeDepartment" placeholder="Enter your college or department">
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="verification-document" class="form-label fw-bold">Verification Document</label>
-                                        <input required type="file" class="form-control" id="verification-document" name="verificationDocument" accept=".pdf,.jpg,.jpeg,.png" aria-describedby="verification-document-help">
-                                        <div id="verification-document-help" class="form-text">Select an EAF or university ID (PDF, JPG, or PNG). Files are not uploaded yet.</div>
+                                        <label for="verification-document" class="form-label fw-bold">Verification Document<span class="text-danger">*</span></label>
+                                        <input required type="file" class="form-control" id="verification-document" name="verificationDocument" accept=".pdf">
+                                        <div id="verification-document-help" class="form-text">Submit your EAF or university ID in PDF format.</div>
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="signup-password" class="form-label fw-bold">Password</label>
+                                        <label for="signup-password" class="form-label fw-bold">Password<span class="text-danger">*</span></label>
                                         <input required type="password" class="form-control" id="signup-password" name="password" placeholder="Create a password" autocomplete="new-password">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="confirm-password" class="form-label fw-bold">Confirm Password</label>
+                                        <label for="confirm-password" class="form-label fw-bold">Confirm Password<span class="text-danger">*</span></label>
                                         <input required type="password" class="form-control" id="confirm-password" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
                                     </div>
                                 </div>
 
                                 <!-- <p id="registration-note" class="small text-secondary mt-4 mb-2">Account registration is not available yet.</p> -->
                                 <br>
-                                <button type="submit" class="btn btn-dlsu-green w-100" aria-describedby="registration-note">Create Account</button>
+                                <button type="submit" class="btn btn-dlsu-green w-100">Create Account</button>
                             </form>
                         </div>
                     </div>
