@@ -28,38 +28,51 @@ function show_admin_vehicles(): void
 
         // Receive inputs from admin-vehicles.php
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'plate'    => trim($_POST['plate'] ?? ''),
-                'model'    => trim($_POST['model'] ?? ''),
-                'capacity' => trim($_POST['capacity'] ?? ''),
-            ];
+            if (isset($_POST['deletion-id'])) {
+                $deletion_id = trim($_POST['deletion-id'] ?? '');
 
-            $id = trim($_POST['id'] ?? '');
-
-            if (in_array('', $data, true)) {
-                $error = 'Please fill in all fields.';
-            } else {
-                try {
-                    // Add vehicle
-                    if ($id === '') {
-                        $stmt = $pdo->prepare(
-                            "INSERT INTO vehicle (plate_number, vehicle_model, capacity) VALUES (?, ?, ?);"
+                $stmt = $pdo->prepare(
+                            "DELETE FROM vehicle WHERE vehicle_id = ?;"
                         );
-                        $stmt->execute([$data['plate'], $data['model'], $data['capacity']]);
-                    }
-                    // Edit vehicle
-                    else {
-                        $stmt = $pdo->prepare(
-                            "UPDATE vehicle SET plate_number = ?, vehicle_model = ?, capacity = ? WHERE vehicle_id = ?;"
-                        );
-                        $stmt->execute([$data['plate'], $data['model'], $data['capacity'], $id]);
-                    }
+                $stmt->execute([$deletion_id]);
 
-                    header("Location: admin-vehicles.php");
-                    exit;
-                } catch (PDOException $e) {
-                    error_log($e->getMessage());
-                    $error = 'Could not add vehicle. Please try again.';
+                header("Location: admin-vehicles.php");
+                exit;
+            }
+            else {
+                $data = [
+                    'plate'    => trim($_POST['plate'] ?? ''),
+                    'model'    => trim($_POST['model'] ?? ''),
+                    'capacity' => trim($_POST['capacity'] ?? ''),
+                ];
+
+                $id = trim($_POST['id'] ?? '');
+
+                if (in_array('', $data, true)) {
+                    $error = 'Please fill in all fields.';
+                } else {
+                    try {
+                        // Add vehicle
+                        if ($id === '') {
+                            $stmt = $pdo->prepare(
+                                "INSERT INTO vehicle (plate_number, vehicle_model, capacity) VALUES (?, ?, ?);"
+                            );
+                            $stmt->execute([$data['plate'], $data['model'], $data['capacity']]);
+                        }
+                        // Edit vehicle
+                        else {
+                            $stmt = $pdo->prepare(
+                                "UPDATE vehicle SET plate_number = ?, vehicle_model = ?, capacity = ? WHERE vehicle_id = ?;"
+                            );
+                            $stmt->execute([$data['plate'], $data['model'], $data['capacity'], $id]);
+                        }
+
+                        header("Location: admin-vehicles.php");
+                        exit;
+                    } catch (PDOException $e) {
+                        error_log($e->getMessage());
+                        $error = 'Could not add vehicle. Please try again.';
+                    }
                 }
             }
         }
