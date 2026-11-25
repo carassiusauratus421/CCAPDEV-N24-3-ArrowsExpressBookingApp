@@ -26,24 +26,35 @@ function show_admin_vehicles(): void
             return;
         }
 
-        // Add vehicle
+        // Receive inputs from admin-vehicles.php
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                // 'name'     => trim($_POST['name'] ?? ''),
                 'plate'    => trim($_POST['plate'] ?? ''),
                 'model'    => trim($_POST['model'] ?? ''),
                 'capacity' => trim($_POST['capacity'] ?? ''),
             ];
 
+            $id = trim($_POST['id'] ?? '');
+
             if (in_array('', $data, true)) {
                 $error = 'Please fill in all fields.';
             } else {
                 try {
-                    $stmt = $pdo->prepare(
-                        "INSERT INTO vehicle (plate_number, vehicle_model, capacity) VALUES (?, ?, ?);"
-                    );
-                    $stmt->execute([$data['plate'], $data['model'], $data['capacity']]);
-                    // create_admin($pdo, $data['email'], password_hash($data['password'], PASSWORD_DEFAULT));
+                    // Add vehicle
+                    if ($id === '') {
+                        $stmt = $pdo->prepare(
+                            "INSERT INTO vehicle (plate_number, vehicle_model, capacity) VALUES (?, ?, ?);"
+                        );
+                        $stmt->execute([$data['plate'], $data['model'], $data['capacity']]);
+                    }
+                    // Edit vehicle
+                    else {
+                        $stmt = $pdo->prepare(
+                            "UPDATE vehicle SET plate_number = ?, vehicle_model = ?, capacity = ? WHERE vehicle_id = ?;"
+                        );
+                        $stmt->execute([$data['plate'], $data['model'], $data['capacity'], $id]);
+                    }
+
                     header("Location: admin-vehicles.php");
                     exit;
                 } catch (PDOException $e) {
@@ -55,8 +66,7 @@ function show_admin_vehicles(): void
 
         // Display vehicles
         $vehicles = $pdo->query("SELECT
-                CONCAT('DLSU Shuttle ', vehicle_id) AS shuttle,
-                plate_number, vehicle_model, capacity
+                vehicle_id, plate_number, vehicle_model, capacity
             FROM vehicle ORDER BY vehicle_id ASC")->fetchAll(PDO::FETCH_ASSOC);
 
         require __DIR__ . '/../views/admin-vehicles.php';

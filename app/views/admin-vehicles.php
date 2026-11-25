@@ -64,11 +64,21 @@
                                     <tbody id="admin-vehicle-list">
                                         <?php foreach ($vehicles as $vehicle): ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($vehicle['shuttle']); ?></td>
+                                            <td><?= 'DLSU Shuttle ' . htmlspecialchars($vehicle['vehicle_id']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['plate_number']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['vehicle_model']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['capacity']); ?></td>
-                                            <td><a href="admin-vehicles.php">Manage</a></td>
+                                            <td>
+                                                <button type="button" 
+                                                    class="btn btn-dlsu-green" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#admin-vehicle-modal"
+                                                    data-bs-vehicle="<?= htmlspecialchars($vehicle['vehicle_id']); ?>"
+                                                    data-bs-plate="<?= htmlspecialchars($vehicle['plate_number']); ?>"
+                                                    data-bs-model="<?= htmlspecialchars($vehicle['vehicle_model']); ?>"
+                                                    data-bs-capacity="<?= htmlspecialchars($vehicle['capacity']); ?>""
+                                                >Edit</button>
+                                            </td>
                                             <!-- <td colspan="5">Loading data...</td> -->
                                         </tr>
                                         <?php endforeach; ?>
@@ -93,10 +103,7 @@
                                             <div class="alert alert-danger d-none" id="admin-vehicle-form-error" role="alert" tabindex="-1">
                                             </div>
                                             <div class="row g-3">
-                                                <!-- <div class="col-12 col-md-6">
-                                                    <label for="vehicle-name" class="form-label">Shuttle name</label>
-                                                    <input type="text" id="vehicle-name" name="name" class="form-control" required maxlength="80">
-                                                </div> -->
+                                                    <input type="hidden" id="vehicle-id" name="id">
                                                 <div class="col-12 col-md-6">
                                                     <label for="vehicle-plate" class="form-label">Plate number</label>
                                                     <input type="text" id="vehicle-plate" name="plate" class="form-control" required maxlength="20">
@@ -129,6 +136,28 @@
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/theme-toggle.js">
+        </script>
+
+
+        <script>
+            const vehicleModal = document.getElementById('admin-vehicle-modal');
+
+            vehicleModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+
+                // Extract info from data-bs-* attributes
+                const vehicle = button.getAttribute('data-bs-vehicle');
+                const plate = button.getAttribute('data-bs-plate');
+                const model = button.getAttribute('data-bs-model');
+                const capacity = button.getAttribute('data-bs-capacity');
+
+                // Populate the form fields inside the modal
+                vehicleModal.querySelector('#vehicle-id').value = vehicle;
+                vehicleModal.querySelector('#vehicle-plate').value = plate;
+                vehicleModal.querySelector('#vehicle-model').value = model;
+                vehicleModal.querySelector('#vehicle-capacity').value = capacity;
+            });
         </script>
     </body>
 </html>
