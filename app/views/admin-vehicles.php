@@ -64,11 +64,30 @@
                                     <tbody id="admin-vehicle-list">
                                         <?php foreach ($vehicles as $vehicle): ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($vehicle['shuttle']); ?></td>
+                                            <td><?= 'DLSU Shuttle ' . htmlspecialchars($vehicle['vehicle_id']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['plate_number']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['vehicle_model']); ?></td>
                                             <td><?= htmlspecialchars($vehicle['capacity']); ?></td>
-                                            <td><a href="admin-vehicles.php">Manage</a></td>
+                                            <td>
+                                                <button type="button" 
+                                                    class="btn btn-secondary" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#admin-vehicle-modal"
+                                                    data-bs-vehicle="<?= htmlspecialchars($vehicle['vehicle_id']); ?>"
+                                                    data-bs-plate="<?= htmlspecialchars($vehicle['plate_number']); ?>"
+                                                    data-bs-model="<?= htmlspecialchars($vehicle['vehicle_model']); ?>"
+                                                    data-bs-capacity="<?= htmlspecialchars($vehicle['capacity']); ?>"
+                                                >Edit</button>
+                                                <button type="button"
+                                                    class="btn btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#admin-vehicle-deletion-modal"
+                                                    data-bs-vehicle="<?= htmlspecialchars($vehicle['vehicle_id']); ?>"
+                                                    data-bs-plate="<?= htmlspecialchars($vehicle['plate_number']); ?>"
+                                                    data-bs-model="<?= htmlspecialchars($vehicle['vehicle_model']); ?>"
+                                                    data-bs-capacity="<?= htmlspecialchars($vehicle['capacity']); ?>"
+                                                >Delete</button>
+                                            </td>
                                             <!-- <td colspan="5">Loading data...</td> -->
                                         </tr>
                                         <?php endforeach; ?>
@@ -79,6 +98,7 @@
                                 </table>
                             </div>
                         </section>
+
                         <!-- DETAILS MODAL -->
                         <div class="modal fade" id="admin-vehicle-modal" tabindex="-1" role="dialog" aria-labelledby="admin-vehicle-modal-heading" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -93,10 +113,7 @@
                                             <div class="alert alert-danger d-none" id="admin-vehicle-form-error" role="alert" tabindex="-1">
                                             </div>
                                             <div class="row g-3">
-                                                <!-- <div class="col-12 col-md-6">
-                                                    <label for="vehicle-name" class="form-label">Shuttle name</label>
-                                                    <input type="text" id="vehicle-name" name="name" class="form-control" required maxlength="80">
-                                                </div> -->
+                                                    <input type="hidden" id="vehicle-id" name="id">
                                                 <div class="col-12 col-md-6">
                                                     <label for="vehicle-plate" class="form-label">Plate number</label>
                                                     <input type="text" id="vehicle-plate" name="plate" class="form-control" required maxlength="20">
@@ -119,6 +136,47 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- DELETION MODAL -->
+                        <div class="modal fade" id="admin-vehicle-deletion-modal" tabindex="-1" role="dialog" aria-labelledby="admin-vehicle-deletion-modal-heading" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content rounded-4">
+                                    <form id="admin-vehicle-deletion-form" novalidate action="admin-vehicles.php" method="POST">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title fs-5" id="admin-vehicle-deletion-modal-heading">Delete Vehicle</h2>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="alert alert-danger d-none" id="admin-vehicle-deletion-form-error" role="alert" tabindex="-1">
+                                            </div>
+                                            <input type="hidden" id="vehicle-deletion-id" name="deletion-id">
+
+                                            Are you sure you want to delete this vehicle? <br><br>
+
+                                            <table class="table align-middle">
+                                                <tr>
+                                                    <td>Plate Number</td>
+                                                    <td id="vehicle-deletion-plate"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Vehicle Model</td>
+                                                    <td id="vehicle-deletion-model"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Capacity</td>
+                                                    <td id="vehicle-deletion-capacity"></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+                                            <button type="submit" class="btn btn-outline-danger">Yes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
@@ -128,7 +186,8 @@
 
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/js/theme-toggle.js">
-        </script>
+        <script src="assets/js/theme-toggle.js"></script>
+
+        <script src="assets/js/admin-vehicles.js"></script>
     </body>
 </html>

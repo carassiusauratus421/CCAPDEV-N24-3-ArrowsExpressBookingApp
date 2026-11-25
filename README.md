@@ -24,3 +24,13 @@ $ mysql -u root -p
 ```
 
 5. Edit `app/core/db.php` with the appropriate credentials.
+
+---
+
+**Web Application User Credentials**
+
+| Email | Password | Role |
+|---|---|---|
+| admin.primary@dlsu.edu.ph | ArrowsAdminTest26! | Admin |
+| roberto.sanjose@gmail.com | ArrowsTest16! | Driver |
+| joshua.mendoza@dlsu.edu.ph | ArrowsTest16! | Passenger |
