@@ -39,6 +39,13 @@ which restrict access to sensitive web application files.
 
 ---
 
+7. Edit permissions for the storage folder that stores file uploads
+```
+sudo chown -R www-data:www-data /var/www/html/CCAPDEV-N24-3-ArrowsExpressBookingApp/storage
+sudo chmod -R 775 /var/www/html/CCAPDEV-N24-3-ArrowsExpressBookingApp/storage
+```
+
+
 **Web Application User Credentials**
 
 | Email | Password | Role |
