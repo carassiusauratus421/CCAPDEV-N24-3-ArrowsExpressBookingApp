@@ -2,7 +2,6 @@
 
 // Unit tests for app/models/Booking.php.
 // Run from the project folder:  php tests/BookingTest.php
-// Needs MySQL/MariaDB running. Uses its own database (arrows_express_test),
 // which is created at the start and removed at the end.
 
 if (PHP_SAPI !== 'cli') {
@@ -26,8 +25,7 @@ function connectTestDatabase(): PDO
     $pdo->exec('USE ' . TEST_DB);
     $pdo->exec("SET time_zone = '+08:00'");
 
-    // Copy only the table definitions from the project dump. The dump itself
-    // is never imported, because it would overwrite the real database.
+
     $dump = file_get_contents(__DIR__ . '/../app/db/CCAPDEV-N24-3-ArrowsExpress.sql');
     preg_match_all('/^CREATE TABLE .*?^\) ENGINE[^;]*;/ms', $dump, $tables);
 
@@ -40,7 +38,6 @@ function connectTestDatabase(): PDO
     return $pdo;
 }
 
-// Every test starts from the same small set of records.
 function resetData(PDO $pdo): void
 {
     $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
