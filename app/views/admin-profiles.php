@@ -85,36 +85,36 @@
                                             </div>
                                             <div class="row g-3">
                                                 <div class="col-12 col-md-6">
-                                                    <label for="user-first-name" class="form-label">First name</label>
+                                                    <label for="user-first-name" class="form-label">First name<span class="text-danger">*</span></label>
                                                     <input type="text" id="user-first-name" class="form-control" required maxlength="50">
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="user-last-name" class="form-label">Last name</label>
+                                                    <label for="user-last-name" class="form-label">Last name<span class="text-danger">*</span></label>
                                                     <input type="text" id="user-last-name" class="form-control" required maxlength="50">
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="user-email" class="form-label">DLSU email</label>
+                                                    <label for="user-email" class="form-label">DLSU email<span class="text-danger">*</span></label>
                                                     <input type="email" id="user-email" class="form-control" required maxlength="254" autocomplete="off">
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="user-role" class="form-label">Profile type</label>
+                                                    <label for="user-role" class="form-label">Profile type<span class="text-danger">*</span></label>
                                                     <select id="user-role" class="form-select">
                                                         <option value="passenger">Passenger</option>
                                                         <option value="driver">Driver</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="user-contact" class="form-label">Contact number</label>
+                                                    <label for="user-contact" class="form-label">Contact number<span class="text-danger">*</span></label>
                                                     <input type="tel" id="user-contact" class="form-control" maxlength="16">
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="user-id-number" class="form-label">ID / Employee number</label>
+                                                    <label for="user-id-number" class="form-label">ID / Employee number<span class="text-danger">*</span></label>
                                                     <input type="text" id="user-id-number" class="form-control" required maxlength="20">
                                                 </div>
                                                 <div class="col-12" id="admin-passenger-fields">
                                                     <div class="row g-3">
                                                         <div class="col-12 col-md-6">
-                                                            <label for="user-passenger-type" class="form-label">Passenger type</label>
+                                                            <label for="user-passenger-type" class="form-label">Passenger type<span class="text-danger">*</span></label>
                                                             <select id="user-passenger-type" class="form-select">
                                                                 <option value="student">Student</option>
                                                                 <option value="faculty">Faculty</option>
@@ -122,7 +122,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-12 col-md-6">
-                                                            <label for="user-sex" class="form-label">Sex</label>
+                                                            <label for="user-sex" class="form-label">Sex<span class="text-danger">*</span></label>
                                                             <select id="user-sex" class="form-select">
                                                                 <option value="male">Male</option>
                                                                 <option value="female">Female</option>
@@ -130,18 +130,18 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-12 col-md-6">
-                                                            <label for="user-college" class="form-label">College / Department</label>
+                                                            <label for="user-college" class="form-label">College / Department<span class="text-danger">*</span></label>
                                                             <input type="text" id="user-college" class="form-control" maxlength="100">
                                                         </div>
                                                         <div class="col-12 col-md-6">
-                                                            <label for="user-campus" class="form-label">Campus</label>
+                                                            <label for="user-campus" class="form-label">Campus<span class="text-danger">*</span></label>
                                                             <select id="user-campus" class="form-select">
                                                                 <option value="Manila">Manila</option>
                                                                 <option value="Laguna">Laguna</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-12">
-                                                            <label for="user-document" class="form-label">Verification document</label>
+                                                            <label for="user-document" class="form-label">Verification document<span class="text-danger">*</span></label>
                                                             <a id="user-document-link" href="#" target="_blank" class="btn btn-sm btn-outline-secondary d-none">View Document</a>
                                                             <!-- <input type="text" id="user-document" class="form-control" maxlength="255" placeholder="e.g. passenger-eaf.pdf"> -->
                                                         </div>

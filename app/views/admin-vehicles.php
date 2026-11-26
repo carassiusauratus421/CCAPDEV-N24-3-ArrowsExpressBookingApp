@@ -115,15 +115,15 @@
                                             <div class="row g-3">
                                                     <input type="hidden" id="vehicle-id" name="id">
                                                 <div class="col-12 col-md-6">
-                                                    <label for="vehicle-plate" class="form-label">Plate number</label>
+                                                    <label for="vehicle-plate" class="form-label">Plate number<span class="text-danger">*</span></label>
                                                     <input type="text" id="vehicle-plate" name="plate" class="form-control" required maxlength="20">
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="vehicle-model" class="form-label">Vehicle model</label>
+                                                    <label for="vehicle-model" class="form-label">Vehicle model<span class="text-danger">*</span></label>
                                                     <input type="text" id="vehicle-model" name="model" class="form-control" required maxlength="80">
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="vehicle-capacity" class="form-label">Seat capacity</label>
+                                                    <label for="vehicle-capacity" class="form-label">Seat capacity<span class="text-danger">*</span></label>
                                                     <input type="number" id="vehicle-capacity" name="capacity" class="form-control" required min="1" max="100" step="1">
                                                 </div>
                                             </div>
