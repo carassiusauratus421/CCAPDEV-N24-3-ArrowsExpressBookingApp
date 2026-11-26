@@ -23,7 +23,12 @@
     }
 
     function get_admins($pdo) {
-        $stmt = $pdo->query("SELECT email FROM `user` WHERE role = 'admin'");
+        $stmt = $pdo->query("SELECT user_id, email FROM `user` WHERE role = 'admin'");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function delete_user($pdo, $userId) {
+        $stmt = $pdo->prepare("DELETE FROM `user` WHERE user_id = ? AND role = 'admin'");
+        $stmt->execute([$userId]);
     }
 ?>
