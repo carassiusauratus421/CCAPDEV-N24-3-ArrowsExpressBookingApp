@@ -1,14 +1,8 @@
 <?php
 function show_admin_profiles(): void
 {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-
-    if (empty($_SESSION['user_id'])) {
-        header('Location: index.php', true, 303);
-        exit;
-    }
+    require __DIR__ . '/../../public/api/session-management.php';
+    restrict_access('admin');
 
     try {
         require_once __DIR__ . '/../core/db.php';

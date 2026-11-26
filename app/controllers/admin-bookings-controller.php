@@ -2,13 +2,9 @@
 // Protect the admin booking page using the server-side account record.
 function show_admin_bookings(): void
 {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-    if (empty($_SESSION['user_id'])) {
-        header('Location: index.php', true, 303);
-        exit;
-    }
+    require __DIR__ . '/../../public/api/session-management.php';
+    restrict_access('admin');
+    
     try {
         require __DIR__ . '/../core/db.php';
         $statement = $pdo->prepare("SELECT role, account_status FROM `user` WHERE user_id = :id LIMIT 1");

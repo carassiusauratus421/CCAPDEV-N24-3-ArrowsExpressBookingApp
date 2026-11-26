@@ -2,14 +2,8 @@
 // Vehicle management
 function show_admin_vehicles(): void
 {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-
-    if (empty($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-        header('Location: login.php');
-        exit;
-    }
+    require __DIR__ . '/../../public/api/session-management.php';
+    restrict_access('admin');
 
     try {
         require __DIR__ . '/../core/db.php';

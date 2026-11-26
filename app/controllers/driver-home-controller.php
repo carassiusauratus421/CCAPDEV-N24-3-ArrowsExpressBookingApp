@@ -1,21 +1,24 @@
 <?php
 function show_driver_home(): void
 {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
+    require __DIR__ . '/../../public/api/session-management.php';
+    restrict_access('driver');
 
-    $userId = $_SESSION['user_id'] ?? null;
-    $role = $_SESSION['role'] ?? null;
+    // if (session_status() !== PHP_SESSION_ACTIVE) {
+    //     session_start();
+    // }
 
-    if (
-        empty($userId) ||
-        filter_var($userId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false ||
-        $role !== 'driver'
-    ) {
-        header('Location: index.php', true, 303);
-        exit;
-    }
+    // $userId = $_SESSION['user_id'] ?? null;
+    // $role = $_SESSION['role'] ?? null;
+
+    // if (
+    //     empty($userId) ||
+    //     filter_var($userId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false ||
+    //     $role !== 'driver'
+    // ) {
+    //     header('Location: index.php', true, 303);
+    //     exit;
+    // }
 
     try {
         require_once __DIR__ . '/../core/db.php';

@@ -2,11 +2,8 @@
     require_once __DIR__ . '/../models/user-model.php';
 
     function show_admin_accounts($pdo) {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        if (($_SESSION['role'] ?? '') !== 'admin') {
-            header("Location: index.php");
-            exit;
-        }
+        require __DIR__ . '/../../public/api/session-management.php';
+        restrict_access('admin');
 
         $error = '';
 
