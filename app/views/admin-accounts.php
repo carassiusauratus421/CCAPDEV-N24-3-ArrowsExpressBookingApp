@@ -84,17 +84,23 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Email</th>
-                                        <th scope="col" colspan=2>Manage</th>
+                                        <th scope="col">Manage</th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody id="admin-account-list">
                                     <?php
                                         if (empty($admins)) {
-                                            echo '<tr><td>No admins found.</td></tr>';
+                                            echo '<tr><td colspan="2">No admins found.</td></tr>';
                                         } else {
                                             foreach ($admins as $admin) {
-                                                echo '<tr><td>' . htmlspecialchars($admin['email']) . '</td></tr>';
+                                                echo '<tr>';
+                                                echo '<td>' . htmlspecialchars($admin['email']) . '</td>';
+                                                echo '<td><button type="button" class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal" data-bs-target="#delete-admin-modal"
+                                                        data-id="' . htmlspecialchars($admin['user_id']) . '"
+                                                        data-email="' . htmlspecialchars($admin['email']) . '">Delete</button></td>';
+                                                echo '</tr>';
                                             }
                                         }
                                     ?>
@@ -107,11 +113,40 @@
                 </main>
             </div>
         </div>
+
+        <div class="modal fade" id="delete-admin-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <form class="modal-content" method="POST" action="admin-accounts.php">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Admin</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Delete <strong id="delete-admin-email"></strong>? This can't be undone.
+                        <input type="hidden" name="deleteUserId" id="delete-admin-id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- MOBILE NAV -->
         <?php include __DIR__ . '/admin-nav-mobile.php';?>
 
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            document.getElementById("delete-admin-modal").addEventListener("show.bs.modal", function (event) {
+                const btn = event.relatedTarget;
+                document.getElementById("delete-admin-id").value = btn.dataset.id;
+                document.getElementById("delete-admin-email").textContent = btn.dataset.email;
+            });
+        </script>
+
         <script src="assets/js/theme-toggle.js">
         </script>
     </body>
