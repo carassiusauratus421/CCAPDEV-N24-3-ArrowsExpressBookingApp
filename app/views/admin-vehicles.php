@@ -44,12 +44,7 @@
                                 <h2 class="fs-5 fw-bold text-dlsu-green mb-0">Shuttle Vehicles</h2>
                                 <button type="button" class="btn btn-dlsu-green" data-admin-action="add-vehicle" data-bs-toggle="modal" data-bs-target="#admin-vehicle-modal">Add Vehicle</button>
                             </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-12 col-lg-6">
-                                    <label for="admin-search" class="form-label">Search</label>
-                                    <input type="search" id="admin-search" class="form-control" placeholder="Search names, emails, plates, or references">
-                                </div>
-                            </div>
+
                             <div class="admin-table-wrapper">
                                 <table class="table align-middle mb-0 admin-table">
                                     <thead>
