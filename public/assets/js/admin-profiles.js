@@ -249,6 +249,8 @@ function openUserModal(userId = null) {
     adminUserForm.reset();
 
     const modalTitle = document.getElementById("admin-user-modal-heading");
+    const docLink = document.getElementById("user-document-link");
+    docLink.classList.add("d-none");
 
     if (userId) {
         const profile = adminProfiles.find(function (p) { return p.user_id === userId; });
@@ -271,7 +273,9 @@ function openUserModal(userId = null) {
             document.getElementById("user-passenger-type").value = profile.passenger_type || "student";
             document.getElementById("user-sex").value = profile.sex || "prefer-not-to-say";
             document.getElementById("user-college").value = profile.college || "";
-            document.getElementById("user-document").value = profile.document_path || "";
+            // document.getElementById("user-document").value = profile.document_path || "";
+            docLink.href = "view-document.php?id=" + profile.id_number;
+            docLink.classList.remove("d-none");
         } else {
             populateVehicleDropdown(profile.assigned_vehicle_id);
             populateDriverStatusDropdown(profile.duty_status);

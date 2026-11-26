@@ -141,8 +141,9 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-12">
-                                                            <label for="user-document" class="form-label">Verification document filename</label>
-                                                            <input type="text" id="user-document" class="form-control" maxlength="255" placeholder="e.g. passenger-eaf.pdf">
+                                                            <label for="user-document" class="form-label">Verification document</label>
+                                                            <a id="user-document-link" href="#" target="_blank" class="btn btn-sm btn-outline-secondary d-none">View Document</a>
+                                                            <!-- <input type="text" id="user-document" class="form-control" maxlength="255" placeholder="e.g. passenger-eaf.pdf"> -->
                                                         </div>
                                                     </div>
                                                 </div>
