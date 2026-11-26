@@ -55,18 +55,18 @@
                                 <div class="row g-3">
 
                                     <div class="col-12">
-                                        <label for="signup-email" class="form-label fw-bold">DLSU Email</label>
+                                        <label for="signup-email" class="form-label fw-bold">DLSU Email<span class="text-danger">*</span></label>
                                         <input required type="email" class="form-control" id="signup-email" name="email" placeholder="username@dlsu.edu.ph" autocomplete="email" autocapitalize="none" spellcheck="false" aria-describedby="signup-email-help">
-                                        <div id="signup-email-help" class="form-text">Use your university email address.</div>
+                                        <div id="signup-email-help" class="form-text">Use a university email address.</div>
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="signup-password" class="form-label fw-bold">Password</label>
+                                        <label for="signup-password" class="form-label fw-bold">Password<span class="text-danger">*</span></label>
                                         <input required type="password" class="form-control" id="signup-password" name="password" placeholder="Create a password" autocomplete="new-password">
                                     </div>
 
                                     <div class="col-12 col-sm-6">
-                                        <label for="confirm-password" class="form-label fw-bold">Confirm Password</label>
+                                        <label for="confirm-password" class="form-label fw-bold">Confirm Password<span class="text-danger">*</span></label>
                                         <input required type="password" class="form-control" id="confirm-password" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
                                     </div>
                                     <button type="submit" class="btn btn-dlsu-green w-100" aria-describedby="registration-note">Create Admin Account</button>
@@ -84,6 +84,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Email</th>
+                                        <th scope="col" colspan=2>Manage</th>
                                     </tr>
                                 </thead>
                                 
