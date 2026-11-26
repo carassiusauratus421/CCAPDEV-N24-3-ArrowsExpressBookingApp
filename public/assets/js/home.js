@@ -391,6 +391,10 @@ async function loadDashboardData() {
         );
 
         dashboardUserName.textContent = "Unable to load";
+        document.querySelectorAll("[data-passenger-name]")
+            .forEach(function (element) {
+                element.textContent = "Unable to load";
+            });
         dashboardFirstName.textContent = "Guest";
 
         dashboardBookings = [];

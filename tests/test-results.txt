@@ -1,0 +1,58 @@
+Booking model unit tests
+Run: 2026-11-27 01:51:02 PST | PHP 8.5.12 | Database 10.11.16-MariaDB
+
+__construct
+  [PASS] stores a connection the model can use
+
+getPassengerByUserId
+  [PASS] returns an active passenger
+  [PASS] returns null for an unknown user
+  [PASS] returns null for an inactive account
+  [PASS] returns null for a non-passenger role
+
+getBookingsByPassengerId
+  [PASS] returns an empty list when there are no bookings
+  [PASS] returns only that passenger, latest departure first
+
+createBooking
+  [PASS] creates a pending booking and reserves one seat
+  [PASS] rejects a trip that does not exist
+  [PASS] rejects a departed trip
+  [PASS] rejects a trip that is not scheduled
+  [PASS] rejects a full trip
+  [PASS] rejects a duplicate active booking
+  [PASS] allows booking again after cancelling
+  [PASS] rolls back when the database rejects the insert
+
+cancelBooking
+  [PASS] cancels pending, confirmed and on_hold bookings and returns the seat
+  [PASS] rejects another passenger's booking
+  [PASS] rejects an already cancelled booking
+  [PASS] rejects a departed trip
+  [PASS] throws and rolls back when seat totals are inconsistent
+
+getDatabaseNow
+  [PASS] returns the database time as Y-m-d H:i:s
+
+processDueForfeitures
+  [PASS] forfeits an unconfirmed departed ride and releases the seat once
+  [PASS] leaves confirmed, pending and future rides alone
+  [PASS] can be limited to one passenger
+  [PASS] treats a limit below 1 as 1
+
+forfeitDueBooking (private)
+  [PASS] returns true for an eligible booking
+  [PASS] returns false when the trip has not departed
+  [PASS] returns false when the booking belongs to another trip
+  [PASS] throws and rolls back when seat totals are inconsistent
+
+confirmRide
+  [PASS] confirms within 60 minutes of departure
+  [PASS] keeps the first timestamp when confirmed again
+  [PASS] rejects confirming too early
+  [PASS] rejects confirming after departure
+  [PASS] rejects a booking that is not admin-approved
+  [PASS] rejects a trip that is not scheduled
+  [PASS] rejects another passenger's booking
+
+Total: 36 | Passed: 36 | Failed: 0

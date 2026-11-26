@@ -67,6 +67,15 @@
     <div class="px-2">
         <hr class="my-3 opacity-25">
 
+        <a href="profile.php"
+           class="dashboard-account btn btn-white border rounded-pill py-1 px-2 mb-2 d-flex align-items-center shadow-sm text-decoration-none">
+            <span class="dashboard-user-avatar me-2">
+                <i class="bi bi-person-fill" aria-hidden="true"></i>
+            </span>
+            <span class="fw-semibold me-2 text-start" data-passenger-name>Loading...</span>
+            <i class="bi bi-chevron-right text-muted small ms-auto me-1" aria-hidden="true"></i>
+        </a>
+
         <a href="api/logout.php"
             class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold"
             style="font-size: 0.9rem;">

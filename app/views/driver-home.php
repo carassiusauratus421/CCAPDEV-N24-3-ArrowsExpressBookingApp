@@ -43,6 +43,16 @@
 
             <div class="px-2">
                 <hr class="my-3 opacity-25">
+
+        <a href="#driver-details"
+           class="dashboard-account btn btn-white border rounded-pill py-1 px-2 mb-2 d-flex align-items-center shadow-sm text-decoration-none">
+            <span class="dashboard-user-avatar me-2">
+                <i class="bi bi-person-fill" aria-hidden="true"></i>
+            </span>
+            <span class="fw-semibold me-2 text-start" data-driver-name>Driver</span>
+            <i class="bi bi-chevron-right text-muted small ms-auto me-1" aria-hidden="true"></i>
+        </a>
+
                 <a href="api/logout.php"
                    class="nav-link nav-item-default rounded px-3 py-2 d-flex align-items-center fw-semibold">
                     <i class="bi bi-box-arrow-right me-3 fs-5" aria-hidden="true"></i>
@@ -54,12 +64,16 @@
         <!-- MAIN CONTENT AREA -->
         <main class="driver-main flex-grow-1 p-4 px-xl-5">
             <!-- PAGE HEADER -->
-            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
+            <header class="dashboard-header d-flex d-lg-none flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                 <img src="assets/images/logo.png"
                      alt="DLSU Logo"
                      class="dashboard-logo d-lg-none">
 
                 <div class="ms-auto d-flex align-items-center gap-2">
+                    <button type="button" id="themeToggle" class="btn btn-sm btn-light border" aria-label="Toggle theme" aria-pressed="false">
+                        <i class="bi bi-moon" aria-hidden="true"></i>
+                    </button>
+
                     <a href="#driver-details"
                        class="dashboard-account btn btn-white border rounded-pill py-1 px-2 d-flex align-items-center shadow-sm text-decoration-none">
                         <span class="dashboard-user-avatar me-2">

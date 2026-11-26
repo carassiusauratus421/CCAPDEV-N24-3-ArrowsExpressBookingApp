@@ -21,7 +21,7 @@
         <!-- MAIN CONTENT AREA -->
         <main class="profile-main flex-grow-1 p-4 px-xl-5">
             <!-- PAGE HEADER -->
-            <header class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
+            <header class="dashboard-header d-flex d-lg-none flex-wrap justify-content-between align-items-center gap-2 mb-4 position-relative z-2">
                 <img src="assets/images/logo.png" alt="DLSU Logo" class="dashboard-logo d-lg-none">
                 <div class="ms-auto d-flex align-items-center gap-2 notification-header-actions">
                 
