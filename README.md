@@ -25,6 +25,18 @@ $ mysql -u root -p
 
 5. Edit `app/core/db.php` with the appropriate credentials.
 
+
+6. Edit `/etc/apache2/apache2.conf` to include the following lines:
+```
+<Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+</Directory>
+```
+The line `AllowOverride All` allows the use of `.htaccess` files
+which restrict access to sensitive web application files.
+
 ---
 
 **Web Application User Credentials**
