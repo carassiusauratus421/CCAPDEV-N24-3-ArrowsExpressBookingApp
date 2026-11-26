@@ -114,6 +114,7 @@
             </div>
         </div>
 
+        <!-- ADMIN PROFILES DELETING MODAL JS -->
         <div class="modal fade" id="delete-admin-modal" tabindex="-1">
             <div class="modal-dialog">
                 <form class="modal-content" method="POST" action="admin-accounts.php">
@@ -139,6 +140,7 @@
         <!-- LOCAL SCRIPTS -->
         <script src="assets/js/bootstrap.bundle.min.js"></script>
 
+        <!-- ADMIN PROFILES DELETING MODAL JS -->
         <script>
             document.getElementById("delete-admin-modal").addEventListener("show.bs.modal", function (event) {
                 const btn = event.relatedTarget;
